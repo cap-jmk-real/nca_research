@@ -59,7 +59,7 @@ Proprioception, if a task has it, is another write slice. It is optional in the 
 
 ## Experiment ladder
 
-These are designs only.
+The first run is text traces from Hermes, not images. See [hermes-first-run.md](hermes-first-run.md). The ladder below is the multimodal continuation after that run has a number.
 
 **Step 1. Image plus instruction, one step.** A low-resolution image and a discrete instruction share the grid. Two instructions on the same pixels require different labels (for example digit identity versus parity, in the spirit of the self-classifying grid of Randazzo et al., 2020). Train the rule and both the write and the readout. Measure accuracy per instruction, then under each channel ablation from hypothesis 1.
 
