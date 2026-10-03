@@ -1,0 +1,147 @@
+{
+  "chip": {
+    "brand": "Apple M1",
+    "arm64": "1",
+    "mem_bytes": 17179869184,
+    "mem_gib": 16.0,
+    "ncpu": 8,
+    "torch": "2.13.0",
+    "mps_available": true
+  },
+  "data_root": "/Volumes/Extreme SSD/nca_research/results",
+  "arch": "trace-1d",
+  "train_note": "curated/train.jsonl (57675 rows); extra/train.jsonl (88541 rows); extra/openhands_train.jsonl (9630 rows); extra/swe_smith_partial_train.jsonl (329140 rows)",
+  "val_note": "curated/val.jsonl (6995 rows)",
+  "local_note": "local ~/.hermes/state.db held out as test; transcripts not written to disk",
+  "resumed": true,
+  "eval_only": false,
+  "step": 150000,
+  "train_rows": 484986,
+  "train_sessions": 25304,
+  "val_rows": 6995,
+  "val_sessions": 382,
+  "local_rows_before_vocab": 867,
+  "local_test_rows": 843,
+  "local_test_sessions": 33,
+  "local_oov_or_unmapped": 24,
+  "n_classes": 13,
+  "labels": [
+    "delegate_task",
+    "execute_code",
+    "memory",
+    "patch",
+    "process",
+    "read_file",
+    "respond",
+    "search_files",
+    "session_search",
+    "skill_view",
+    "terminal",
+    "todo",
+    "write_file"
+  ],
+  "train_hist": {
+    "delegate_task": 486,
+    "execute_code": 4601,
+    "memory": 332,
+    "patch": 35220,
+    "process": 827,
+    "read_file": 53474,
+    "respond": 179330,
+    "search_files": 14384,
+    "session_search": 1116,
+    "skill_view": 1114,
+    "terminal": 142388,
+    "todo": 3676,
+    "write_file": 48038
+  },
+  "val_hist": {
+    "delegate_task": 5,
+    "execute_code": 12,
+    "memory": 3,
+    "patch": 197,
+    "process": 50,
+    "read_file": 951,
+    "respond": 331,
+    "search_files": 767,
+    "session_search": 6,
+    "skill_view": 16,
+    "terminal": 3798,
+    "todo": 21,
+    "write_file": 838
+  },
+  "local_test_hist": {
+    "delegate_task": 4,
+    "execute_code": 39,
+    "memory": 3,
+    "patch": 73,
+    "process": 5,
+    "read_file": 79,
+    "respond": 64,
+    "search_files": 23,
+    "session_search": 11,
+    "skill_view": 17,
+    "terminal": 417,
+    "todo": 17,
+    "write_file": 91
+  },
+  "device": "mps",
+  "batch": 1024,
+  "microbench": {
+    "rows": [],
+    "chosen": {
+      "device": "mps",
+      "batch": 1024,
+      "step_ms": null,
+      "samples_per_sec": null,
+      "hours_for_150k": null
+    },
+    "compile": "skipped; eager training, batch from the M1 probe",
+    "use_compile": false
+  },
+  "config": {
+    "hidden_c": 16,
+    "update_hidden": 96,
+    "steps": 4,
+    "seq_len": 5,
+    "trace_steps": 4,
+    "hash_dim": 48,
+    "obs_c": 62,
+    "n_classes": 13,
+    "total_steps": 150000,
+    "lr": 0.001,
+    "weight_decay": 0.01,
+    "seed": 0,
+    "arch": "trace-1d"
+  },
+  "best_tracked": {
+    "val_top1_nca": 0.6517512508934954,
+    "val_top1_flat": 0.6071479628305932,
+    "step": 26000
+  },
+  "final_val_top1": {
+    "nca": 0.6428877769835597,
+    "flat": 0.5979985704074339,
+    "always_terminal": 0.5429592566118656
+  },
+  "final_local_test_top1": {
+    "nca": 0.3760379596678529,
+    "flat": 0.4412811387900356,
+    "always_terminal": 0.49466192170818507
+  },
+  "best_val_top1": {
+    "nca": 0.6517512508934954,
+    "flat": 0.6071479628305932,
+    "always_terminal": 0.5429592566118656,
+    "step": 26000
+  },
+  "best_local_test_top1": {
+    "nca": 0.40094899169632264,
+    "flat": 0.4472123368920522,
+    "always_terminal": 0.49466192170818507,
+    "step": 26000
+  },
+  "checkpoint_last": "/Volumes/Extreme SSD/nca_research/results/checkpoints/text_nca_1d_mix13_last.pt",
+  "checkpoint_best": "/Volumes/Extreme SSD/nca_research/results/checkpoints/text_nca_1d_mix13_best.pt",
+  "log": "/Volumes/Extreme SSD/nca_research/results/logs/text_nca_1d_mix13.jsonl"
+}

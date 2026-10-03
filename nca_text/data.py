@@ -21,6 +21,10 @@ HASH_C = 8
 GRID_W = 8
 MAX_STEPS = 5
 GRID_H = 1 + MAX_STEPS
+# 1D trace layout: cell 0 is the goal, cells 1..TRACE_STEPS are recent steps.
+TRACE_STEPS = 4
+SEQ_LEN = 1 + TRACE_STEPS
+HASH_DIM = 48
 TEXT_CAP = 160
 PUBLIC_PAGES = 4
 PUBLIC_PAGE_LEN = 100
@@ -263,10 +267,10 @@ def load_local_test(db_path: Path | None = None) -> tuple[list[Example], str]:
                     session_id=current_id or "",
                     label=label,
                     goal=goal,
-                    steps=list(steps[-MAX_STEPS:]),
-                    source="local",
-                )
+                steps=list(steps[-TRACE_STEPS:]),
+                source="local",
             )
+        )
 
         for session_id, role, content, tool_name, tool_calls in cur:
             if session_id != current_id:
@@ -280,8 +284,8 @@ def load_local_test(db_path: Path | None = None) -> tuple[list[Example], str]:
             elif role == "tool":
                 name = tool_name or "tool"
                 steps.append((name, _short(content or "")))
-                if len(steps) > MAX_STEPS:
-                    steps = steps[-MAX_STEPS:]
+                if len(steps) > TRACE_STEPS:
+                    steps = steps[-TRACE_STEPS:]
         return examples, "local ~/.hermes/state.db held out as test; transcripts not written to disk"
     finally:
         con.close()
@@ -356,3 +360,262 @@ def build_obs(
         empty = np.zeros((0, obs_c, GRID_H, GRID_W), np.float32)
         return empty, np.zeros((0,), np.int64), []
     return np.stack(grids), np.asarray(labels, np.int64), kept
+
+
+def datasets_dir() -> Path:
+    """Sibling of the results directory named in docs/data-root.md."""
+    path = data_root().parent / "datasets"
+    assert_external(path)
+    if not path.is_dir():
+        raise SystemExit(f"datasets directory missing: {path}")
+    return path
+
+
+def _examples_from_jsonl(path: Path, source: str) -> list[Example]:
+    examples: list[Example] = []
+    with path.open() as handle:
+        for line in handle:
+            line = line.strip()
+            if not line:
+                continue
+            row = json.loads(line)
+            steps = [
+                (str(step.get("tool") or ""), str(step.get("result") or ""))
+                for step in (row.get("recent_steps") or [])
+            ]
+            label = str(row.get("target_tool") or "")
+            if not label:
+                continue
+            examples.append(
+                Example(
+                    session_id=str(row.get("session_id") or ""),
+                    label=label,
+                    goal=str(row.get("goal") or ""),
+                    steps=steps[-TRACE_STEPS:],
+                    source=source,
+                )
+            )
+    return examples
+
+
+def load_curated_split(split: str) -> tuple[list[Example], str]:
+    path = datasets_dir() / "curated" / f"{split}.jsonl"
+    if not path.is_file():
+        raise SystemExit(f"missing curated split: {path}")
+    examples = _examples_from_jsonl(path, "curated")
+    return examples, f"{path} ({len(examples)} rows)"
+
+
+def training_split_paths(split: str) -> list[Path]:
+    """Train rows that share the Hermes tool names. Val is the curated split only.
+
+    tau2 airline/retail rows use a different API vocabulary, so they stay on disk
+    and out of this head. browser_* rows were dropped from the Hermes label set.
+    extra/val.jsonl is the held-out remainder of the extra Hermes source, not the
+    validation set for this run.
+    """
+    root = datasets_dir()
+    extra = root / "extra"
+    if split == "val":
+        paths = [root / "curated" / "val.jsonl"]
+    else:
+        paths = [
+            root / "curated" / "train.jsonl",
+            extra / "train.jsonl",
+            extra / "openhands_train.jsonl",
+            extra / "swe_smith_partial_train.jsonl",
+        ]
+    return [path for path in paths if path.is_file()]
+
+
+def load_training_examples(split: str) -> tuple[list[Example], str]:
+    paths = training_split_paths(split)
+    if not paths:
+        raise SystemExit(f"no jsonl for split {split}")
+    examples: list[Example] = []
+    notes: list[str] = []
+    for path in paths:
+        rows = _examples_from_jsonl(path, path.stem)
+        examples.extend(rows)
+        notes.append(f"{path.name} ({len(rows)} rows)")
+    return examples, "; ".join(notes)
+
+
+def _iter_jsonl_rows(paths: list[Path]):
+    for path in paths:
+        n = 0
+        with path.open() as handle:
+            for line in handle:
+                if not line.strip():
+                    continue
+                row = json.loads(line)
+                label = str(row.get("target_tool") or "")
+                if not label:
+                    continue
+                n += 1
+                yield f"{path.parent.name}/{path.name}", row, label
+        print(f"scanned {path.name} ({n} rows)", flush=True)
+
+
+def _fill_obs(
+    paths: list[Path],
+    vocab: dict[str, int],
+    n_hint: int,
+    cache_path: Path | None = None,
+) -> tuple[np.ndarray, np.ndarray, int]:
+    """Second pass: pack rows. Large splits are written to the SSD in small chunks.
+
+    A single memmap or zeros() of the full train grid is about 600 MB. This
+    machine often has less free memory than that, and the kernel kills the
+    process. A few-megabyte buffer written with tofile stays anonymous-small.
+    """
+    n_classes = len(vocab)
+    obs_c = HASH_DIM + n_classes + 1
+    sessions: set[str] = set()
+    labels = np.empty(n_hint, np.int64)
+    filled = 0
+    chunk = 4096
+    buf = np.zeros((chunk, obs_c, SEQ_LEN), np.float32)
+    buf_i = 0
+    in_mem = None if cache_path is not None else np.zeros((n_hint, obs_c, SEQ_LEN), np.float32)
+    out = None
+    if cache_path is not None:
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        if cache_path.exists():
+            cache_path.unlink()
+        out = cache_path.open("wb")
+
+    def flush_buf() -> None:
+        nonlocal buf_i
+        if buf_i == 0 or out is None:
+            buf_i = 0
+            return
+        buf[:buf_i].tofile(out)
+        buf_i = 0
+
+    for name, row, label in _iter_jsonl_rows(paths):
+        if label not in vocab:
+            continue
+        sessions.add(str(row.get("session_id") or ""))
+        if filled >= n_hint:
+            raise SystemExit(f"packed more rows than scanned ({n_hint})")
+        obs = buf[buf_i] if out is not None else in_mem[filled]
+        obs[:] = 0
+        obs[:HASH_DIM, 0] = hash_features(str(row.get("goal") or ""), HASH_DIM)
+        obs[-1, 0] = 1.0
+        steps = row.get("recent_steps") or []
+        steps = steps[-TRACE_STEPS:]
+        start = SEQ_LEN - len(steps)
+        for i, step in enumerate(steps):
+            if not isinstance(step, dict):
+                continue
+            tool = str(step.get("tool") or "")
+            text = str(step.get("result") or "")
+            col = start + i
+            obs[:HASH_DIM, col] = hash_features(f"{tool} {text}".strip(), HASH_DIM)
+            idx = vocab.get(tool)
+            if idx is not None:
+                obs[HASH_DIM + idx, col] = 1.0
+            obs[-1, col] = 1.0
+        labels[filled] = vocab[label]
+        filled += 1
+        if out is not None:
+            buf_i += 1
+            if buf_i == chunk:
+                flush_buf()
+        if filled % 100_000 == 0:
+            print(f"packed {filled} from {name}", flush=True)
+    flush_buf()
+    if out is not None:
+        out.close()
+        obs_all = np.memmap(
+            cache_path, dtype=np.float32, mode="r", shape=(filled, obs_c, SEQ_LEN)
+        )
+    else:
+        obs_all = in_mem[:filled].copy() if filled < n_hint else in_mem
+    if filled < n_hint:
+        labels = labels[:filled].copy()
+    return obs_all, labels, len(sessions)
+
+
+def load_packed_splits() -> dict:
+    """Scan train and val once, then pack. Does not keep the json rows."""
+    train_paths = training_split_paths("train")
+    val_paths = training_split_paths("val")
+    if not train_paths or not val_paths:
+        raise SystemExit(f"missing train or val jsonl: {train_paths} {val_paths}")
+    print("scanning train labels", flush=True)
+    train_labels: set[str] = set()
+    train_sessions: set[str] = set()
+    train_counts: dict[str, int] = {}
+    train_n = 0
+    for name, row, label in _iter_jsonl_rows(train_paths):
+        train_labels.add(label)
+        train_sessions.add(str(row.get("session_id") or ""))
+        train_counts[name] = train_counts.get(name, 0) + 1
+        train_n += 1
+    print("scanning val sessions", flush=True)
+    val_sessions: set[str] = set()
+    val_counts: dict[str, int] = {}
+    val_n = 0
+    for name, row, label in _iter_jsonl_rows(val_paths):
+        val_sessions.add(str(row.get("session_id") or ""))
+        val_counts[name] = val_counts.get(name, 0) + 1
+        val_n += 1
+    overlap = train_sessions & val_sessions
+    if overlap:
+        raise SystemExit(f"train/val session overlap: {len(overlap)}")
+    vocab = {name: i for i, name in enumerate(sorted(train_labels))}
+    del train_sessions, val_sessions, train_labels
+    import gc
+    gc.collect()
+    print(f"packing train into {len(vocab)} classes", flush=True)
+    cache = data_root() / "cache" / "train_obs.f32"
+    train_obs, train_y, train_session_n = _fill_obs(train_paths, vocab, train_n, cache)
+    print("packing val", flush=True)
+    val_obs, val_y, val_session_n = _fill_obs(val_paths, vocab, val_n)
+    train_note = "; ".join(f"{name} ({n} rows)" for name, n in train_counts.items())
+    val_note = "; ".join(f"{name} ({n} rows)" for name, n in val_counts.items())
+    return {
+        "vocab": vocab,
+        "train_obs": train_obs,
+        "train_y": train_y,
+        "val_obs": val_obs,
+        "val_y": val_y,
+        "train_sessions": train_session_n,
+        "val_sessions": val_session_n,
+        "train_note": train_note,
+        "val_note": val_note,
+    }
+
+
+def build_trace_obs(
+    examples: list[Example],
+    vocab: dict[str, int],
+) -> tuple[np.ndarray, np.ndarray, list[Example]]:
+    """Pack goal + recent steps as a 1D cell sequence. Drops labels outside vocab."""
+    n_classes = len(vocab)
+    obs_c = HASH_DIM + n_classes + 1
+    usable = [ex for ex in examples if ex.label in vocab]
+    if not usable:
+        empty = np.zeros((0, obs_c, SEQ_LEN), np.float32)
+        return empty, np.zeros((0,), np.int64), []
+    obs_all = np.zeros((len(usable), obs_c, SEQ_LEN), np.float32)
+    labels = np.empty(len(usable), np.int64)
+    for n, ex in enumerate(usable):
+        obs = obs_all[n]
+        obs[:HASH_DIM, 0] = hash_features(ex.goal, HASH_DIM)
+        obs[-1, 0] = 1.0
+        steps = ex.steps[-TRACE_STEPS:]
+        start = SEQ_LEN - len(steps)
+        for i, (tool, text) in enumerate(steps):
+            col = start + i
+            obs[:HASH_DIM, col] = hash_features(f"{tool} {text}".strip(), HASH_DIM)
+            idx = vocab.get(tool)
+            if idx is not None:
+                obs[HASH_DIM + idx, col] = 1.0
+            obs[-1, col] = 1.0
+        labels[n] = vocab[ex.label]
+        if n and n % 100_000 == 0:
+            print(f"packed {n}/{len(usable)}", flush=True)
+    return obs_all, labels, usable

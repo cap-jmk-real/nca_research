@@ -6,6 +6,8 @@ More training rows for the same next-tool task as [curated-traces.md](curated-tr
 
 The row schema, truncation caps, browser drop, and session split are the ones in `scripts/curate_traces.py`.
 
+Browser tool calls from the same Hermes parquets are kept in `browser_train.jsonl` and `browser_val.jsonl` (names such as `browser_navigate`, `browser_click`, `browser_snapshot`). They use the same session hash split as the other Hermes rows. The curated files still omit them.
+
 ## What was added
 
 [lambda/hermes-agent-reasoning-traces](https://huggingface.co/datasets/lambda/hermes-agent-reasoning-traces), revision `b92885e4f0161d4b2536512710e004d4892cac6e`, license Apache-2.0 (the dataset card's License section). Both configs are real Hermes-harness trajectories in ShareGPT form (`from` / `value`, `<tool_call>`, `<tool_response>`).
@@ -119,3 +121,18 @@ These were opened far enough to decide. None of them were copied into the extra 
 **AppWorld.** [stonybrooknlp/appworld](https://github.com/stonybrooknlp/appworld) (Apache-2.0) says it releases everything for `train` and `dev`, and only evaluation programs for `test_normal` and `test_challenge`. Task archives were not downloaded. The opened train row of [hamishivi/appworld_env_train](https://huggingface.co/datasets/hamishivi/appworld_env_train) has tools `['appworld']` and a contact-creation task. That single tool does not map onto the Hermes names.
 
 A Klaut paper search at `http://192.168.10.29:30487/v1/research/papers/search` returned HTTP 200. The abstracts that came back (xLAM, BUTTON, ToolMind, and an agent-monitoring paper) did not point at another Hermes-harness dump. Datasets from those abstracts were not opened in this pass, apart from the ToolMind exclusion already listed.
+
+## What the 150k loss uses
+
+`nca_text.data.training_split_paths` trains on four files that share the Hermes tool names:
+
+- `datasets/curated/train.jsonl` (57,675)
+- `datasets/extra/train.jsonl` (88,541)
+- `datasets/extra/openhands_train.jsonl` (9,630)
+- `datasets/extra/swe_smith_partial_train.jsonl` (329,140)
+
+Validation inside the run is only `datasets/curated/val.jsonl`. `datasets/extra/val.jsonl` is not in the loss.
+
+`browser_train.jsonl` and `browser_val.jsonl` stay out. The curated label set dropped `browser_*`.
+
+`tau2_airline_train.jsonl` (84 rows, 25 train tasks) and `tau2_retail_train.jsonl` (365 rows, 72 train tasks) were built from the official `split_tasks.json` train ids only. Their tools are airline and retail APIs, not Hermes tools, so they are not in this head. The raw `tasks.json` files under `datasets/extra/raw/tau2/` still contain test-split gold actions. Do not train on those raw files. Test ids in the jsonl were checked at 0.
