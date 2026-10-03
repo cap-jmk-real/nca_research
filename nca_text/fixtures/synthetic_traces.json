@@ -1,0 +1,78 @@
+[
+  {
+    "id": "syn-terminal-1",
+    "conversations": [
+      {"from": "human", "value": "Run the unit tests in the repo"},
+      {"from": "gpt", "value": "<tool_call>\n{\"name\": \"terminal\"}\n</tool_call>"},
+      {"from": "tool", "value": "<tool_response>\n{\"name\": \"terminal\"}\n12 passed\n</tool_response>"},
+      {"from": "gpt", "value": "All tests passed."}
+    ]
+  },
+  {
+    "id": "syn-terminal-2",
+    "conversations": [
+      {"from": "human", "value": "Run the test suite please"},
+      {"from": "gpt", "value": "<tool_call>\n{\"name\": \"terminal\"}\n</tool_call>"},
+      {"from": "tool", "value": "<tool_response>\n{\"name\": \"terminal\"}\nok\n</tool_response>"},
+      {"from": "gpt", "value": "The suite is green."}
+    ]
+  },
+  {
+    "id": "syn-read-1",
+    "conversations": [
+      {"from": "human", "value": "Open the config file and tell me the port"},
+      {"from": "gpt", "value": "<tool_call>\n{\"name\": \"read_file\"}\n</tool_call>"},
+      {"from": "tool", "value": "<tool_response>\n{\"name\": \"read_file\"}\nport = 8080\n</tool_response>"},
+      {"from": "gpt", "value": "The port is 8080."}
+    ]
+  },
+  {
+    "id": "syn-read-2",
+    "conversations": [
+      {"from": "human", "value": "Open the readme file"},
+      {"from": "gpt", "value": "<tool_call>\n{\"name\": \"read_file\"}\n</tool_call>"},
+      {"from": "tool", "value": "<tool_response>\n{\"name\": \"read_file\"}\n# Notes\n</tool_response>"},
+      {"from": "gpt", "value": "Here are the notes."}
+    ]
+  },
+  {
+    "id": "syn-patch-1",
+    "conversations": [
+      {"from": "human", "value": "Edit the parser to handle empty input"},
+      {"from": "gpt", "value": "<tool_call>\n{\"name\": \"read_file\"}\n</tool_call>"},
+      {"from": "tool", "value": "<tool_response>\n{\"name\": \"read_file\"}\ndef parse(x):\n    return x\n</tool_response>"},
+      {"from": "gpt", "value": "<tool_call>\n{\"name\": \"patch\"}\n</tool_call>"},
+      {"from": "tool", "value": "<tool_response>\n{\"name\": \"patch\"}\npatched\n</tool_response>"},
+      {"from": "gpt", "value": "The parser now handles empty input."}
+    ]
+  },
+  {
+    "id": "syn-patch-2",
+    "conversations": [
+      {"from": "human", "value": "Edit the function so it returns zero on empty input"},
+      {"from": "gpt", "value": "<tool_call>\n{\"name\": \"read_file\"}\n</tool_call>"},
+      {"from": "tool", "value": "<tool_response>\n{\"name\": \"read_file\"}\ndef f(x):\n    return x\n</tool_response>"},
+      {"from": "gpt", "value": "<tool_call>\n{\"name\": \"patch\"}\n</tool_call>"},
+      {"from": "tool", "value": "<tool_response>\n{\"name\": \"patch\"}\napplied\n</tool_response>"},
+      {"from": "gpt", "value": "Done."}
+    ]
+  },
+  {
+    "id": "syn-write-1",
+    "conversations": [
+      {"from": "human", "value": "Save a new script that prints hello"},
+      {"from": "gpt", "value": "<tool_call>\n{\"name\": \"write_file\"}\n</tool_call>"},
+      {"from": "tool", "value": "<tool_response>\n{\"name\": \"write_file\"}\nwrote hello.py\n</tool_response>"},
+      {"from": "gpt", "value": "Saved hello.py."}
+    ]
+  },
+  {
+    "id": "syn-write-2",
+    "conversations": [
+      {"from": "human", "value": "Save a notes file with the current date"},
+      {"from": "gpt", "value": "<tool_call>\n{\"name\": \"write_file\"}\n</tool_call>"},
+      {"from": "tool", "value": "<tool_response>\n{\"name\": \"write_file\"}\nwrote notes.txt\n</tool_response>"},
+      {"from": "gpt", "value": "Wrote notes.txt."}
+    ]
+  }
+]

@@ -1,0 +1,5 @@
+# System Python on this Mac already has numpy and torch.
+# Do not pip-install onto the internal disk. Caches and checkpoints
+# belong on the external path in docs/data-root.md.
+numpy>=1.26
+torch>=2.2
