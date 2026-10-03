@@ -21,7 +21,7 @@ One row is one decision point inside a session, split so no session is in both t
 - **Hidden channels.** Carried from the previous decision in the same session. Resetting them is the ablation for memory.
 - **Target.** The next `tool_name`, or a single `respond` class when the assistant message has no tool call. Full reply text is not the target. Hermes's value here is the tool loop, and a closed label set is the only loss this corpus can support.
 
-Thirty-five sessions can show whether the rule overfits and whether it beats a baseline. They cannot support a claim about new tasks.
+Thirty-five sessions can show whether the rule overfits and whether it beats a baseline. They cannot support a claim about new tasks. The public set that matches this schema is [lambda/hermes-agent-reasoning-traces](https://huggingface.co/datasets/lambda/hermes-agent-reasoning-traces): 14,701 real Hermes harness trajectories. Comparison with the API-calling sets that do not match is in [agent-trace-datasets.md](agent-trace-datasets.md).
 
 ## Order of work
 
@@ -29,7 +29,7 @@ Thirty-five sessions can show whether the rule overfits and whether it beats a b
 2. **Train the automaton on those rows.** Instruction band, trace rows, K local updates, readout over the tool vocabulary plus `respond`. Loss is cross-entropy on the next label.
 3. **Beat a flat baseline on the same rows.** Same text, no spatial update. That is hypothesis 4 in [research-design.md](research-design.md). If the grid loses, stop and change the write pattern before adding a teacher.
 4. **Bring in a teacher only for bad targets.** `qwen3.5:9b` is already on engine. Use it to shorten tool results into a fixed schema, and to mark loops that repeat the same failing call. Train the NCA on those cleaned labels. Do not distill the teacher's weights or hidden states in this run.
-5. **Generate traces for the holes.** After step 3 has a number, run Hermes on a short task list that forces the rare tools. Append those sessions with the same schema.
+5. **Fill holes from the public Hermes traces, then generate.** After step 3 has a number, add rows from `lambda/hermes-agent-reasoning-traces` whose tool names overlap the local vocabulary. Generate new local sessions only for tools that set still lacks.
 6. **Add a modality without changing the action head.** Screenshots and files already cached under `~/.hermes` land in the vision channels. The tool label set stays. That is the multimodal step, and it waits until the text rule is measurable.
 
 ## What this run refuses
