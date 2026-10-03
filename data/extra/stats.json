@@ -1,0 +1,267 @@
+{
+  "filters": {
+    "kept_tools": [
+      "delegate_task",
+      "execute_code",
+      "memory",
+      "patch",
+      "process",
+      "read_file",
+      "search_files",
+      "session_search",
+      "skill_view",
+      "terminal",
+      "todo",
+      "web_search",
+      "write_file"
+    ],
+    "respond_label": "respond",
+    "dropped": "tool names starting with browser_, plus any name outside the kept set",
+    "aliases": {},
+    "goal_chars": 500,
+    "result_chars": 500,
+    "recent_steps": 4,
+    "pending_result": "[pending]",
+    "split": "sha256(session_id) first 8 bytes % 10 == 0 is val, otherwise train",
+    "already_curated_excluded": {
+      "dataset": "DJLougen/hermes-agent-traces-filtered",
+      "revision": "f91a8ef669194408a706741cd6f32a1686a8fd78",
+      "filename": "data/train.jsonl",
+      "ids": 3679,
+      "ids_found_in_kimi": 3679,
+      "ids_found_in_glm": 0,
+      "ids_missing_from_both_parquets": 0
+    },
+    "local_hermes_in_train": false,
+    "browser_star_dropped": true
+  },
+  "id_audit": {
+    "kimi_rows": 7646,
+    "kimi_unique_ids": 7646,
+    "glm_rows": 7055,
+    "glm_unique_ids": 7055,
+    "kept_id_intersection": 0,
+    "curated_overlap": {
+      "checked": [
+        {
+          "file": "/Volumes/Extreme SSD/nca_research/datasets/curated/train.jsonl",
+          "present": true,
+          "overlapping_sessions": 0
+        },
+        {
+          "file": "/Volumes/Extreme SSD/nca_research/datasets/curated/val.jsonl",
+          "present": true,
+          "overlapping_sessions": 0
+        }
+      ],
+      "overlap": 0
+    }
+  },
+  "sources": [
+    {
+      "name": "lambda-kimi-remainder",
+      "counts": {
+        "source_sessions": 3967,
+        "source_parse_errors": 0,
+        "sessions_with_rows": 3902,
+        "sessions_dropped_no_kept_decision": 65,
+        "sessions_train": 3504,
+        "sessions_val": 398,
+        "rows_train": 32833,
+        "rows_val": 3629,
+        "dropped_browser_calls": 4558,
+        "dropped_unmapped_calls": 147,
+        "unparsed_tool_calls": 2,
+        "unparsed_tool_responses": 0,
+        "orphan_tool_responses": 0,
+        "assistant_turns_missing_tool_message": 2,
+        "local_hermes_sessions_included": 0
+      },
+      "excluded_calls": {
+        " functions read_file": 1,
+        "browser_back": 33,
+        "browser_click": 877,
+        "browser_close": 170,
+        "browser_console": 13,
+        "browser_get_images": 19,
+        "browser_navigate": 1029,
+        "browser_press": 75,
+        "browser_scroll": 655,
+        "browser_snapshot": 1306,
+        "browser_type": 96,
+        "browser_vision": 285,
+        "clarify": 32,
+        "execute": 1,
+        "foreground": 1,
+        "picture": 1,
+        "shell": 3,
+        "skill_manage": 55,
+        "skills_list": 53
+      },
+      "tools_train": {
+        "delegate_task": 33,
+        "execute_code": 173,
+        "memory": 11,
+        "patch": 740,
+        "process": 82,
+        "read_file": 1812,
+        "respond": 2616,
+        "search_files": 3319,
+        "session_search": 66,
+        "skill_view": 43,
+        "terminal": 11606,
+        "todo": 189,
+        "web_search": 0,
+        "write_file": 12143
+      },
+      "tools_val": {
+        "delegate_task": 2,
+        "execute_code": 15,
+        "memory": 2,
+        "patch": 74,
+        "process": 3,
+        "read_file": 202,
+        "respond": 296,
+        "search_files": 336,
+        "session_search": 5,
+        "skill_view": 1,
+        "terminal": 1260,
+        "todo": 17,
+        "web_search": 0,
+        "write_file": 1416
+      },
+      "unexpected_roles": {},
+      "outputs": {
+        "train": "/Volumes/Extreme SSD/nca_research/datasets/extra/lambda-kimi-remainder/train.jsonl",
+        "val": "/Volumes/Extreme SSD/nca_research/datasets/extra/lambda-kimi-remainder/val.jsonl",
+        "train_bytes": 28009066,
+        "val_bytes": 3047829,
+        "train_sha256": "b4ea8b017a9d3d60127c2b87c11057ff6f8afbf9aeec23cc2646fb392e487ee7",
+        "val_sha256": "fb8a17a146141a8db24c43fa05babc9ce0bfa6b958de84507b112f5ef5a4af69"
+      },
+      "selection": {
+        "kept_sessions": 3967,
+        "skipped_already_curated": 3679,
+        "missing_id": 0,
+        "duplicate_ids_skipped": 0,
+        "bytes": 217258705,
+        "path": "/Volumes/Extreme SSD/nca_research/datasets/extra/raw/lambda-kimi-remainder.jsonl"
+      },
+      "source_parquet": {
+        "dataset": "lambda/hermes-agent-reasoning-traces",
+        "revision": "b92885e4f0161d4b2536512710e004d4892cac6e",
+        "license": "apache-2.0",
+        "filename": "data/kimi/train.parquet",
+        "bytes": 508262558,
+        "sha256": "d4a53d84935d0bffe7054b12c0591c34fe31fc96115602394b3f517b4631dd02",
+        "local_path": "/Volumes/Extreme SSD/nca_research/datasets/hf_home/hub/datasets--lambda--hermes-agent-reasoning-traces/snapshots/b92885e4f0161d4b2536512710e004d4892cac6e/data/kimi/train.parquet"
+      }
+    },
+    {
+      "name": "lambda-glm-5.1",
+      "counts": {
+        "source_sessions": 7055,
+        "source_parse_errors": 0,
+        "sessions_with_rows": 6618,
+        "sessions_dropped_no_kept_decision": 437,
+        "sessions_train": 6002,
+        "sessions_val": 616,
+        "rows_train": 55708,
+        "rows_val": 5788,
+        "dropped_browser_calls": 6287,
+        "dropped_unmapped_calls": 1287,
+        "unparsed_tool_calls": 0,
+        "unparsed_tool_responses": 0,
+        "orphan_tool_responses": 0,
+        "assistant_turns_missing_tool_message": 0,
+        "local_hermes_sessions_included": 0
+      },
+      "excluded_calls": {
+        "browser_click": 48,
+        "browser_close": 19,
+        "browser_console": 364,
+        "browser_get_images": 234,
+        "browser_navigate": 1352,
+        "browser_press": 5,
+        "browser_scroll": 91,
+        "browser_snapshot": 2603,
+        "browser_vision": 1571,
+        "clarify": 361,
+        "skill_manage": 39,
+        "skills_list": 885,
+        "skills_list()<tool_call>session_search": 1,
+        "write_file</arg_key><arg_value>[tool.pytest.ini_options]": 1
+      },
+      "tools_train": {
+        "delegate_task": 420,
+        "execute_code": 4204,
+        "memory": 293,
+        "patch": 65,
+        "process": 73,
+        "read_file": 526,
+        "respond": 675,
+        "search_files": 4871,
+        "session_search": 968,
+        "skill_view": 983,
+        "terminal": 29411,
+        "todo": 3233,
+        "web_search": 0,
+        "write_file": 9986
+      },
+      "tools_val": {
+        "delegate_task": 48,
+        "execute_code": 477,
+        "memory": 23,
+        "patch": 5,
+        "process": 4,
+        "read_file": 34,
+        "respond": 68,
+        "search_files": 459,
+        "session_search": 149,
+        "skill_view": 96,
+        "terminal": 3139,
+        "todo": 359,
+        "web_search": 0,
+        "write_file": 927
+      },
+      "unexpected_roles": {},
+      "outputs": {
+        "train": "/Volumes/Extreme SSD/nca_research/datasets/extra/lambda-glm-5.1/train.jsonl",
+        "val": "/Volumes/Extreme SSD/nca_research/datasets/extra/lambda-glm-5.1/val.jsonl",
+        "train_bytes": 67131510,
+        "val_bytes": 7186196,
+        "train_sha256": "1a7d7a21e3e66ae3333c03df755573f9599b6af6904d8c92c7ca4eb7a0411995",
+        "val_sha256": "cf24eebfd1794bccfc566c9c7d4a1f8ec1163ba0d516ad07f814109b62a56b1a"
+      },
+      "selection": {
+        "kept_sessions": 7055,
+        "skipped_already_curated": 0,
+        "missing_id": 0,
+        "duplicate_ids_skipped": 0,
+        "bytes": 624985803,
+        "path": "/Volumes/Extreme SSD/nca_research/datasets/extra/raw/lambda-glm-5.1.jsonl"
+      },
+      "source_parquet": {
+        "dataset": "lambda/hermes-agent-reasoning-traces",
+        "revision": "b92885e4f0161d4b2536512710e004d4892cac6e",
+        "license": "apache-2.0",
+        "filename": "data/glm-5.1/train.parquet",
+        "bytes": 599571360,
+        "sha256": "d0344c77348cf092dce002256ed6ddbbd95bb568fbc90eb2cc8ffff3c9c3086d",
+        "local_path": "/Volumes/Extreme SSD/nca_research/datasets/hf_home/hub/datasets--lambda--hermes-agent-reasoning-traces/snapshots/b92885e4f0161d4b2536512710e004d4892cac6e/data/glm-5.1/train.parquet"
+      }
+    }
+  ],
+  "combined": {
+    "train": "/Volumes/Extreme SSD/nca_research/datasets/extra/train.jsonl",
+    "val": "/Volumes/Extreme SSD/nca_research/datasets/extra/val.jsonl",
+    "train_bytes": 95140576,
+    "val_bytes": 10234025,
+    "train_sha256": "7afa51e0e2a9db3db47f0298c54f04045cabfb400d049f70bca228acaa61db2c",
+    "val_sha256": "13011f84b60dc29b6078b84549bc3822af3d67d56a881d8c9aa149a276b904ac",
+    "rows_train": 88541,
+    "rows_val": 9417,
+    "sessions_train": 9506,
+    "sessions_val": 1014
+  }
+}

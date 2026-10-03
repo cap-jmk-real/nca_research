@@ -5,3 +5,8 @@ __pycache__/
 *.parquet
 *.gguf
 .venv/
+
+# Full extra-trace jsonl stays on the external data root.
+# data/extra/sample.jsonl is the committed exception.
+data/extra/*.jsonl
+!data/extra/sample.jsonl

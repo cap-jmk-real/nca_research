@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-03
 
-Training rows for next-tool prediction, built from the public Hermes harness traces. The local `~/.hermes` pilot (35 sessions) is the test distribution and is not in these files. The script never opens that database.
+Training rows for next-tool prediction, built from the public Hermes harness traces. The local `~/.hermes` pilot (35 sessions) is the test distribution and is not in these files. The script never opens that database. Extra rows from other train splits, and the sets that were not mixed in, are in [extra-traces.md](extra-traces.md).
 
 ## Source
 
