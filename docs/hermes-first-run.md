@@ -38,3 +38,5 @@ Thirty-five sessions can show whether the rule overfits and whether it beats a b
 - A distilled student model sitting between the traces and the NCA.
 - Training on all 3,297 messages as if they were independent. The split is by session.
 - Treating the current logs as a general agent dataset. They are a pilot distribution dominated by terminal and browser calls.
+
+Scored public tasks for this text policy, and the benchmarks that wait on vision, are in [benchmarks.md](benchmarks.md).
