@@ -58,7 +58,7 @@ Loss was sqrt-inverse-frequency cross-entropy, so top-1 is not the training obje
 
 ## How to rerun
 
-Artifacts go to the Results path in [data-root.md](data-root.md) (`/Volumes/Extreme SSD/nca_research/results`). The loader refuses a path whose parent is `/Volumes` itself.
+Artifacts go to the Results path in [data-root.md](data-root.md) (`/Volumes/Extreme SSD/nca_research/results`). The loader refuses a path whose parent is `/Volumes` itself. Training curves and benchmark scores: [tensorboard.md](tensorboard.md).
 
 ```bash
 export NCA_DATA_ROOT="/Volumes/Extreme SSD/nca_research/results"
