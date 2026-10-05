@@ -60,8 +60,12 @@ Read first:
 
 ## Distillation cap (9B)
 
-- Allowed: label/trace imitation from **`qwen3.5:9b`** or smaller; observation text cleanup; verifier-filtered rows ([FineEnvs](../../../docs/multi-harness-and-message-passing.md)).
+- Allowed: label/trace imitation from **`qwen3.5:9b`** or smaller; observation text cleanup; verifier-filtered rows ([FineEnvs](../../../docs/multi-harness-and-message-passing.md)); **specialist LM students** (Python / TypeScript / Shell / Orchestrator) via SFT/LoRA or logit KL from ≤9B teachers ([specialist-coder-stack.md](../../../docs/specialist-coder-stack.md)).
 - Forbidden: distilling 9B **weights or hidden states** into `TextNCA`; unlimited 27B teacher SFT into respond-heavy mix.
+
+## Specialist coder path
+
+After NCA long runs, or in parallel on CPU/disk: compile datasets → distill on engine → eval harnesses (`LiveCodeBench`, `SWE-bench_Lite`, `Terminal-Bench`, `tsc_repo_smoke`). Plug order: orchestrator → specialist → tools → verifier. Register every harness score as `EXP-*`.
 
 ## Klaut API (summary)
 

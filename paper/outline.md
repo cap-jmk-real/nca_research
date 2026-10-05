@@ -46,6 +46,7 @@ Populate only from [si/tables/](si/tables/) and primary EXP records.
 3. FineEnvs-prior continuation.
 4. LLM baselines (1.5B; later 9B).
 5. Benchmark suite (BFCL, NESTFUL, τ2, AppWorld) when heads allow.
+6. **Specialist coder stack** ([docs/specialist-coder-stack.md](../docs/specialist-coder-stack.md)): Python → TypeScript → Shell students (distilled ≤9B), orchestrator routing, open harnesses (LiveCodeBench, SWE-bench Lite, Terminal-Bench, tsc smoke).
 
 ## 6. Discussion
 

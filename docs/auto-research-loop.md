@@ -162,7 +162,20 @@ After the NCA beats Qwen2.5-1.5B on all **wired** gates:
 2. Tighten mins in `benchmark_gates.json` toward published small-model leaderboard slices.
 3. Wire τ2 and AppWorld blockers; add gates for SWE-lite @5 instances.
 
+## Specialist coder stack
+
+Python → TypeScript → Shell specialists + orchestrator, distilled from ≤9B teachers,
+evaluated on open harnesses: [specialist-coder-stack.md](specialist-coder-stack.md),
+`config/specialists.json`.
+
+```bash
+python scripts/compile_specialist_datasets.py --langs python typescript
+python scripts/distill_specialist.py --lang python --limit 128   # needs engine
+python scripts/eval_specialist_harness.py --lang python --harness LiveCodeBench
+```
+
 ## Related commits
 
 - Message-passing ablations: `nca_text/hypotheses.py`, [hypothesis-tests.md](hypothesis-tests.md).
 - Benchmark scorer stub: `scripts/run_text_benchmarks.py`.
+- Specialist stack: `scripts/compile_specialist_datasets.py`, `distill_specialist.py`, `eval_specialist_harness.py`.

@@ -101,6 +101,46 @@ QUEUE = (
         "note": "Continue/resume mix13-scale train (150k class). Do not use --fresh.",
         "optional": False,
     },
+    {
+        "id": "H31_compile_python_ts",
+        "kind": "dataset",
+        "cmd": [
+            PYTHON,
+            str(ROOT / "scripts" / "compile_specialist_datasets.py"),
+            "--langs",
+            "python",
+            "typescript",
+            "--max-rows-per-source",
+            "50000",
+        ],
+    },
+    {
+        "id": "H33_distill_python",
+        "kind": "distill",
+        "cmd": [
+            PYTHON,
+            str(ROOT / "scripts" / "distill_specialist.py"),
+            "--lang",
+            "python",
+            "--limit",
+            "128",
+        ],
+        "note": "No-op / partial if engine Ollama down",
+    },
+    {
+        "id": "eval_specialist_stubs",
+        "kind": "eval",
+        "cmd": [
+            PYTHON,
+            str(ROOT / "scripts" / "eval_specialist_harness.py"),
+            "--lang",
+            "python",
+            "--harness",
+            "LiveCodeBench",
+            "--limit",
+            "20",
+        ],
+    },
 )
 
 

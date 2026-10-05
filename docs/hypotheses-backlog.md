@@ -215,6 +215,48 @@ Each item links to a **gate** in `config/benchmark_gates.json` or a **research-d
 
 ---
 
+## Specialist coder stack (Python → TS → Shell → Orchestrator)
+
+See [specialist-coder-stack.md](specialist-coder-stack.md) and `config/specialists.json`. Distill ≤9B; evaluate with open harnesses; register `EXP-*`.
+
+### H31 — Compile Python specialist corpus from staged coding dumps
+
+- **Claim:** Language-tagged rows (≥0.45 score) from SWE-smith / OpenHands / R2E are enough to start Python SFT.
+- **Gate:** `specialist_python_dataset_rows` (informal ≥10k)
+- **Priority:** 1
+- **Command:** `python scripts/compile_specialist_datasets.py --langs python --max-rows-per-source 50000`
+
+### H32 — Compile TypeScript specialist corpus
+
+- **Claim:** Same pipeline yields a usable TS/JS set for `tsc_repo_smoke`.
+- **Priority:** 2
+- **Command:** `python scripts/compile_specialist_datasets.py --langs typescript`
+
+### H33 — Distill Python student from `qwen3.5:9b` on compiled rows
+
+- **Claim:** 9B teacher plans + tool tags improve Python specialist over base small model on LiveCodeBench slice.
+- **Priority:** 3
+- **Command:** `python scripts/distill_specialist.py --lang python --limit 256` (engine up)
+
+### H34 — Distill TypeScript student (same teacher)
+
+- **Priority:** 4
+
+### H35 — Shell specialist from terminal-heavy traces + Terminal-Bench subset
+
+- **Priority:** 5
+
+### H36 — Orchestrator routes to {python, typescript, shell} then plugs specialists
+
+- **Claim:** Routed system beats single 9B on multi-lang smoke and does not regress Python-only LiveCodeBench.
+- **Priority:** 6
+- **Eval:** `multi_specialist_smoke`, then SWE-Lite mixed slice
+
+### H37 — TextNCA next-tool prior inside orchestrator (optional)
+
+- **Claim:** Hermes-13 prior reduces tool thrash without specialist weight distillation into the NCA.
+- **Priority:** 8
+
 ## Auto-research meta
 
 ### H29 — Klaut report before every **new architecture family**
