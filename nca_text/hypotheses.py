@@ -605,6 +605,33 @@ def main() -> None:
     (OUT_DIR / "summary.json").write_text(json.dumps(summary, indent=2))
     _write_doc(summary)
     print(f"wrote {REPO_DOC}", flush=True)
+    # Paper SI: register EXP-* and rebuild tables (best-effort).
+    try:
+        import subprocess
+        from pathlib import Path as _P
+
+        repo = _P(__file__).resolve().parents[1]
+        import sys as _sys
+
+        reg = subprocess.run(
+            [
+                _sys.executable,
+                str(repo / "scripts" / "record_experiment.py"),
+                "register",
+                "--from-hypotheses-summary",
+                "--summary",
+                str(OUT_DIR / "summary.json"),
+            ],
+            cwd=str(repo),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        print(f"si_register exit={reg.returncode} {reg.stdout.strip()[:500]}", flush=True)
+        if reg.stderr:
+            print(f"si_register stderr={reg.stderr.strip()[:300]}", flush=True)
+    except Exception as exc:  # noqa: BLE001
+        print(f"si_register skipped: {exc}", flush=True)
     print(json.dumps({k: summary[k] for k in ("date", "total_steps", "device")}, indent=2))
 
 

@@ -295,9 +295,22 @@ def main() -> None:
         state["cycles"] += 1
         _write_json(STATE_PATH, state)
 
-        # Scoreboard after each train
+        # Scoreboard + paper SI after each train
         if item["kind"].startswith("train"):
             _run([PYTHON, str(ROOT / "scripts" / "auto_research.py")], timeout=600)
+            _run(
+                [
+                    PYTHON,
+                    str(ROOT / "scripts" / "record_experiment.py"),
+                    "register",
+                    "--from-hypotheses-summary",
+                ],
+                timeout=120,
+            )
+            _run(
+                [PYTHON, str(ROOT / "scripts" / "record_experiment.py"), "build-tables"],
+                timeout=120,
+            )
 
         if args.once:
             break

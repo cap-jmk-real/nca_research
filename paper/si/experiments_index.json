@@ -1,0 +1,50 @@
+{
+  "experiments": [
+    {
+      "id": "EXP-20261003-001",
+      "title": "1D TextNCA mix13 primary 150k (Hermes tools)",
+      "status": "primary",
+      "date": "2026-10-03",
+      "hypothesis_ids": [
+        "H4",
+        "hermes-first-run"
+      ],
+      "path": "paper/si/experiments/EXP-20261003-001.json"
+    },
+    {
+      "id": "EXP-20261004-001",
+      "title": "Baseline Qwen2.5-1.5B-Instruct local Hermes next-tool",
+      "status": "primary",
+      "date": "2026-10-04",
+      "hypothesis_ids": [
+        "benchmark-gates"
+      ],
+      "path": "paper/si/experiments/EXP-20261004-001.json"
+    },
+    {
+      "id": "EXP-20261005-001",
+      "title": "1D TextNCA FineEnvs-prior continuation 150k",
+      "status": "primary",
+      "date": "2026-10-05",
+      "hypothesis_ids": [
+        "H14",
+        "H16"
+      ],
+      "path": "paper/si/experiments/EXP-20261005-001.json"
+    },
+    {
+      "id": "EXP-20261005-002",
+      "title": "Message-passing ablations curated equal-budget (8000 steps)",
+      "status": "smoke",
+      "date": "2026-10-05",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range"
+      ],
+      "path": "paper/si/experiments/EXP-20261005-002.json"
+    }
+  ]
+}

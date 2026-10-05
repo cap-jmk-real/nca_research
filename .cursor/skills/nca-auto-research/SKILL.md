@@ -46,9 +46,17 @@ Read first:
    - `python scripts/score_local_next_tool.py` (Qwen2.5-1.5B)  
    Do not update `benchmark_gates.json` pass/fail without LLM comparison on the same task.
 
-8. **Record** — Append under the hypothesis in `hypotheses-backlog.md`: date, metric delta, link to SSD artifact. Re-run `auto_research.py`.
+8. **Record for the paper (required)** — Register an SI experiment and rebuild tables:
+   ```bash
+   python scripts/record_experiment.py register --from-hypotheses-summary   # or backfill
+   python scripts/record_experiment.py build-tables
+   ```
+   Fill `claims_supported` / `claims_not_supported` in the new `paper/si/experiments/EXP-*.json`.  
+   Cite the `EXP-*` id in `docs/hypotheses-backlog.md` and never put a main-text number without an id.  
+   Smoke (`status: smoke`, &lt;50k steps) must not support architecture claims.  
+   Also re-run `auto_research.py`.
 
-9. **Commit** — One hypothesis per commit when possible; push branch `cursor/<name>-1754`.
+9. **Commit** — One hypothesis per commit when possible; push branch `cursor/<name>-1754`. Include `paper/si/` updates.
 
 ## Distillation cap (9B)
 

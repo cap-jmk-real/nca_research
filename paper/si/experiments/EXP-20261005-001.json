@@ -1,0 +1,93 @@
+{
+  "id": "EXP-20261005-001",
+  "title": "1D TextNCA FineEnvs-prior continuation 150k",
+  "status": "primary",
+  "date": "2026-10-05",
+  "hypothesis_ids": [
+    "H14",
+    "H16"
+  ],
+  "claims_supported": [
+    "Verifier-correct FineEnvs rows can be staged into the 13 Hermes labels"
+  ],
+  "claims_not_supported": [],
+  "hardware": {
+    "device": "mps",
+    "brand": "Apple M1",
+    "mem_gib": 16.0,
+    "ncpu": 8,
+    "mps": true
+  },
+  "software": {
+    "torch": "2.13.0"
+  },
+  "data": {
+    "train_note": "curated/train.jsonl (57675 rows); extra/train.jsonl (88541 rows); extra/openhands_train.jsonl (9630 rows); extra/swe_smith_partial_train.jsonl (329140 rows); extra/fineenvs_common_train.jsonl (11120 rows)",
+    "val_note": "curated/val.jsonl (6995 rows)",
+    "train_rows": 496106,
+    "val_rows": 6995,
+    "local_test_rows": 843,
+    "n_classes": 13
+  },
+  "model": {
+    "hidden_c": 16,
+    "update_hidden": 96,
+    "steps": 4,
+    "seq_len": 5,
+    "trace_steps": 4,
+    "hash_dim": 48,
+    "obs_c": 62,
+    "n_classes": 13,
+    "total_steps": 150000,
+    "lr": 0.001,
+    "weight_decay": 0.01,
+    "seed": 0,
+    "arch": "trace-1d"
+  },
+  "training": {
+    "optimizer": "AdamW",
+    "total_steps": 150000,
+    "batch": 1024,
+    "sampler": "hermes-prior+fineenvs",
+    "init": "mix13 best weights, fresh AdamW at 1e-4",
+    "seed": 0
+  },
+  "metrics": {
+    "best_val_top1": {
+      "nca": 0.5841315225160829,
+      "flat": 0.49535382416011436,
+      "always_terminal": 0.5429592566118656,
+      "step": 60000
+    },
+    "final_val_top1": {
+      "nca": 0.5728377412437455,
+      "flat": 0.4963545389563974,
+      "always_terminal": 0.5429592566118656
+    },
+    "best_local_test_top1": {
+      "nca": 0.4033214709371293,
+      "flat": 0.4483985765124555,
+      "always_terminal": 0.49466192170818507,
+      "step": 60000
+    },
+    "final_local_test_top1": {
+      "nca": 0.3902728351126928,
+      "flat": 0.4483985765124555,
+      "always_terminal": 0.49466192170818507
+    }
+  },
+  "artifacts": {
+    "metrics_json": "/Volumes/Extreme SSD/nca_research/results/text_nca_1d_fineenvs_metrics.json",
+    "checkpoint_best": "/Volumes/Extreme SSD/nca_research/results/checkpoints/text_nca_1d_fineenvs_best.pt",
+    "checkpoint_last": "/Volumes/Extreme SSD/nca_research/results/checkpoints/text_nca_1d_fineenvs_last.pt",
+    "log": "/Volumes/Extreme SSD/nca_research/results/logs/text_nca_1d_fineenvs.jsonl",
+    "methods_doc": "docs/multi-harness-and-message-passing.md"
+  },
+  "repro": {
+    "command": "python -m nca_text.train  # with fineenvs_common_train.jsonl staged",
+    "seed": 0,
+    "git_commit": "dbc0f6952746f4ea87fc425ffc3e320abd9e6efe"
+  },
+  "related_experiments": [],
+  "si_notes": "Continuation TensorBoard run tb/train_fineenvs."
+}
