@@ -33,8 +33,13 @@ ENGINE = os.environ.get("NCA_ENGINE_HOST", "192.168.10.29")
 OLLAMA = f"http://{ENGINE}:11434"
 KLAUT = f"http://{ENGINE}:30487"
 
+# Long-training floor (see docs/auto-research-loop.md §Long training).
+# Short runs (8k–20k) are plumbing only; architectural claims need ≥150k,
+# matching the mix13 recipe and recent Sudoku/iterative-reasoning work
+# (long imitation on structured traces before the policy settles).
+LONG_STEPS = os.environ.get("NCA_HYP_STEPS", "150000")
+
 # Ordered experiment queue (hypothesis id -> command args).
-# Train jobs use curated equal-budget ablations; longer jobs later.
 QUEUE = (
     {
         "id": "scoreboard",
@@ -42,14 +47,14 @@ QUEUE = (
         "cmd": [PYTHON, str(ROOT / "scripts" / "auto_research.py")],
     },
     {
-        "id": "H6",
+        "id": "H6_long",
         "kind": "train",
         "cmd": [
             PYTHON,
             "-m",
             "nca_text.hypotheses",
             "--steps",
-            "20000",
+            LONG_STEPS,
             "--only",
             "long_range",
             "baseline",
@@ -57,30 +62,31 @@ QUEUE = (
         ],
     },
     {
-        "id": "H2b_carry",
+        "id": "H2b_carry_long",
         "kind": "train",
         "cmd": [
             PYTHON,
             "-m",
             "nca_text.hypotheses",
             "--steps",
-            "20000",
+            LONG_STEPS,
             "--only",
             "carry",
             "baseline",
         ],
     },
     {
-        "id": "H_halt_recheck",
+        "id": "H_halt_long",
         "kind": "train",
         "cmd": [
             PYTHON,
             "-m",
             "nca_text.hypotheses",
             "--steps",
-            "20000",
+            LONG_STEPS,
             "--only",
             "halt",
+            "baseline",
         ],
     },
     {
@@ -91,9 +97,9 @@ QUEUE = (
     {
         "id": "H16_mix_prior",
         "kind": "train_main",
-        "cmd": [PYTHON, "-m", "nca_text.train", "--fresh"],
-        "note": "Full mix train; long. Skip if already near 150k and prefer continuation.",
-        "optional": True,
+        "cmd": [PYTHON, "-m", "nca_text.train"],
+        "note": "Continue/resume mix13-scale train (150k class). Do not use --fresh.",
+        "optional": False,
     },
 )
 
@@ -223,12 +229,17 @@ def main() -> None:
     args = parser.parse_args()
 
     STATE_DIR.mkdir(parents=True, exist_ok=True)
-    deadline = time.time() + args.days * 86400
     state = _load_state()
+    # Preserve an existing mission deadline on restart (supervision ticks).
+    if state.get("deadline_unix") and float(state["deadline_unix"]) > time.time():
+        deadline = float(state["deadline_unix"])
+    else:
+        deadline = time.time() + args.days * 86400
+        state["started_at"] = state.get("started_at") or _now()
     state["deadline_unix"] = deadline
     state["deadline_iso"] = datetime.fromtimestamp(deadline, timezone.utc).isoformat()
     _write_json(STATE_PATH, state)
-    _log(f"daemon start days={args.days} deadline={state['deadline_iso']}")
+    _log(f"daemon start days={args.days} deadline={state['deadline_iso']} queue_index={state.get('queue_index', 0)}")
 
     while time.time() < deadline:
         _write_json(

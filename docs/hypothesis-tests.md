@@ -2,7 +2,10 @@
 
 **Date:** 2026-10-05
 
-Equal-budget runs on curated Hermes train / curated val. Each variant trained for 8000 AdamW steps (batch 512, seed 0, lr 0.001, MPS when available).
+Equal-budget runs on curated Hermes train / curated val. Default budget is
+**150,000** AdamW steps (batch 512, seed 0, lr 0.001, MPS when available).
+Shorter historical 8k ablations are smoke only — see
+[auto-research-loop.md](auto-research-loop.md) §Long training.
 
 ## Variants
 
@@ -44,7 +47,7 @@ Extra updates after the first help the damaged grid (partial support for H3); th
 - Carry is trained with truncated BPTT across a window of session decisions; the reported val metric still resets hidden so it stays comparable.
 - Artifacts: `/Volumes/Extreme SSD/nca_research/results/hypothesis_tests`.
 
-## Sources
+## Priority notes (2026-10-05)
 
-- [research-design.md](research-design.md) hypotheses 2–4.
-- [multi-harness-and-message-passing.md](multi-harness-and-message-passing.md) carry / halt / long-range recommendations.
+- **Train long:** architectural ablations default to **150k** steps. The morning 8k table above is smoke; do not treat it as final. See [auto-research-loop.md](auto-research-loop.md) §Long training (Sudoku / iterative-reasoning lesson).
+- Daemon queue: `H6_long` → `H2b_carry_long` → `H_halt_long` at 150k each, then mix resume.

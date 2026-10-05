@@ -51,8 +51,11 @@ NCA_STEPS = 4
 SEED = 0
 LR = 1e-3
 WEIGHT_DECAY = 1e-2
-DEFAULT_STEPS = 8_000
-VAL_EVERY = 500
+# Smoke / plumbing only at 8k. Architectural comparisons need ≥150k (mix13
+# budget; Sudoku/iterative-reasoning literature: short runs understate capacity).
+DEFAULT_STEPS = 150_000
+SMOKE_STEPS = 8_000
+VAL_EVERY = 1000
 BATCH = 512
 CARRY_WINDOW = 4
 CARRY_SESSIONS = 128

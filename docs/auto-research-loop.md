@@ -26,6 +26,29 @@ Do not claim victory on BFCL/NESTFUL until the same scoring scripts used for the
 
 Local Qwen numbers: [`results/local_next_tool_qwen25_1_5b.json`](file:///Volumes/Extreme%20SSD/nca_research/results/local_next_tool_qwen25_1_5b.json) on the SSD.
 
+## Long training (do not skip)
+
+Local update / iterative policies need **long** AdamW budgets before architecture
+comparisons are meaningful. Recent Sudoku / combinatorial-reasoning work trains
+transformers for large trace corpora and many epochs (or many internal reasoning
+steps) before accuracy plateaus — e.g. Giannoulis et al., NeurIPS 2025
+([arXiv:2509.22023](https://arxiv.org/abs/2509.22023); Sudoku trial-and-error on
+a vanilla GPT-2), and follow-on Sudoku world-model analyses trained for multiple
+epochs on millions of traces (Google TPU runs in that line). The same caution
+applies to the 1D NCA: a few thousand steps can look flat while 150k separates
+cellular from linear.
+
+| Budget | Use |
+| --- | --- |
+| ≤ 8k | Plumbing / compile / shape checks only |
+| 20k–50k | Early curve shape — **not** a verdict |
+| **≥ 150k** | Default equal-budget ablations (matches mix13) |
+| Resume mix / FineEnvs | Prefer continuation over `--fresh` short jobs |
+
+Daemon env: `NCA_HYP_STEPS=150000` (default). The 3-day runner must not demote
+hypotheses to smoke budgets to “fit more experiments.” Prefer fewer, fully
+trained runs.
+
 ## Distillation rules (≤ 9B)
 
 | Allowed | Forbidden |

@@ -39,7 +39,7 @@ Read first:
 
 5. **Implement minimally** — Match existing `nca_text/` style. No scope creep.
 
-6. **Train/eval** — Curated or mix per hypothesis doc; log to SSD TensorBoard when training >1k steps.
+6. **Train/eval — long enough** — Default **≥150k** AdamW steps for any architectural claim (matches mix13). ≤8k is plumbing only; 20k is not a verdict. Recent Sudoku / iterative-reasoning work (e.g. Giannoulis et al. NeurIPS 2025, arXiv:2509.22023) shows structured policies need long imitation before they settle — treat NCA the same. Daemon: `NCA_HYP_STEPS=150000`. Log to SSD TensorBoard.
 
 7. **Score paired baselines** — Whenever benchmarks change, run **both**:  
    - `python scripts/run_text_benchmarks.py` (NCA checkpoint)  
