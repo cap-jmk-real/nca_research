@@ -479,6 +479,9 @@ def _write_doc(summary: dict) -> None:
 
     regen = summary.get("regeneration")
     if regen:
+        def _at(d, k: int) -> float:
+            return float(d[k] if k in d else d[str(k)])
+
         lines.extend(
             [
                 "",
@@ -492,21 +495,32 @@ def _write_doc(summary: dict) -> None:
             ]
         )
         for k in sorted(int(x) for x in regen["clean_top1_by_steps"]):
-            c = regen["clean_top1_by_steps"][k]
-            d = regen["damaged_top1_by_steps"][k]
-            delta = regen["recovery_delta"][str(k)]
+            c = _at(regen["clean_top1_by_steps"], k)
+            d = _at(regen["damaged_top1_by_steps"], k)
+            delta = _at(regen["recovery_delta"], k)
             lines.append(f"| {k} | {c:.4f} | {d:.4f} | {delta:+.4f} |")
-        recovered = regen["damaged_top1_by_steps"][NCA_STEPS] - regen["damaged_top1_by_steps"][0]
+        ks = sorted(int(x) for x in regen["damaged_top1_by_steps"])
+        peak_k = max(ks, key=lambda k: _at(regen["damaged_top1_by_steps"], k))
+        d1 = _at(regen["damaged_top1_by_steps"], 1)
+        d_peak = _at(regen["damaged_top1_by_steps"], peak_k)
+        c_full = _at(regen["clean_top1_by_steps"], NCA_STEPS)
+        d_full = _at(regen["damaged_top1_by_steps"], NCA_STEPS)
         lines.append("")
-        if recovered > 1e-4:
+        lines.append(
+            f"Readout on zero hidden (k=0) is near chance, so Δ from k=0 is not the "
+            f"regeneration claim. From one update onward, damaged peaks at "
+            f"**k={peak_k} ({d_peak:.4f})**, which is {d_peak - d1:+.4f} vs damaged@1 "
+            f"({d1:.4f}). At full depth, damaged is {d_full:.4f} against clean {c_full:.4f} "
+            f"(gap {c_full - d_full:+.4f})."
+        )
+        if d_peak > d1 + 1e-4:
             lines.append(
-                f"Further updates recover **{recovered:.4f}** absolute top-1 after damage "
-                f"(supports H3 on this split)."
+                "Extra updates after the first help the damaged grid (partial support for H3); "
+                "they do not fully close the gap to the clean grid."
             )
         else:
             lines.append(
-                f"Further updates do not recover accuracy after damage "
-                f"(Δ={recovered:+.4f}); H3 is not supported on this split."
+                "Extra updates after the first do not help the damaged grid; H3 is not supported."
             )
 
     lines.extend(
