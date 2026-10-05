@@ -22,7 +22,7 @@
   "data": {
     "langs": {
       "python": {
-        "rows": 14441,
+        "rows": 16689,
         "files": [
           {
             "file": "openhands-sft.jsonl",
@@ -30,7 +30,7 @@
           },
           {
             "file": "swe-smith-trajectories-tool.jsonl",
-            "rows": 13952
+            "rows": 16200
           }
         ]
       },
@@ -53,7 +53,7 @@
     "trained": false
   },
   "metrics": {
-    "python_rows": 14441,
+    "python_rows": 16689,
     "typescript_rows": 2
   },
   "artifacts": {
@@ -65,5 +65,5 @@
     "seed": 0,
     "git_commit": "2b733e17d878b91bda64fa3a1eb0825bd33b311d"
   },
-  "si_notes": "Counts at registration; compile may still append SWE-smith shards."
+  "si_notes": "Updated mid-compile; daemon still scanning SWE-smith. Commit cadence: regular push after milestones."
 }

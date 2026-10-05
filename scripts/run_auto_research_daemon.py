@@ -214,6 +214,56 @@ def _probe_engine() -> dict:
     return {"ts": _now(), "ollama": ollama, "klaut": klaut, "host": ENGINE}
 
 
+def _auto_commit(message: str) -> None:
+    """Commit and push dirty tree after a successful queue item (regular cadence)."""
+    if os.environ.get("NCA_AUTO_COMMIT", "1") not in {"1", "true", "yes"}:
+        return
+    try:
+        st = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=str(ROOT),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if not (st.stdout or "").strip():
+            return
+        subprocess.run(["git", "add", "-A"], cwd=str(ROOT), check=False)
+        # Keep untracked huge/local noise out if present
+        subprocess.run(
+            ["git", "reset", "HEAD", "--", "*.pt", "*.f32"],
+            cwd=str(ROOT),
+            check=False,
+            capture_output=True,
+        )
+        staged = subprocess.run(
+            ["git", "diff", "--cached", "--name-only"],
+            cwd=str(ROOT),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if not (staged.stdout or "").strip():
+            return
+        subprocess.run(
+            ["git", "commit", "-m", message],
+            cwd=str(ROOT),
+            check=False,
+        )
+        branch = subprocess.check_output(
+            ["git", "branch", "--show-current"], cwd=str(ROOT), text=True
+        ).strip()
+        if branch:
+            subprocess.run(
+                ["git", "push", "-u", "origin", branch],
+                cwd=str(ROOT),
+                check=False,
+            )
+            _log(f"auto_commit pushed on {branch}: {message}")
+    except Exception as exc:  # noqa: BLE001
+        _log(f"auto_commit skipped: {exc}")
+
+
 def _run(cmd: list[str], timeout: int | None = None) -> int:
     _log(f"RUN {' '.join(cmd)}")
     try:
@@ -336,7 +386,7 @@ def main() -> None:
         _write_json(STATE_PATH, state)
 
         # Scoreboard + paper SI after each train
-        if item["kind"].startswith("train"):
+        if item["kind"].startswith("train") and code == 0:
             _run([PYTHON, str(ROOT / "scripts" / "auto_research.py")], timeout=600)
             _run(
                 [
@@ -351,6 +401,8 @@ def main() -> None:
                 [PYTHON, str(ROOT / "scripts" / "record_experiment.py"), "build-tables"],
                 timeout=120,
             )
+        if code == 0:
+            _auto_commit(f"chore(auto): {item['id']} queue item complete")
 
         if args.once:
             break

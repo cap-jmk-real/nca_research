@@ -112,6 +112,16 @@ python scripts/score_local_next_tool.py   # Qwen2.5-1.5B baseline
 
 Cycle JSON: `/Volumes/Extreme SSD/nca_research/results/auto_research/latest.json`.
 
+## Commit cadence
+
+Push often on the working branch (`cursor/auto-research-klaut-1754` for the 3-day run):
+
+- After each completed train / SI register / dataset milestone.
+- On every supervision tick if the tree is dirty.
+- Prefer small conventional commits (`feat:`, `docs:`, `fix:`) over end-of-day dumps.
+
+The daemon may auto-commit SI + doc updates after successful queue items when `NCA_AUTO_COMMIT=1` (default on).
+
 ## Paper / supporting information
 
 Every completed train or baseline that might appear in a manuscript must land in

@@ -56,7 +56,12 @@ Read first:
    Smoke (`status: smoke`, &lt;50k steps) must not support architecture claims.  
    Also re-run `auto_research.py`.
 
-9. **Commit** — One hypothesis per commit when possible; push branch `cursor/<name>-1754`. Include `paper/si/` updates.
+9. **Commit regularly (required)** — Do **not** batch a whole day of work into one commit.
+   - After each finished hypothesis / SI register / dataset compile milestone: `git add` relevant paths, commit with a conventional message, `git push -u origin <branch>`.
+   - Prefer one logical unit per commit (one EXP, one script, one doc note).
+   - Branch: `cursor/<name>-1754` (current long-run: `cursor/auto-research-klaut-1754`).
+   - Always include `paper/si/` updates when metrics change.
+   - On every 6h supervision tick: if `git status` is dirty, commit and push before ending the turn.
 
 ## Distillation cap (9B)
 
