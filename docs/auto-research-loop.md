@@ -1,0 +1,131 @@
+# Auto-research loop (Klaut + benchmarks)
+
+**Date:** 2026-10-05
+
+Goal: iterate on the 1D trace NCA (and later heads) until it **beats small local LLMs on every scored benchmark gate**, using literature-backed hypotheses. Teacher / distillation is capped at **9B parameters** (`qwen3.5:9b` on engine).
+
+This is a **process** document. The scoreboard lives on the external SSD; gates are in [`config/benchmark_gates.json`](../config/benchmark_gates.json).
+
+## Stop condition
+
+Stop when every gate in `benchmark_gates.json` either:
+
+- **passes** (NCA metric ≥ min and beats listed baselines), or
+- remains **blocked** only because harness code is missing (τ2, AppWorld) — and those blockers are tracked explicitly.
+
+Do not claim victory on BFCL/NESTFUL until the same scoring scripts used for the NCA are run for **Qwen2.5-1.5B-Instruct** (and optionally `qwen3.5:9b`) on identical inputs.
+
+## Current scoreboard snapshot (2026-10-05)
+
+| Metric | NCA (best) | Baseline to beat |
+| --- | ---: | ---: |
+| Curated val top-1 | 65.2% (step 26k mix13) | flat 60.7% ✓ |
+| Local Hermes top-1 | 40.1% | always-terminal **49.5%** ✗, Qwen2.5-1.5B **6.3%** ✓ |
+| BFCL AST | not re-run on latest ckpt | set after paired LLM run |
+| τ2 / AppWorld | blocked (packages) | — |
+
+Local Qwen numbers: [`results/local_next_tool_qwen25_1_5b.json`](file:///Volumes/Extreme%20SSD/nca_research/results/local_next_tool_qwen25_1_5b.json) on the SSD.
+
+## Distillation rules (≤ 9B)
+
+| Allowed | Forbidden |
+| --- | --- |
+| Verifier-filtered multi-harness **labels** (FineEnvs common slice) | KL / hidden-state match into `TextNCA` |
+| Teacher **rewrites tool result text** in observations | Pouring 27B teacher completions into respond-heavy mix |
+| Pseudo-labels on high-entropy rows only | Training the cellular rule to mimic 9B logits |
+| 9B as τ2 **user simulator** or reply filler in a hybrid | Second generative policy the NCA copies |
+
+See [multi-harness-and-message-passing.md](multi-harness-and-message-passing.md) for why 27B SFT underperformed multi-harness RL on LFM2.5.
+
+## Klaut research gateway
+
+| | |
+| --- | --- |
+| Base URL | `http://192.168.10.29:30487` (engine NodePort; see [literature.md](literature.md)) |
+| Search | `POST /v1/research/papers/search` |
+| Synthesis | `POST /v1/research/reports` |
+| CLI | `python scripts/klaut_gateway.py search "query"` |
+| Cache | `/Volumes/Extreme SSD/nca_research/results/cache/klaut/` |
+
+Synthesis uses **`qwen3.5:9b`** on engine — within the distillation cap, but used here for **literature**, not as NCA teacher weights.
+
+When the gateway is unreachable (e.g. cloud agent off-LAN), the client returns the newest cached search/report.
+
+## Loop (one cycle)
+
+```mermaid
+flowchart TD
+  A[Measure scoreboard] --> B{Any gate failing?}
+  B -->|no| Z[Stop or raise gates]
+  B -->|yes| C[Klaut search or report for top gap]
+  C --> D[Pick hypothesis from backlog]
+  D --> E[Implement + train ablation]
+  E --> F[Eval curated val + local Hermes]
+  F --> G[run_text_benchmarks + LLM baselines]
+  G --> A
+```
+
+### Commands (M1 + SSD)
+
+```bash
+export NCA_DATA_ROOT="/Volumes/Extreme SSD/nca_research/results"
+export TMPDIR="/Volumes/Extreme SSD/nca_research/results/tmp"
+
+# 1) Score gates + suggest hypotheses
+python scripts/auto_research.py --klaut-search
+
+# 2) Optional deep read (slow)
+python scripts/auto_research.py --klaut-report --topic "tool calling distillation 9B"
+
+# 3) Train (example)
+python -m nca_text.hypotheses --steps 8000 --only long_range
+
+# 4) Benchmarks (needs best checkpoint on SSD)
+python scripts/run_text_benchmarks.py
+python scripts/score_local_next_tool.py   # Qwen2.5-1.5B baseline
+
+# 5) Commit cycle artifact path from auto_research output
+```
+
+Cycle JSON: `/Volumes/Extreme SSD/nca_research/results/auto_research/latest.json`.
+
+### Agent skill
+
+Use the project skill **nca-auto-research** (`.cursor/skills/nca-auto-research/SKILL.md`) in Cursor so each session:
+
+1. Runs `auto_research.py` first.
+2. Implements the top **suggested_hypotheses** entry not yet tried.
+3. Updates gates only with paired NCA + LLM numbers.
+4. Appends a one-line result to `docs/hypotheses-backlog.md` under the hypothesis.
+
+## Hypothesis generation
+
+- **Backlog:** [hypotheses-backlog.md](hypotheses-backlog.md) (30 items, prioritized).
+- **Measured ablations:** [hypothesis-tests.md](hypothesis-tests.md).
+- **Architecture program:** [research-design.md](research-design.md).
+
+New hypotheses should name: claim, gate, Klaut query, estimated cost, distillation interaction (if any).
+
+## Benchmarks in scope
+
+From [benchmarks.md](benchmarks.md), parallel text suite:
+
+1. BFCL non-live AST + irrelevance  
+2. NESTFUL `data_v2`  
+3. τ2 airline + retail (text, one trial)  
+4. AppWorld dev → test_normal  
+
+SWE-bench Lite is **out of band** until patch head exists. Vision benchmarks wait on research-design step 1.
+
+## Raising the bar
+
+After the NCA beats Qwen2.5-1.5B on all **wired** gates:
+
+1. Add **`qwen3.5:9b`** as a second local baseline (same prompts, engine Ollama).
+2. Tighten mins in `benchmark_gates.json` toward published small-model leaderboard slices.
+3. Wire τ2 and AppWorld blockers; add gates for SWE-lite @5 instances.
+
+## Related commits
+
+- Message-passing ablations: `nca_text/hypotheses.py`, [hypothesis-tests.md](hypothesis-tests.md).
+- Benchmark scorer stub: `scripts/run_text_benchmarks.py`.

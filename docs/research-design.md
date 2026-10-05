@@ -67,6 +67,10 @@ The first run is text traces from Hermes, not images. See [hermes-first-run.md](
 
 **Step 3. Damage and the flat baseline.** Repeat step 2 after zeroing a block of cells, and against the non-spatial baseline in hypothesis 4. Report recovery over K, not a single post-damage number.
 
+## Auto-research continuation
+
+The measured Hermes text run, benchmark gates, Klaut-backed literature loop, and prioritized hypothesis backlog live in [auto-research-loop.md](auto-research-loop.md) and [hypotheses-backlog.md](hypotheses-backlog.md). Use the project Cursor skill `nca-auto-research` when iterating until local-LLM baselines are beaten on every wired gate (teacher cap 9B).
+
 ## What this pass does not do
 
 No training code, no new architecture implementation, and no measured result. Language in step 1 is a discrete instruction, not open dialogue. Long-range connectivity, hierarchical NCAs (Pande and Grattarola, 2023), and a manifold of rules (Hernandez Ruiz et al., 2021) stay outside the first experiment so a failure is attributable to the shared local substrate.
