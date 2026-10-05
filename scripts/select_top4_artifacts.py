@@ -96,15 +96,44 @@ def _metrics(exp: dict) -> dict:
             if best_nca is None or row["val_top1"] > best_nca["val_top1"]:
                 best_nca = row
     # Single-model EXPs (mix13 / FineEnvs) without variants block.
-    if best_nca is None and m.get("best_val_top1") is not None:
-        best_nca = {
-            "exp_id": exp.get("id"),
-            "variant": "textnca",
-            "val_top1": float(m["best_val_top1"]),
-            "always_terminal": float(always_default) if always_default is not None else None,
-            "path": exp.get("artifact"),
-            "steps": (exp.get("training") or {}).get("steps"),
-        }
+    if best_nca is None:
+        raw_best = m.get("best_val_top1")
+        if isinstance(raw_best, dict):
+            if raw_best.get("nca") is not None:
+                best_nca = {
+                    "exp_id": exp.get("id"),
+                    "variant": "textnca",
+                    "val_top1": float(raw_best["nca"]),
+                    "always_terminal": float(
+                        raw_best["always_terminal"]
+                        if raw_best.get("always_terminal") is not None
+                        else always_default
+                    )
+                    if (raw_best.get("always_terminal") is not None or always_default is not None)
+                    else None,
+                    "path": exp.get("artifact"),
+                    "steps": raw_best.get("step") or (exp.get("training") or {}).get("steps"),
+                }
+            if raw_best.get("flat") is not None and best_flat is None:
+                best_flat = {
+                    "exp_id": exp.get("id"),
+                    "variant": "flat",
+                    "val_top1": float(raw_best["flat"]),
+                    "always_terminal": float(raw_best["always_terminal"])
+                    if raw_best.get("always_terminal") is not None
+                    else None,
+                    "path": exp.get("artifact"),
+                    "steps": raw_best.get("step"),
+                }
+        elif raw_best is not None:
+            best_nca = {
+                "exp_id": exp.get("id"),
+                "variant": "textnca",
+                "val_top1": float(raw_best),
+                "always_terminal": float(always_default) if always_default is not None else None,
+                "path": exp.get("artifact"),
+                "steps": (exp.get("training") or {}).get("steps"),
+            }
     return {"nca": best_nca, "flat": best_flat, "raw": m}
 
 
@@ -123,10 +152,9 @@ def select(exps: list[dict]) -> dict:
     flat_cands = []
     for exp in exps:
         status = str(exp.get("status") or "")
-        if status not in {"accepted", "preliminary", "complete", "ok", ""}:
-            # still consider preliminary long-trains
-            if status in {"blocked", "claims_not_supported"}:
-                continue
+        if status in {"blocked", "claims_not_supported"}:
+            continue
+        # Accept primary/smoke/accepted/… — only hard rejects above.
         got = _metrics(exp)
         if got["nca"]:
             nca_cands.append(got["nca"])
