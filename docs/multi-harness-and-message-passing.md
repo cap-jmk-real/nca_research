@@ -94,6 +94,8 @@ For the trace NCA the useful split is:
 
 Those three are still ablations of the cellular rule. A teacher, and the FineEnvs GRPO stack, stay behind them.
 
+Equal-budget measurements of carry, learned halt, the goal long-range edge, the flat baseline, and regeneration after cell damage are in [hypothesis-tests.md](hypothesis-tests.md).
+
 ## Sources opened on 2026-10-05
 
 - Kolavi, Niklaus, Paniego Blanco, Monigatti, Dirhoussi, Burtenshaw, Tunstall, and von Werra (2026). The ultimate guide to multi-harness RL. Hugging Face Space `FineEnvs/multi-harness-rl`, published 1 October 2026. Chapters `introduction`, `basics`, `why-multi-harness`, `openenv`, `training`, `conclusions`.
