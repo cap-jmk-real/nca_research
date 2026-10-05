@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "hf_namespace": "cap-jmk-real",
+  "ssd_mirror": "/Volumes/Extreme SSD/nca_research/results/hf",
+  "publish_only_top4": true,
+  "slots": {
+    "A": {
+      "kind": "model",
+      "repo": "textnca-next-tool",
+      "role": "best_textnca",
+      "metric_primary": "val_top1_minus_always_terminal",
+      "metric_secondary": "val_top1_minus_qwen15",
+      "min_rows_or_steps": 150000
+    },
+    "B": {
+      "kind": "model",
+      "repo": "baseline-next-tool",
+      "role": "best_baseline_comparator",
+      "metric_primary": "val_top1",
+      "note": "Flat or small transformer used in the paper comparison table"
+    },
+    "C": {
+      "kind": "model",
+      "repo": "specialist-python",
+      "role": "best_specialist",
+      "metric_primary": "harness_score",
+      "metric_fallback": "distill_tag_match",
+      "max_teacher_params_b": 9
+    },
+    "D": {
+      "kind": "dataset",
+      "repo": "hermes-next-tool-mix",
+      "role": "best_dataset",
+      "metric_primary": "n_rows_scrubbed",
+      "text_cap": 160,
+      "forbid_full_parquet_dump": true
+    }
+  },
+  "quantization": {
+    "ladder": [
+      {"id": "fp16", "approx_bits": 16, "backends": ["torch"]},
+      {"id": "bf16", "approx_bits": 16, "backends": ["torch"]},
+      {"id": "fp8_e4m3", "approx_bits": 8, "backends": ["torchao", "mlx"], "floating": true},
+      {"id": "int8", "approx_bits": 8, "backends": ["torch"]},
+      {"id": "nf4", "approx_bits": 4, "backends": ["bitsandbytes"]},
+      {"id": "iq2_xxs", "approx_bits": 2.5, "backends": ["llama_cpp"], "floating": true, "note": "~2.5 bpw IQ2-class"},
+      {"id": "iq2_s", "approx_bits": 2.75, "backends": ["llama_cpp"], "floating": true}
+    ],
+    "keep_fraction_of_fp16_top1": 0.98,
+    "publish_quant_companion": true,
+    "max_quant_companions_per_slot": 1
+  },
+  "paper": {
+    "si_dir": "paper/si/experiments",
+    "availability_doc": "paper/availability.md",
+    "require_exp_for_claim": true,
+    "long_train_floor_steps": 150000
+  },
+  "scrub": {
+    "goal_chars": 160,
+    "path_hints_max": 8,
+    "drop_keys": ["messages", "trajectory", "conversations", "tools", "patch", "diff"]
+  }
+}
