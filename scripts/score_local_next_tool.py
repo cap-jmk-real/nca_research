@@ -6,10 +6,13 @@ counts only. Does not write goals, tool results, or model text.
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import re
 import sys
+import urllib.error
+import urllib.request
 from collections import Counter
 from pathlib import Path
 
@@ -44,6 +47,8 @@ LABELS = [
 LABEL_SET = set(LABELS)
 WORD = re.compile(r"[a-z_]+")
 MODEL_ID = "Qwen/Qwen2.5-1.5B-Instruct"
+OLLAMA_MODEL = os.environ.get("NCA_BASELINE_MODEL", "qwen2.5:1.5b")
+OLLAMA = os.environ.get("NCA_OLLAMA", "http://192.168.10.29:11434")
 OUT = SSD / "results" / "local_next_tool_qwen25_1_5b.json"
 
 
@@ -74,18 +79,61 @@ def _parse(text: str) -> str | None:
     return None
 
 
+def _engine_models() -> set[str]:
+    req = urllib.request.Request(f"{OLLAMA.rstrip('/')}/api/tags")
+    with urllib.request.urlopen(req, timeout=8) as resp:
+        payload = json.load(resp)
+    return {str(row.get("name") or "") for row in payload.get("models") or []}
+
+
+def _engine_reply(system: str, user: str, model: str) -> str:
+    body = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ],
+        "stream": False,
+        "options": {"temperature": 0, "num_predict": 8},
+    }
+    req = urllib.request.Request(
+        f"{OLLAMA.rstrip('/')}/api/chat",
+        data=json.dumps(body).encode(),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=120) as resp:
+        payload = json.load(resp)
+    return str((payload.get("message") or {}).get("content") or "")
+
+
 def main() -> None:
-    import torch
-    from transformers import AutoModelForCausalLM, AutoTokenizer
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Rescore even if the SSD baseline JSON already exists",
+    )
+    args = parser.parse_args()
+    if OUT.is_file() and not args.force:
+        print(f"baseline already on SSD, skip ({OUT})", flush=True)
+        return
 
     examples, note = load_local_test()
     rows = [ex for ex in examples if ex.label in LABEL_SET]
     print(f"local rows in vocab {len(rows)} of {len(examples)}", flush=True)
-
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
-    model = AutoModelForCausalLM.from_pretrained(MODEL_ID, torch_dtype=torch.float16)
-    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
-    model.to(device).eval()
+    print(f"teacher={OLLAMA_MODEL} via {OLLAMA} (not this Mac)", flush=True)
+    try:
+        names = _engine_models()
+    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        print(f"engine Ollama unreachable, refusing local teacher load: {exc}", flush=True)
+        return
+    if OLLAMA_MODEL not in names and f"{OLLAMA_MODEL}:latest" not in names:
+        print(
+            f"{OLLAMA_MODEL} is not on engine; refusing to download or load it on this Mac",
+            flush=True,
+        )
+        return
 
     system = (
         "Reply with exactly one Hermes tool name and no other words. "
@@ -98,24 +146,12 @@ def main() -> None:
     hit: Counter[str] = Counter()
 
     for i, ex in enumerate(rows, start=1):
-        messages = [
-            {"role": "system", "content": system},
-            {"role": "user", "content": _prompt(ex.goal, ex.steps)},
-        ]
-        prompt = tokenizer.apply_chat_template(
-            messages, add_generation_prompt=True, tokenize=False
-        )
-        encoded = tokenizer(prompt, return_tensors="pt")
-        input_ids = encoded["input_ids"].to(device)
-        with torch.inference_mode():
-            out = model.generate(
-                input_ids,
-                max_new_tokens=8,
-                do_sample=False,
-                pad_token_id=tokenizer.eos_token_id,
-            )
-        new_tokens = out[0, input_ids.shape[-1] :]
-        pred = _parse(tokenizer.decode(new_tokens, skip_special_tokens=True))
+        try:
+            text = _engine_reply(system, _prompt(ex.goal, ex.steps), OLLAMA_MODEL)
+        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+            print(f"engine teacher failed, stopping without a local load: {exc}", flush=True)
+            return
+        pred = _parse(text)
         gold_hist[ex.label] += 1
         if pred is None:
             unparsed += 1
@@ -130,7 +166,9 @@ def main() -> None:
 
     n = len(rows)
     payload = {
-        "model": MODEL_ID,
+        "model": OLLAMA_MODEL,
+        "model_ref": MODEL_ID,
+        "endpoint": OLLAMA,
         "note": note,
         "protocol": (
             "Same local ~/.hermes rows as the 1D NCA test, restricted to the "

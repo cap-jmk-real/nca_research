@@ -186,6 +186,10 @@ def _env() -> dict:
     env["PYTHONPYCACHEPREFIX"] = str(SSD / "pycache")
     env["HF_HOME"] = str(SSD / "hf-home")
     env["HF_HUB_CACHE"] = str(SSD / "hf-home" / "hub")
+    env["TORCH_HOME"] = str(SSD / "torch-home")
+    env["XDG_CACHE_HOME"] = str(SSD / "xdg-cache")
+    env["NCA_OLLAMA"] = OLLAMA
+    env["NCA_TEACHER"] = os.environ.get("NCA_TEACHER", "qwen3.5:9b")
     env.setdefault("PYTHONPATH", str(ROOT))
     return env
 
@@ -298,8 +302,7 @@ def _engine_jobs(state: dict) -> None:
             timeout=300,
         )
     if probe["ollama"]:
-        # Local LLM baseline on Hermes (transformers path may still use M1;
-        # prefer engine Ollama when the score script supports it later).
+        # Baseline stays on engine Ollama. The scorer refuses a local weight load.
         score = ROOT / "scripts" / "score_local_next_tool.py"
         if score.is_file():
             _run([PYTHON, str(score)], timeout=3600)
@@ -332,7 +335,10 @@ def main() -> None:
     state["deadline_unix"] = deadline
     state["deadline_iso"] = datetime.fromtimestamp(deadline, timezone.utc).isoformat()
     _write_json(STATE_PATH, state)
-    _log(f"daemon start days={args.days} deadline={state['deadline_iso']} queue_index={state.get('queue_index', 0)}")
+    _log(
+        f"daemon start days={args.days} deadline={state['deadline_iso']} "
+        f"queue_index={state.get('queue_index', 0)} data_root={SSD} ollama={OLLAMA}"
+    )
 
     while time.time() < deadline:
         # Refresh lean status file for agent ticks (few lines, not full logs).
