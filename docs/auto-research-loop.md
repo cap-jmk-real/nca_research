@@ -26,6 +26,20 @@ Do not claim victory on BFCL/NESTFUL until the same scoring scripts used for the
 
 Local Qwen numbers: [`results/local_next_tool_qwen25_1_5b.json`](file:///Volumes/Extreme%20SSD/nca_research/results/local_next_tool_qwen25_1_5b.json) on the SSD.
 
+### 3-day mission status (live)
+
+| Item | Status |
+| --- | --- |
+| Deadline | 2026-10-08T13:11:54Z |
+| Queue | H6 150k `long_range` → `baseline` → `flat` (restarted after SSD TCC save failure) |
+| `long_range` progress | ~20k / 150k; val_top1 ≈ 0.595 vs always-terminal 0.543 |
+| Specialist compile | python ≈22k rows; typescript sparse; shell in progress |
+| Engine Ollama/Klaut | down earlier — distill waits |
+| HF top-4 (provisional) | A=`textnca` EXP-20261003-001 (0.652); B=`flat` EXP-20261005-002 (0.630); C/D pending |
+| Ops | Prefer `python scripts/status_lean.py`; see [mac-worker-prep.md](mac-worker-prep.md), [huggingface-distribution.md](huggingface-distribution.md) |
+
+Prior 150k `long_range` reached step 150k in-memory but **failed saving** the checkpoint when macOS blocked SSD writes; rerun is the source of truth for SI once it completes and saves.
+
 ## Long training (do not skip)
 
 Local update / iterative policies need **long** AdamW budgets before architecture
