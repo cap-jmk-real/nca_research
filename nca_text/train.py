@@ -17,6 +17,7 @@ from nca_text.data import (
     data_root,
     load_local_test,
     load_packed_splits,
+    load_side_eval,
     prepare_env,
 )
 
@@ -40,6 +41,25 @@ LR = 1e-3
 WEIGHT_DECAY = 1e-2
 BENCH_BATCHES = (128, 512, 1024, 2048)
 WALL_BUDGET_H = 2.5
+# Share of each class drawn from verifier-correct FineEnvs rows, once that file is staged.
+FINEENVS_WITHIN_CLASS = 0.25
+# Curated Hermes train counts (data/curated/stats.json). The coding mix is 37% respond;
+# this prior is 52% terminal, which is the val and local shape.
+CURATED_TRAIN_COUNTS = {
+    "delegate_task": 33,
+    "execute_code": 224,
+    "memory": 28,
+    "patch": 1670,
+    "process": 672,
+    "read_file": 8086,
+    "respond": 2854,
+    "search_files": 6194,
+    "session_search": 82,
+    "skill_view": 88,
+    "terminal": 30259,
+    "todo": 254,
+    "write_file": 7231,
+}
 
 LAST_CKPT = ROOT / "checkpoints" / "text_nca_1d_mix13_last.pt"
 BEST_CKPT = ROOT / "checkpoints" / "text_nca_1d_mix13_best.pt"
@@ -68,6 +88,58 @@ def _chip() -> dict:
         "torch": torch.__version__,
         "mps_available": bool(torch.backends.mps.is_available()),
     }
+
+
+def _fineenvs_sampler(
+    labels: np.ndarray,
+    names: list[str],
+    mask: np.ndarray,
+):
+    """Class buckets split into FineEnvs and the rest, plus the Hermes label prior.
+
+    Returns None when no FineEnvs row was packed, so the uniform sampler stays.
+    """
+    if mask is None or int(np.asarray(mask).sum()) == 0:
+        return None
+    labels = np.asarray(labels)
+    mask = np.asarray(mask).astype(bool)
+    n_classes = len(names)
+    base: list[np.ndarray] = []
+    fine: list[np.ndarray] = []
+    raw = np.zeros(n_classes, np.float64)
+    for c, name in enumerate(names):
+        idx = np.flatnonzero(labels == c)
+        fine.append(idx[mask[idx]])
+        base.append(idx[~mask[idx]])
+        if idx.size:
+            raw[c] = float(CURATED_TRAIN_COUNTS.get(name, 0))
+    total = float(raw.sum())
+    if total <= 0:
+        return None
+    return base, fine, raw / total
+
+
+def _sample_batch(rng: np.random.Generator, batch: int, sampler) -> np.ndarray:
+    base, fine, prior = sampler
+    classes = rng.choice(len(prior), size=batch, p=prior)
+    idx = np.empty(batch, np.int64)
+    for c in range(len(prior)):
+        take = np.flatnonzero(classes == c)
+        if take.size == 0:
+            continue
+        pool_base, pool_fine = base[c], fine[c]
+        if pool_fine.size == 0 or pool_base.size == 0:
+            pool = pool_fine if pool_fine.size else pool_base
+            idx[take] = rng.choice(pool, size=take.size, replace=True)
+            continue
+        from_fine = rng.random(take.size) < FINEENVS_WITHIN_CLASS
+        n_fine = int(from_fine.sum())
+        n_base = take.size - n_fine
+        if n_fine:
+            idx[take[from_fine]] = rng.choice(pool_fine, size=n_fine, replace=True)
+        if n_base:
+            idx[take[~from_fine]] = rng.choice(pool_base, size=n_base, replace=True)
+    return idx
 
 
 def _class_weight(labels: np.ndarray, n_classes: int, device: torch.device) -> torch.Tensor:
@@ -340,6 +412,17 @@ def main() -> None:
     train_kept = train_sessions_n
     val_kept = val_sessions_n
     terminal_index = vocab.get("terminal")
+    sampler = _fineenvs_sampler(train_y, names, packed.get("train_fineenvs"))
+    side = load_side_eval("fineenvs_common_val.jsonl", vocab)
+    if sampler is None:
+        print("batch sampler: uniform", flush=True)
+    else:
+        n_fine = int(np.asarray(packed["train_fineenvs"]).sum())
+        print(
+            f"batch sampler: hermes prior, {FINEENVS_WITHIN_CLASS:.0%} of each class from "
+            f"{n_fine} fineenvs rows",
+            flush=True,
+        )
     print(f"loaded {train_note}", flush=True)
     print(f"loaded {val_note}", flush=True)
     if len(train_y) < 4 or len(vocab) < 2:
@@ -433,6 +516,12 @@ def main() -> None:
     train_y_t = torch.from_numpy(np.ascontiguousarray(train_y))
     val_obs_t = torch.from_numpy(np.ascontiguousarray(val_obs)).to(device)
     val_y_t = torch.from_numpy(np.ascontiguousarray(val_y)).to(device)
+    if side is not None and len(side[1]):
+        side_obs_t = torch.from_numpy(np.ascontiguousarray(side[0])).to(device)
+        side_y_t = torch.from_numpy(np.ascontiguousarray(side[1])).to(device)
+    else:
+        side_obs_t = None
+        side_y_t = None
     weight = _class_weight(train_y, len(vocab), device)
     n = int(train_obs.shape[0])
 
@@ -512,7 +601,8 @@ def main() -> None:
         lr = _lr(step, TOTAL_STEPS, LR)
         _apply_lr(nca_opt, lr)
         _apply_lr(flat_opt, lr)
-        idx_np = rng.choice(n, size=min(batch, n), replace=False)
+        draw = min(batch, n)
+        idx_np = rng.choice(n, size=draw, replace=False) if sampler is None else _sample_batch(rng, draw, sampler)
         obs_b = torch.from_numpy(np.ascontiguousarray(train_obs[idx_np])).to(device)
         y_b = train_y_t[torch.from_numpy(idx_np.astype(np.int64, copy=False))].to(device)
         nca_loss = _step(nca, nca_opt, obs_b, y_b, weight)
@@ -538,9 +628,13 @@ def main() -> None:
                 "val_top1_nca": nca_acc,
                 "val_top1_flat": flat_acc,
                 "val_top1_always_terminal": term_val,
+                "batch_mix": "uniform" if sampler is None else "hermes-prior+fineenvs",
                 "lr": lr,
                 "ms_per_step": round(ms, 3),
             }
+            if side_obs_t is not None:
+                row["fineenvs_val_top1_nca"] = _accuracy(nca, side_obs_t, side_y_t, batch)
+                row["fineenvs_val_top1_flat"] = _accuracy(flat, side_obs_t, side_y_t, batch)
             if ms > 0:
                 row["samples_per_sec"] = round(batch / (ms / 1000.0), 1)
             log_f.write(json.dumps(row) + "\n")

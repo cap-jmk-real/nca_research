@@ -412,7 +412,8 @@ def training_split_paths(split: str) -> list[Path]:
     tau2 airline/retail rows use a different API vocabulary, so they stay on disk
     and out of this head. browser_* rows were dropped from the Hermes label set.
     extra/val.jsonl is the held-out remainder of the extra Hermes source, not the
-    validation set for this run.
+    validation set for this run. fineenvs_common_val.jsonl is also held out of
+    this list and is scored only as a side metric.
     """
     root = datasets_dir()
     extra = root / "extra"
@@ -424,8 +425,23 @@ def training_split_paths(split: str) -> list[Path]:
             extra / "train.jsonl",
             extra / "openhands_train.jsonl",
             extra / "swe_smith_partial_train.jsonl",
+            # Verifier-correct multi-harness tool calls. Absent until staged.
+            extra / "fineenvs_common_train.jsonl",
         ]
     return [path for path in paths if path.is_file()]
+
+
+def load_side_eval(filename: str, vocab: dict[str, int]):
+    """Pack a held-out jsonl with the training vocabulary. None if the file is absent.
+
+    Used for FineEnvs task-held-out rows. Those rows are not the checkpoint metric.
+    """
+    path = datasets_dir() / "extra" / filename
+    if not path.is_file():
+        return None
+    examples = _examples_from_jsonl(path, path.stem)
+    obs, labels, kept = build_trace_obs(examples, vocab)
+    return obs, labels, f"{path.name} ({len(kept)} of {len(examples)} rows)"
 
 
 def load_training_examples(split: str) -> tuple[list[Example], str]:
@@ -473,6 +489,7 @@ def _fill_obs(
     obs_c = HASH_DIM + n_classes + 1
     sessions: set[str] = set()
     labels = np.empty(n_hint, np.int64)
+    fineenvs = np.zeros(n_hint, np.uint8)
     filled = 0
     chunk = 4096
     buf = np.zeros((chunk, obs_c, SEQ_LEN), np.float32)
@@ -518,6 +535,8 @@ def _fill_obs(
                 obs[HASH_DIM + idx, col] = 1.0
             obs[-1, col] = 1.0
         labels[filled] = vocab[label]
+        if "fineenvs_common_train" in name:
+            fineenvs[filled] = 1
         filled += 1
         if out is not None:
             buf_i += 1
@@ -535,7 +554,8 @@ def _fill_obs(
         obs_all = in_mem[:filled].copy() if filled < n_hint else in_mem
     if filled < n_hint:
         labels = labels[:filled].copy()
-    return obs_all, labels, len(sessions)
+        fineenvs = fineenvs[:filled].copy()
+    return obs_all, labels, len(sessions), fineenvs
 
 
 def load_packed_splits() -> dict:
@@ -571,9 +591,11 @@ def load_packed_splits() -> dict:
     gc.collect()
     print(f"packing train into {len(vocab)} classes", flush=True)
     cache = data_root() / "cache" / "train_obs.f32"
-    train_obs, train_y, train_session_n = _fill_obs(train_paths, vocab, train_n, cache)
+    train_obs, train_y, train_session_n, train_fineenvs = _fill_obs(
+        train_paths, vocab, train_n, cache
+    )
     print("packing val", flush=True)
-    val_obs, val_y, val_session_n = _fill_obs(val_paths, vocab, val_n)
+    val_obs, val_y, val_session_n, _val_fineenvs = _fill_obs(val_paths, vocab, val_n)
     train_note = "; ".join(f"{name} ({n} rows)" for name, n in train_counts.items())
     val_note = "; ".join(f"{name} ({n} rows)" for name, n in val_counts.items())
     return {
@@ -586,6 +608,7 @@ def load_packed_splits() -> dict:
         "val_sessions": val_session_n,
         "train_note": train_note,
         "val_note": val_note,
+        "train_fineenvs": train_fineenvs,
     }
 
 
