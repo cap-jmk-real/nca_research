@@ -80,11 +80,22 @@ else
   warn "engine Ollama down (${NCA_ENGINE_HOST}) — distill/Klaut will wait"
 fi
 
-# Sleep hint
-if pmset -g custom 2>/dev/null | grep -q "sleep.*0" || pmset -g 2>/dev/null | grep -E "^\s*sleep\s+0" >/dev/null; then
-  ok "sleep settings look awake-friendly"
+# Sleep hint (prefer caffeinate over pmset disablesleep on 16GB Air)
+if pgrep -x caffeinate >/dev/null 2>&1; then
+  ok "caffeinate running"
+elif pmset -g custom 2>/dev/null | grep -q "sleep.*0" || pmset -g 2>/dev/null | grep -E "^\s*sleep\s+0" >/dev/null; then
+  ok "sleep settings look awake-friendly (pmset)"
 else
-  warn "system may sleep — sudo pmset -c sleep 0 disksleep 0  or caffeinate -dims"
+  warn "system may sleep — prefer: caffeinate -im  (avoid pmset disablesleep unless needed)"
+fi
+
+# Disk / roommate warnings for 16GB M1
+AVAIL_KB="$(df -k / | awk 'NR==2{print $4}')"
+if [[ -n "$AVAIL_KB" && "$AVAIL_KB" -lt 5242880 ]]; then
+  warn "low free space on / (~$((AVAIL_KB/1024/1024)) GiB) — free disk before train/compile"
+fi
+if pgrep -fl 'gmx|mdrun' >/dev/null 2>&1; then
+  warn "gmx/mdrun running — do not start NCA train/compile on 16GB until it finishes"
 fi
 
 # Lean status if daemon exists

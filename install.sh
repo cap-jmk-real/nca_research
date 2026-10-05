@@ -16,8 +16,14 @@ done
 chmod +x "$ROOT"/scripts/*.sh 2>/dev/null || true
 
 if [[ "$(uname -s)" == "Darwin" ]]; then
-  echo "Running Mac worker prep (sudo password may be required)..."
-  "$ROOT/scripts/setup_mac_worker.sh" ${WORKER_ONLY:+--no-sync}
+  echo "Running Mac worker prep (safe defaults; sudo may be required)..."
+  # setup_mac_worker defaults: Wi-Fi DNS only, no rsync, no pmset disablesleep.
+  # Pass flags through only when --worker-only (no sync) is requested.
+  if [[ "$WORKER_ONLY" -eq 1 ]]; then
+    "$ROOT/scripts/setup_mac_worker.sh" --no-ui
+  else
+    "$ROOT/scripts/setup_mac_worker.sh"
+  fi
 else
   echo "Non-Darwin: sourcing env only"
   # shellcheck disable=SC1091
@@ -30,4 +36,6 @@ fi
 
 "$ROOT/scripts/check_setup.sh"
 echo
-echo "Install entry done. Start mission with: ./scripts/start_auto_research.sh --with-compile"
+echo "Install entry done."
+echo "Start daemon alone:  ./scripts/start_auto_research.sh"
+echo "Do NOT stack --with-compile while training on 16GB M1 (watchdog risk)."
