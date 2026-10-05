@@ -45,17 +45,35 @@ def _last_console() -> str:
         return "-"
 
 
-def _procs() -> str:
+def _proc_lines() -> list[str]:
+    """Return process command lines; pgrep often fails in agent sandboxes."""
     try:
         out = subprocess.check_output(
-            ["pgrep", "-fl", "hypotheses|auto_research|compile_specialist|distill"],
+            ["pgrep", "-fl", "hypotheses|auto_research|compile_specialist|distill|caffeinate"],
             text=True,
             stderr=subprocess.DEVNULL,
         )
+        return [ln for ln in out.splitlines() if ln.strip()]
     except (subprocess.CalledProcessError, FileNotFoundError):
-        return "none"
-    names = []
-    for line in out.splitlines()[:4]:
+        pass
+    try:
+        out = subprocess.check_output(["ps", "-ax", "-o", "command="], text=True)
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return []
+    keys = (
+        "nca_text.hypotheses",
+        "run_auto_research_daemon",
+        "compile_specialist",
+        "distill_specialist",
+        "auto_research.py",
+        "caffeinate",
+    )
+    return [ln for ln in out.splitlines() if any(k in ln for k in keys)]
+
+
+def _procs() -> str:
+    names: list[str] = []
+    for line in _proc_lines()[:8]:
         if "hypotheses" in line:
             names.append("hypotheses")
         elif "compile_specialist" in line:
@@ -66,7 +84,16 @@ def _procs() -> str:
             names.append("daemon")
         elif "auto_research" in line:
             names.append("scoreboard")
-    return ",".join(names) or "other"
+        elif "caffeinate" in line:
+            names.append("caffeine")
+    # stable unique order
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for n in names:
+        if n not in seen:
+            seen.add(n)
+            ordered.append(n)
+    return ",".join(ordered) or "none"
 
 
 def _branch() -> str:

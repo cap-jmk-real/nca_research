@@ -31,12 +31,14 @@ Local Qwen numbers: [`results/local_next_tool_qwen25_1_5b.json`](file:///Volumes
 | Item | Status |
 | --- | --- |
 | Deadline | 2026-10-08T13:11:54Z |
-| Queue | H6 150k `long_range` → `baseline` → `flat` (restarted after SSD TCC save failure) |
-| `long_range` progress | ~20k / 150k; val_top1 ≈ 0.595 vs always-terminal 0.543 |
-| Specialist compile | python ≈22k rows; typescript sparse; shell in progress |
-| Engine Ollama/Klaut | down earlier — distill waits |
+| Branch | `cursor/auto-research-klaut-1754` (ahead of origin — push via `./scripts/push_branch.sh` in Terminal) |
+| Queue | H6 150k `long_range` → `baseline` → `flat` (tmux `nca-daemon`; SSD writes OK) |
+| `long_range` progress | ≥25k / 150k; val_top1 ≈ 0.615 @25k (peak 0.635 @10k) vs always-terminal 0.543 |
+| Specialist compile | tmux `nca-compile`; python ≈23.7k rows; scanning swe-rebench; ts/shell sparse |
+| Engine Ollama | local up but **embed-only** (`nomic-embed-text`) — no generative distill until 9B present; Klaut reachable |
 | HF top-4 (provisional) | A=`textnca` EXP-20261003-001 (0.652); B=`flat` EXP-20261005-002 (0.630); C/D pending |
-| Ops | Prefer `python scripts/status_lean.py`; see [mac-worker-prep.md](mac-worker-prep.md), [huggingface-distribution.md](huggingface-distribution.md) |
+| Ops | `python scripts/status_lean.py`; caffeinate in `nca-caffeine`; [mac-worker-prep.md](mac-worker-prep.md), [huggingface-distribution.md](huggingface-distribution.md) |
+| PR | Agent sandbox: DNS/`gh` keychain blocked. Compare: https://github.com/cap-jmk-real/nca_research/compare/main...cursor/auto-research-klaut-1754?expand=1 |
 
 Prior 150k `long_range` reached step 150k in-memory but **failed saving** the checkpoint when macOS blocked SSD writes; rerun is the source of truth for SI once it completes and saves.
 
