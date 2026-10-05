@@ -15,9 +15,12 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import urllib.error
 import urllib.request
 from pathlib import Path
+
+_TAG = re.compile(r"<[^>]+>")
 
 SSD = Path("/Volumes/Extreme SSD/nca_research")
 SPEC = SSD / "datasets" / "specialists"
@@ -26,13 +29,19 @@ TEACHER = os.environ.get("NCA_TEACHER", "qwen3.5:9b")
 OLLAMA = os.environ.get("NCA_OLLAMA", "http://192.168.10.29:11434")
 
 
+# Route/tool tags are ~10 tokens; keep headroom but never essay-length.
+NUM_PREDICT = int(os.environ.get("NCA_DISTILL_NUM_PREDICT", "24"))
+GOAL_CHARS = int(os.environ.get("NCA_DISTILL_GOAL_CHARS", "160"))
+PATH_HINTS = int(os.environ.get("NCA_DISTILL_PATH_HINTS", "4"))
+
+
 def _ollama_chat(prompt: str, model: str, timeout: float = 120.0) -> str:
     body = {
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
         "stream": False,
         # Tight cap: route/tool tag only — avoid burning teacher tokens on prose.
-        "options": {"temperature": 0.0, "num_predict": 48},
+        "options": {"temperature": 0.0, "num_predict": NUM_PREDICT},
     }
     req = urllib.request.Request(
         f"{OLLAMA.rstrip('/')}/api/chat",
@@ -45,9 +54,14 @@ def _ollama_chat(prompt: str, model: str, timeout: float = 120.0) -> str:
     return str((payload.get("message") or {}).get("content") or "")
 
 
+def _short_goal(value: str) -> str:
+    text = _TAG.sub(" ", value or "")
+    return " ".join(text.split())[:GOAL_CHARS]
+
+
 def _prompt(lang: str, row: dict) -> str:
-    paths = ",".join((row.get("path_hints") or [])[:6])
-    goal = (row.get("goal") or "")[:240]
+    paths = ",".join((row.get("path_hints") or [])[:PATH_HINTS])
+    goal = _short_goal(row.get("goal") or "")
     if row.get("specialist") == "orchestrator" or lang == "orchestrator":
         return (
             f"Route only. langs=python|typescript|shell\n"
@@ -78,16 +92,25 @@ def main() -> None:
     out_path = OUT / f"{args.lang}_from_{args.teacher.replace(':', '_')}.jsonl"
     rows = []
     for path in sorted(src_dir.glob("*.jsonl")):
-        with path.open() as handle:
+        if path.name.startswith("._"):
+            continue
+        with path.open(encoding="utf-8", errors="replace") as handle:
             for line in handle:
                 if line.strip():
-                    rows.append(json.loads(line))
+                    try:
+                        rows.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        continue
                 if len(rows) >= args.limit:
                     break
         if len(rows) >= args.limit:
             break
 
-    print(f"distill lang={args.lang} n={len(rows)} teacher={args.teacher} out={out_path}", flush=True)
+    print(
+        f"distill lang={args.lang} n={len(rows)} teacher={args.teacher} "
+        f"num_predict={NUM_PREDICT} out={out_path}",
+        flush=True,
+    )
     if args.dry_run:
         print(_prompt(args.lang, rows[0] if rows else {}))
         return
@@ -100,18 +123,20 @@ def main() -> None:
             except (urllib.error.URLError, TimeoutError, OSError) as exc:
                 print(f"engine unreachable: {exc}", flush=True)
                 break
+            # Persist truncated fields only — full goals burn disk and later LM tokens.
             out.write(
                 json.dumps(
                     {
                         "specialist": args.lang,
                         "teacher": args.teacher,
+                        "num_predict": NUM_PREDICT,
                         "source_row": {
                             "session_id": row.get("session_id"),
-                            "goal": row.get("goal"),
-                            "path_hints": row.get("path_hints"),
+                            "goal": (row.get("goal") or "")[:GOAL_CHARS],
+                            "path_hints": (row.get("path_hints") or [])[:PATH_HINTS],
                             "source": row.get("source"),
                         },
-                        "teacher_text": text,
+                        "teacher_text": (text or "").strip()[:80],
                     },
                     ensure_ascii=False,
                 )

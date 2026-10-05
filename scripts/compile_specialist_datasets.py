@@ -106,7 +106,8 @@ def _from_openhands_messages(row: dict, source: str) -> dict | None:
     goal = ""
     for msg in messages if isinstance(messages, list) else []:
         if isinstance(msg, dict) and msg.get("role") in {"user", "human"}:
-            goal = str(msg.get("content") or "")[:500]
+            # 240 chars is enough for distill prompts (teacher sees ≤160).
+            goal = str(msg.get("content") or "")[:240]
             break
     return {
         "specialist": lang,
@@ -117,22 +118,22 @@ def _from_openhands_messages(row: dict, source: str) -> dict | None:
         "goal": goal,
         "resolved": row.get("resolved"),
         "source": source,
-        "path_hints": paths[:32],
+        "path_hints": paths[:8],
         "n_messages": len(messages) if isinstance(messages, list) else None,
     }
 
 
 def _from_swe_smith_tool(row: dict, source: str) -> dict | None:
     # Avoid json.dumps(entire row) — huge RAM/CPU vs transformers' token cost.
-    goal = str(row.get("problem_statement") or row.get("prompt") or "")[:500]
+    goal = str(row.get("problem_statement") or row.get("prompt") or "")[:240]
     bits = [goal]
     for key in ("instance_id", "repo", "base_commit"):
         if row.get(key):
             bits.append(str(row[key]))
-    # Prefer structured tool fields if present
+    # Prefer structured tool fields if present (cap for lang detect only).
     for key in ("messages", "trajectory", "conversations", "tools"):
         if key in row and row[key] is not None:
-            bits.append(_text_blob(row[key])[:8000])
+            bits.append(_text_blob(row[key])[:2000])
             break
     text = "\n".join(bits)
     paths = _paths_in(text)
@@ -149,7 +150,7 @@ def _from_swe_smith_tool(row: dict, source: str) -> dict | None:
         "goal": goal,
         "resolved": row.get("resolved"),
         "source": source,
-        "path_hints": paths[:16],
+        "path_hints": paths[:8],
     }
 
 

@@ -123,9 +123,9 @@ QUEUE = (
             "--lang",
             "python",
             "--limit",
-            "128",
+            "64",
         ],
-        "note": "No-op / partial if engine Ollama down",
+        "note": "num_predict=24 route/tool tags; no-op if engine Ollama down",
     },
     {
         "id": "eval_specialist_stubs",
@@ -335,6 +335,18 @@ def main() -> None:
     _log(f"daemon start days={args.days} deadline={state['deadline_iso']} queue_index={state.get('queue_index', 0)}")
 
     while time.time() < deadline:
+        # Refresh lean status file for agent ticks (few lines, not full logs).
+        try:
+            subprocess.run(
+                [PYTHON, str(ROOT / "scripts" / "status_lean.py")],
+                cwd=str(ROOT),
+                env=_env(),
+                timeout=15,
+                check=False,
+                capture_output=True,
+            )
+        except Exception:  # noqa: BLE001
+            pass
         _write_json(
             HEARTBEAT_PATH,
             {
@@ -343,6 +355,7 @@ def main() -> None:
                 "queue_index": state["queue_index"],
                 "cycles": state["cycles"],
                 "deadline_iso": state["deadline_iso"],
+                "status_lean": str(STATE_DIR / "status_lean.txt"),
             },
         )
         if STOP_PATH.is_file():

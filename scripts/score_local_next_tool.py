@@ -47,12 +47,17 @@ MODEL_ID = "Qwen/Qwen2.5-1.5B-Instruct"
 OUT = SSD / "results" / "local_next_tool_qwen25_1_5b.json"
 
 
+# Match nca_text.data.TEXT_CAP so the transformer baseline is not fed a
+# longer observation than the NCA hashed bag (fair + cheaper tokens).
+_OBS_CAP = 160
+
+
 def _prompt(goal: str, steps: list[tuple[str, str]]) -> str:
-    lines = [f"Goal: {goal or '(none)'}"]
+    lines = [f"Goal: {(goal or '(none)')[:_OBS_CAP]}"]
     if steps:
         lines.append("Recent tools, oldest first:")
-        for name, text in steps:
-            lines.append(f"- {name}: {text}")
+        for name, text in steps[-5:]:
+            lines.append(f"- {name}: {(text or '')[:_OBS_CAP]}")
     else:
         lines.append("Recent tools: none")
     lines.append("Next tool:")

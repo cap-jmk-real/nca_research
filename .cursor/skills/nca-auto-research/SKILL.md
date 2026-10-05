@@ -92,9 +92,10 @@ Stop iterating when `auto_research.py` reports **no failing gates** except docum
 
 See [efficiency.md](../../../docs/efficiency.md).
 
-- Supervision ticks: **12h**, ultra-short prompt; reply with a compact status only.
-- Do not re-read or restate long docs each tick — read `daemon/state.json` + `git status` first.
-- Distill/eval LMs: route/tool tags only (`num_predict` ≤ 48). Never ask teachers for essays.
+- Supervision ticks: **12h**. First action: `python scripts/status_lean.py`. Reply with that block only.
+- Do not re-read docs or dump `console.log` / `daemon.log` each tick.
+- Distill/eval LMs: route/tool tags only (`num_predict` ≤ **24**). Never ask teachers for essays.
+- LLM baselines: truncate obs to 160 chars (same as NCA `TEXT_CAP`).
 - TextNCA: classification only; sparse val (5k); do not increase K or sequence length without a gate win.
 - If NCA/specialists use more tokens/compute than a small transformer for worse metrics, prefer the cheaper baseline and log that in SI.
 

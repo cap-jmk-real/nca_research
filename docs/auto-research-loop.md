@@ -112,6 +112,14 @@ python scripts/score_local_next_tool.py   # Qwen2.5-1.5B baseline
 
 Cycle JSON: `/Volumes/Extreme SSD/nca_research/results/auto_research/latest.json`.
 
+## Efficiency (tokens + compute)
+
+Keep agent monitoring and LM calls thin — see [efficiency.md](efficiency.md).
+Supervise every **12h**: run `python scripts/status_lean.py`, reply with that
+block only. Distill/eval teachers answer with `ROUTE:` / `TOOL:` only
+(`num_predict` ≤ 24). LLM baselines share the NCA 160-char obs cap.
+TextNCA stays a classifier (not a generator).
+
 ## Commit cadence
 
 Push often on the working branch (`cursor/auto-research-klaut-1754` for the 3-day run):
