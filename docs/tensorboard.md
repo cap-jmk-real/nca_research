@@ -17,6 +17,7 @@ The script binds TensorBoard to `127.0.0.1`. If the Extreme SSD is not mounted, 
 | Run | Path | What it shows |
 | --- | --- | --- |
 | `train` | `tb/train` | The 1d next-tool run. Live rows come from `results/logs/text_nca_1d.jsonl`. |
+| `train_fineenvs` | `tb/train_fineenvs` | The Hermes-prior run that mixes FineEnvs common-task rows. Live rows come from `results/logs/text_nca_1d_fineenvs.jsonl`. Extra tags: `fineenvs/top1_nca`, `fineenvs/top1_flat`. |
 | `train_grid` | `tb/train_grid` | The earlier grid-run summary in `results/text_nca_metrics.json` (epoch tail, not the full curve). |
 | `benchmarks` | `tb/benchmarks` | One scalar per benchmark. Empty until scores are logged. |
 

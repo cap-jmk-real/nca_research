@@ -50,6 +50,24 @@ if [[ ! -f "$FOLLOW_PID" ]]; then
   echo "following train jsonl (pid $(cat "$FOLLOW_PID"))"
 fi
 
+FINE_PID="$LOGDIR/follow_fineenvs.pid"
+FINE_LOG="$RESULTS/logs/text_nca_1d_fineenvs.jsonl"
+if [[ -f "$FINE_PID" ]]; then
+  old="$(cat "$FINE_PID" 2>/dev/null || true)"
+  if [[ -n "${old}" ]] && kill -0 "$old" 2>/dev/null; then
+    echo "fineenvs follower already running (pid $old)"
+  else
+    rm -f "$FINE_PID"
+  fi
+fi
+if [[ ! -f "$FINE_PID" ]]; then
+  mkdir -p "$LOGDIR/train_fineenvs"
+  nohup "$PY" -m nca_text.tb_log --follow --run fineenvs --jsonl "$FINE_LOG" \
+    >>"$RESULTS/logs/tensorboard_follow_fineenvs.log" 2>&1 &
+  echo $! >"$FINE_PID"
+  echo "following fineenvs jsonl (pid $(cat "$FINE_PID"))"
+fi
+
 HOST="127.0.0.1"
 PORT="${TB_PORT:-6006}"
 echo "TensorBoard logdir: $LOGDIR"

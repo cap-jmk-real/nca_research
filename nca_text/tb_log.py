@@ -22,6 +22,7 @@ RESULTS = VOLUME / "nca_research" / "results"
 TB_ROOT = RESULTS / "tb"
 PACKAGES = VOLUME / "nca_research" / "tb-packages"
 TRAIN_DIR = TB_ROOT / "train"
+FINEENVS_DIR = TB_ROOT / "train_fineenvs"
 GRID_DIR = TB_ROOT / "train_grid"
 BENCH_DIR = TB_ROOT / "benchmarks"
 
@@ -152,6 +153,8 @@ def scalars_from_train_row(row: dict, batch: int | None = None) -> dict[str, flo
     put("val/top1_nca", "val_top1_nca")
     put("val/top1_flat", "val_top1_flat")
     put("val/top1_always_terminal", "val_top1_always_terminal")
+    put("fineenvs/top1_nca", "fineenvs_val_top1_nca")
+    put("fineenvs/top1_flat", "fineenvs_val_top1_flat")
     put("perf/ms_per_step", "ms_per_step")
     put("perf/samples_per_sec", "samples_per_sec")
     put("lr", "lr")
@@ -381,18 +384,27 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--jsonl", type=Path, default=RESULTS / "logs" / "text_nca_1d.jsonl")
     parser.add_argument("--batch", type=int, default=0)
     parser.add_argument("--poll", type=float, default=5.0)
+    parser.add_argument(
+        "--run",
+        choices=("train", "fineenvs"),
+        default="train",
+        help="which event directory receives --follow rows",
+    )
     args = parser.parse_args(argv)
     try:
         require_ssd()
     except TensorBoardPathError as exc:
         raise SystemExit(str(exc)) from exc
     batch = args.batch or detect_batch() or 1024
+    run_dir = FINEENVS_DIR if args.run == "fineenvs" else TRAIN_DIR
+    if args.run == "fineenvs" and args.jsonl == RESULTS / "logs" / "text_nca_1d.jsonl":
+        args.jsonl = RESULTS / "logs" / "text_nca_1d_fineenvs.jsonl"
     if args.backfill or not args.follow:
         counts = backfill_results(batch=batch)
         print(json.dumps({"logdir": str(TB_ROOT), "backfill": counts, "batch": batch}), flush=True)
     if args.follow:
-        print(f"following {args.jsonl}", flush=True)
-        follow_jsonl(args.jsonl, batch=batch, poll=args.poll, run_dir=TRAIN_DIR)
+        print(f"following {args.jsonl} -> {run_dir}", flush=True)
+        follow_jsonl(args.jsonl, batch=batch, poll=args.poll, run_dir=run_dir)
 
 
 if __name__ == "__main__":

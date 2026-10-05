@@ -128,8 +128,10 @@ def _sample_batch(rng: np.random.Generator, batch: int, sampler) -> np.ndarray:
         if take.size == 0:
             continue
         pool_base, pool_fine = base[c], fine[c]
-        if pool_fine.size == 0 or pool_base.size == 0:
-            pool = pool_fine if pool_fine.size else pool_base
+        if pool_fine.size < 64 or pool_base.size == 0:
+            pool = pool_fine if pool_base.size == 0 else (
+                np.concatenate((pool_base, pool_fine)) if pool_fine.size else pool_base
+            )
             idx[take] = rng.choice(pool, size=take.size, replace=True)
             continue
         from_fine = rng.random(take.size) < FINEENVS_WITHIN_CLASS
@@ -351,8 +353,10 @@ def _load_ckpt(path):
     return torch.load(path, map_location="cpu", weights_only=False)
 
 
-def _resume_ckpt():
+def _resume_ckpt(fineenvs: bool = False):
     """Prefer this run's checkpoint, then the step-12496 snapshot, then the old last file."""
+    if fineenvs:
+        return _load_ckpt(LAST_CKPT)
     for path in (LAST_CKPT, SEED_CKPT, ROOT / "checkpoints" / "text_nca_1d_last.pt"):
         ckpt = _load_ckpt(path)
         if ckpt:
@@ -377,12 +381,12 @@ def _score_pair(nca, flat, obs, y, batch: int) -> dict:
     }
 
 
-def _tb_log_train(row: dict, batch: int) -> None:
+def _tb_log_train(row: dict, batch: int, run_dir=None) -> None:
     """Best-effort TensorBoard write. Never interrupts training."""
     try:
         from nca_text.tb_log import log_train_row
 
-        log_train_row(row, batch=batch)
+        log_train_row(row, batch=batch, run_dir=run_dir)
     except Exception as exc:  # noqa: BLE001 — board logging is optional
         print(f"tensorboard: {exc}", flush=True)
 
@@ -414,15 +418,25 @@ def main() -> None:
     terminal_index = vocab.get("terminal")
     sampler = _fineenvs_sampler(train_y, names, packed.get("train_fineenvs"))
     side = load_side_eval("fineenvs_common_val.jsonl", vocab)
+    tb_run = None
     if sampler is None:
         print("batch sampler: uniform", flush=True)
     else:
+        global LAST_CKPT, BEST_CKPT, LOG_PATH, METRICS_PATH
+        LAST_CKPT = ROOT / "checkpoints" / "text_nca_1d_fineenvs_last.pt"
+        BEST_CKPT = ROOT / "checkpoints" / "text_nca_1d_fineenvs_best.pt"
+        LOG_PATH = ROOT / "logs" / "text_nca_1d_fineenvs.jsonl"
+        METRICS_PATH = ROOT / "text_nca_1d_fineenvs_metrics.json"
+        from nca_text.tb_log import FINEENVS_DIR
+
+        tb_run = FINEENVS_DIR
         n_fine = int(np.asarray(packed["train_fineenvs"]).sum())
         print(
             f"batch sampler: hermes prior, {FINEENVS_WITHIN_CLASS:.0%} of each class from "
             f"{n_fine} fineenvs rows",
             flush=True,
         )
+        print(f"artifacts: {LOG_PATH.name}", flush=True)
     print(f"loaded {train_note}", flush=True)
     print(f"loaded {val_note}", flush=True)
     if len(train_y) < 4 or len(vocab) < 2:
@@ -476,10 +490,11 @@ def main() -> None:
             bench=None, history_path=LOG_PATH, step=int(ckpt.get("step") or 0),
             best=ckpt.get("best") or {}, resumed=False, eval_only=True,
             train_sessions_n=train_sessions_n, val_sessions_n=val_sessions_n,
+            tb_run=tb_run,
         )
         return
 
-    resume_ckpt = None if args.fresh else _resume_ckpt()
+    resume_ckpt = None if args.fresh else _resume_ckpt(fineenvs=sampler is not None)
     can_resume = bool(
         resume_ckpt
         and resume_ckpt.get("config") == config
@@ -534,10 +549,11 @@ def main() -> None:
     held["rng"] = rng
     start_step = 0
     best = {"val_top1_nca": -1.0, "step": 0}
+    base_lr = LR
 
     resumed = False
     if not args.fresh:
-        ckpt = None if args.fresh else _resume_ckpt()
+        ckpt = None if args.fresh else _resume_ckpt(fineenvs=sampler is not None)
         if ckpt and ckpt.get("config") == config and int(ckpt.get("step") or 0) < TOTAL_STEPS:
             nca.load_state_dict(_eager_state(ckpt["nca"]))
             flat.load_state_dict(_eager_state(ckpt["flat"]))
@@ -559,6 +575,18 @@ def main() -> None:
             batch = int(ckpt.get("batch") or batch)
             resumed = True
             print(f"resumed from step {start_step}", flush=True)
+    if sampler is not None and not resumed:
+        init = _load_ckpt(ROOT / "checkpoints" / "text_nca_1d_mix13_best.pt")
+        if init and init.get("config") == config:
+            nca.load_state_dict(_eager_state(init["nca"]))
+            flat.load_state_dict(_eager_state(init["flat"]))
+            print(
+                f"initialized weights from mix13 best step {int(init.get('step') or 0)}; "
+                f"fresh AdamW at lr 1e-4",
+                flush=True,
+            )
+    if sampler is not None:
+        base_lr = 1e-4
 
     held.update({"nca": nca, "flat": flat, "nca_opt": nca_opt, "flat_opt": flat_opt, "batch": batch, "best": best, "device": device.type})
 
@@ -598,7 +626,7 @@ def main() -> None:
     print(f"training steps {start_step + 1}..{TOTAL_STEPS} batch={batch} device={device.type}", flush=True)
     for step in range(start_step + 1, TOTAL_STEPS + 1):
         held["model_step"] = step
-        lr = _lr(step, TOTAL_STEPS, LR)
+        lr = _lr(step, TOTAL_STEPS, base_lr)
         _apply_lr(nca_opt, lr)
         _apply_lr(flat_opt, lr)
         draw = min(batch, n)
@@ -640,7 +668,7 @@ def main() -> None:
             log_f.write(json.dumps(row) + "\n")
             log_f.flush()
             print(json.dumps(row), flush=True)
-            _tb_log_train(row, batch)
+            _tb_log_train(row, batch, run_dir=tb_run)
             if nca_acc == nca_acc and nca_acc >= best["val_top1_nca"]:
                 best = {"val_top1_nca": nca_acc, "val_top1_flat": flat_acc, "step": step}
                 held["best"] = best
@@ -652,7 +680,11 @@ def main() -> None:
 
         if step % CKPT_EVERY == 0 or step == TOTAL_STEPS:
             save(step)
-            periodic = ROOT / "checkpoints" / f"text_nca_1d_mix13_step{step:06d}.pt"
+            periodic = ROOT / "checkpoints" / (
+                f"text_nca_1d_fineenvs_step{step:06d}.pt"
+                if sampler is not None
+                else f"text_nca_1d_mix13_step{step:06d}.pt"
+            )
             save(step, periodic)
 
     log_f.close()
@@ -662,6 +694,7 @@ def main() -> None:
         bench=bench, history_path=LOG_PATH, step=TOTAL_STEPS, best=held["best"],
         resumed=resumed, eval_only=False,
         train_sessions_n=train_sessions_n, val_sessions_n=val_sessions_n,
+        tb_run=tb_run,
     )
 
 
@@ -669,7 +702,7 @@ def _eval_and_write(
     nca, flat, device, batch, train_obs, train_y, val_obs, val_y, names, vocab,
     terminal_index, train_kept, val_kept, train_note, val_note, config,
     bench, history_path, step, best, resumed, eval_only,
-    train_sessions_n=None, val_sessions_n=None,
+    train_sessions_n=None, val_sessions_n=None, tb_run=None,
 ) -> None:
     local, local_note = load_local_test()
     test_obs, test_y, test_kept = build_trace_obs(local, vocab)
@@ -755,6 +788,7 @@ def _eval_and_write(
                 "val_top1_always_terminal": final_val.get("always_terminal"),
             },
             int(batch),
+            run_dir=tb_run,
         )
 
 
