@@ -47,3 +47,5 @@ If a cellular / specialist system loses to a flat or small transformer baseline 
 ## Release
 
 HF top-4 + quant ladder: [huggingface-distribution.md](huggingface-distribution.md), [paper-release-plan.md](paper-release-plan.md).
+
+Worker ops (TCC/SSD/DNS): [mac-worker-prep.md](mac-worker-prep.md).
