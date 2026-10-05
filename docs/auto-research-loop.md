@@ -105,24 +105,21 @@ flowchart TD
 ### Commands (M1 + SSD)
 
 ```bash
-export NCA_DATA_ROOT="/Volumes/Extreme SSD/nca_research/results"
-export TMPDIR="/Volumes/Extreme SSD/nca_research/results/tmp"
+source scripts/env.sh
+./scripts/check_setup.sh
+./scripts/start_auto_research.sh --with-compile
 
-# 1) Score gates + suggest hypotheses
+# Manual cycle (if not using the daemon)
 python scripts/auto_research.py --klaut-search
-
-# 2) Optional deep read (slow)
-python scripts/auto_research.py --klaut-report --topic "tool calling distillation 9B"
-
-# 3) Train (example)
-python -m nca_text.hypotheses --steps 8000 --only long_range
-
-# 4) Benchmarks (needs best checkpoint on SSD)
+python -m nca_text.hypotheses --steps 150000 --only long_range baseline flat
 python scripts/run_text_benchmarks.py
 python scripts/score_local_next_tool.py   # Qwen2.5-1.5B baseline
 
-# 5) Commit cycle artifact path from auto_research output
+# Push from Terminal after gh auth (HTTPS)
+./scripts/push_branch.sh
 ```
+
+First-time Mac: `./install.sh --deps` — see [mac-worker-prep.md](mac-worker-prep.md).
 
 Cycle JSON: `/Volumes/Extreme SSD/nca_research/results/auto_research/latest.json`.
 

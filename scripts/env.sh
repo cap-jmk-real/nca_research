@@ -44,7 +44,9 @@ export NCA_PYTHON="${NCA_PYTHON:-/opt/homebrew/bin/python3.14}"
 
 # Prefer repo checkout under ~/code (TCC-safe) when present.
 if [[ -d "$HOME/code/nca_research/.git" && "$NCA_REPO" == *"/Documents/"* ]]; then
-  echo "env.sh: note — prefer worker-dir ~/code/nca_research (TCC); current=$NCA_REPO" >&2
+  if [[ "${1:-}" != "-q" && "${1:-}" != "--quiet" ]]; then
+    echo "env.sh: note — prefer worker-dir ~/code/nca_research (TCC); current=$NCA_REPO" >&2
+  fi
 fi
 
 if [[ "${1:-}" == "-q" || "${1:-}" == "--quiet" ]]; then
