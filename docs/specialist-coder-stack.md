@@ -56,6 +56,12 @@ Sources already staged ([agent-coding-datasets.md](agent-coding-datasets.md)):
 | R2E-Gym SFT | `datasets/coding/r2e-gym-sft` | editor + search |
 | Hermes curated / extra | `datasets/curated`, `datasets/extra` | shell + mixed tools |
 
+**Note (2026-10-05):** First compile from SWE-smith / OpenHands is **Python-heavy**
+(thousands of rows). TypeScript hits are rare in those dumps — expect to add
+TS-specific Hub sources (e.g. JS/TS SWE forks, internal `tsc` repair traces)
+before claiming a TypeScript specialist. Shell comes from terminal-tagged Hermes
+and OpenHands `execute_bash` in a later `--with-shell` pass.
+
 Compiler: `scripts/compile_specialist_datasets.py` writes language-tagged jsonl under:
 
 `/Volumes/Extreme SSD/nca_research/datasets/specialists/{python,typescript,shell,orchestrator}/`
