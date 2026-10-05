@@ -88,6 +88,16 @@ Cache: `/Volumes/Extreme SSD/nca_research/results/cache/klaut/`.
 
 Stop iterating when `auto_research.py` reports **no failing gates** except documented blockers (τ2/AppWorld install). Then add **qwen3.5:9b** as baseline and tighten gates per [auto-research-loop.md](../../../docs/auto-research-loop.md).
 
+## Minimize tokens (agent + algorithms)
+
+See [efficiency.md](../../../docs/efficiency.md).
+
+- Supervision ticks: **12h**, ultra-short prompt; reply with a compact status only.
+- Do not re-read or restate long docs each tick — read `daemon/state.json` + `git status` first.
+- Distill/eval LMs: route/tool tags only (`num_predict` ≤ 48). Never ask teachers for essays.
+- TextNCA: classification only; sparse val (5k); do not increase K or sequence length without a gate win.
+- If NCA/specialists use more tokens/compute than a small transformer for worse metrics, prefer the cheaper baseline and log that in SI.
+
 ## Do not
 
 - Skip the flat baseline when claiming cellular binding helps.

@@ -55,7 +55,9 @@ WEIGHT_DECAY = 1e-2
 # budget; Sudoku/iterative-reasoning literature: short runs understate capacity).
 DEFAULT_STEPS = 150_000
 SMOKE_STEPS = 8_000
-VAL_EVERY = 1000
+# Sparse val: full curated pass is the main cost on long runs; 5k keeps signal
+# without transformer-style "eval every step" waste.
+VAL_EVERY = 5_000
 BATCH = 512
 CARRY_WINDOW = 4
 CARRY_SESSIONS = 128

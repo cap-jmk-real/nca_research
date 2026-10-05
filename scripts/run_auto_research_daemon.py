@@ -149,11 +149,14 @@ def _now() -> str:
 
 
 def _log(msg: str) -> None:
+    """Append to SSD log; print only milestones (cut agent/terminal noise)."""
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     line = f"{_now()} {msg}"
-    print(line, flush=True)
     with LOG_PATH.open("a") as handle:
         handle.write(line + "\n")
+    # Print only starts/ends/errors — low token surface for monitors.
+    if msg.startswith(("daemon ", "RUN ", "EXIT ", "auto_commit", "STOP", "engine probe")):
+        print(line, flush=True)
 
 
 def _write_json(path: Path, payload: dict) -> None:

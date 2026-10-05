@@ -31,7 +31,8 @@ def _ollama_chat(prompt: str, model: str, timeout: float = 120.0) -> str:
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
         "stream": False,
-        "options": {"temperature": 0.2, "num_predict": 512},
+        # Tight cap: route/tool tag only — avoid burning teacher tokens on prose.
+        "options": {"temperature": 0.0, "num_predict": 48},
     }
     req = urllib.request.Request(
         f"{OLLAMA.rstrip('/')}/api/chat",
@@ -45,14 +46,19 @@ def _ollama_chat(prompt: str, model: str, timeout: float = 120.0) -> str:
 
 
 def _prompt(lang: str, row: dict) -> str:
-    paths = ", ".join(row.get("path_hints") or [])
+    paths = ",".join((row.get("path_hints") or [])[:6])
+    goal = (row.get("goal") or "")[:240]
+    if row.get("specialist") == "orchestrator" or lang == "orchestrator":
+        return (
+            f"Route only. langs=python|typescript|shell\n"
+            f"goal:{goal}\npaths:{paths}\n"
+            f"Reply: ROUTE:<lang>\n"
+        )
     return (
-        f"You are a {lang} coding specialist (≤9B teacher distillation target).\n"
-        f"Goal: {row.get('goal') or '(none)'}\n"
-        f"Paths: {paths or '(none)'}\n"
-        f"Write a short plan (3 bullets) then the next tool name from: "
-        f"terminal, read_file, write_file, patch, execute_code, respond.\n"
-        f"Format:\nPLAN:\n- ...\nTOOL: <name>\n"
+        f"{lang} next tool only.\n"
+        f"goal:{goal}\npaths:{paths}\n"
+        f"tools=terminal|read_file|write_file|patch|execute_code|respond\n"
+        f"Reply: TOOL:<name>\n"
     )
 
 

@@ -123,7 +123,18 @@ def _from_openhands_messages(row: dict, source: str) -> dict | None:
 
 
 def _from_swe_smith_tool(row: dict, source: str) -> dict | None:
-    text = _text_blob(row)
+    # Avoid json.dumps(entire row) — huge RAM/CPU vs transformers' token cost.
+    goal = str(row.get("problem_statement") or row.get("prompt") or "")[:500]
+    bits = [goal]
+    for key in ("instance_id", "repo", "base_commit"):
+        if row.get(key):
+            bits.append(str(row[key]))
+    # Prefer structured tool fields if present
+    for key in ("messages", "trajectory", "conversations", "tools"):
+        if key in row and row[key] is not None:
+            bits.append(_text_blob(row[key])[:8000])
+            break
+    text = "\n".join(bits)
     paths = _paths_in(text)
     scores = _lang_scores(text, paths)
     lang = _route(scores)
@@ -135,10 +146,10 @@ def _from_swe_smith_tool(row: dict, source: str) -> dict | None:
         "session_id": str(row.get("instance_id") or row.get("id") or ""),
         "lang_score": scores[lang],
         "lang_raw": scores["raw"],
-        "goal": str(row.get("problem_statement") or row.get("prompt") or "")[:500],
+        "goal": goal,
         "resolved": row.get("resolved"),
         "source": source,
-        "path_hints": paths[:32],
+        "path_hints": paths[:16],
     }
 
 
