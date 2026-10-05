@@ -45,19 +45,41 @@ def _load_exps() -> list[dict]:
     return rows
 
 
+def _iter_variants(exp: dict, m: dict):
+    """Normalize SI shapes: list[{variant,...}] or dict[name -> metrics]."""
+    variants = exp.get("variants") or m.get("variants") or []
+    always_default = m.get("val_always_terminal")
+    if isinstance(variants, dict):
+        for name, v in variants.items():
+            if not isinstance(v, dict):
+                continue
+            yield {
+                "variant": str(name),
+                "val_top1": v.get("val_top1", v.get("best_val_top1")),
+                "val_top1_always_terminal": v.get(
+                    "val_top1_always_terminal", always_default
+                ),
+                "checkpoint": v.get("checkpoint") or v.get("out"),
+                "steps": v.get("steps") or v.get("best_step"),
+            }
+        return
+    if isinstance(variants, list):
+        for v in variants:
+            if isinstance(v, dict):
+                yield v
+
+
 def _metrics(exp: dict) -> dict:
     m = exp.get("metrics") or exp.get("results") or {}
-    variants = exp.get("variants") or m.get("variants") or []
     best_nca = None
     best_flat = None
-    for v in variants if isinstance(variants, list) else []:
-        if not isinstance(v, dict):
-            continue
+    always_default = m.get("val_always_terminal")
+    for v in _iter_variants(exp, m):
         name = str(v.get("variant") or "")
-        top1 = v.get("val_top1")
+        top1 = v.get("val_top1", v.get("best_val_top1"))
         if top1 is None:
             continue
-        always = v.get("val_top1_always_terminal")
+        always = v.get("val_top1_always_terminal", always_default)
         row = {
             "exp_id": exp.get("id") or exp.get("exp_id"),
             "variant": name,
@@ -66,12 +88,23 @@ def _metrics(exp: dict) -> dict:
             "path": v.get("checkpoint") or v.get("out") or exp.get("artifact"),
             "steps": v.get("steps") or exp.get("steps"),
         }
+        # Prefer non-flat cellular variants for slot A; flat alone for slot B.
         if name in {"flat", "baseline_flat"}:
             if best_flat is None or row["val_top1"] > best_flat["val_top1"]:
                 best_flat = row
         else:
             if best_nca is None or row["val_top1"] > best_nca["val_top1"]:
                 best_nca = row
+    # Single-model EXPs (mix13 / FineEnvs) without variants block.
+    if best_nca is None and m.get("best_val_top1") is not None:
+        best_nca = {
+            "exp_id": exp.get("id"),
+            "variant": "textnca",
+            "val_top1": float(m["best_val_top1"]),
+            "always_terminal": float(always_default) if always_default is not None else None,
+            "path": exp.get("artifact"),
+            "steps": (exp.get("training") or {}).get("steps"),
+        }
     return {"nca": best_nca, "flat": best_flat, "raw": m}
 
 
