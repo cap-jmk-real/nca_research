@@ -86,6 +86,36 @@
         "H6"
       ],
       "path": "paper/si/experiments/EXP-20261006-002.json"
+    },
+    {
+      "id": "EXP-20261006-003",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-06",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261006-003.json"
+    },
+    {
+      "id": "EXP-20261006-004",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-06",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261006-004.json"
     }
   ]
 }

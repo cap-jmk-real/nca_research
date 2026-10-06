@@ -1,6 +1,6 @@
 # Results master (paper + SI)
 
-Updated from 7 experiment records.
+Updated from 9 experiment records.
 
 See generated tables:
 

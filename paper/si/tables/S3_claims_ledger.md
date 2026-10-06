@@ -9,3 +9,5 @@
 | `EXP-20261005-003` | preliminary | Language tagging recovers a large Python specialist corpus from SWE-smith/OpenHands | TypeScript yield from SWE-heavy dumps is tiny; need dedicated TS sources |
 | `EXP-20261006-001` | primary | Cellular baseline beats flat on curated val (0.6260 vs 0.6249) at 150000 steps | — |
 | `EXP-20261006-002` | primary | Cellular baseline beats flat on curated val (0.6260 vs 0.6249) at 150000 steps | — |
+| `EXP-20261006-003` | primary | — | — |
+| `EXP-20261006-004` | primary | — | — |
