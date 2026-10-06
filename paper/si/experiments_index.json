@@ -45,6 +45,47 @@
         "H_long_range"
       ],
       "path": "paper/si/experiments/EXP-20261005-002.json"
+    },
+    {
+      "id": "EXP-20261005-003",
+      "title": "Specialist dataset compile (python + typescript) from staged coding dumps",
+      "status": "preliminary",
+      "date": "2026-10-05",
+      "hypothesis_ids": [
+        "H31",
+        "H32"
+      ],
+      "path": "paper/si/experiments/EXP-20261005-003.json"
+    },
+    {
+      "id": "EXP-20261006-001",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-06",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261006-001.json"
+    },
+    {
+      "id": "EXP-20261006-002",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-06",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261006-002.json"
     }
   ]
 }
