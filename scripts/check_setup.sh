@@ -97,6 +97,11 @@ fi
 if pgrep -fl 'gmx|mdrun' >/dev/null 2>&1; then
   warn "gmx/mdrun running — do not start NCA train/compile on 16GB until it finishes"
 fi
+if [[ -f "$HOME/Library/LaunchAgents/com.nca.autoresearch.resume.plist" ]]; then
+  ok "reboot resume agent installed"
+else
+  warn "reboot resume agent not installed — ./scripts/resume_after_reboot.sh install"
+fi
 
 # Lean status if daemon exists
 if [[ -f "$ROOT/scripts/status_lean.py" ]]; then

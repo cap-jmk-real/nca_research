@@ -31,6 +31,11 @@ source scripts/env.sh
 # Start / resume daemon ONLY (memory-guarded on 16GB)
 ./scripts/start_auto_research.sh
 
+# After reboot: wait for the Extreme SSD, then resume the current mission
+# (caffeinate + SSD outputs). Installs a login agent; no-op if already running.
+# Launchd cannot read ~/Documents, so install mirrors the repo to ~/code.
+./scripts/resume_after_reboot.sh install
+
 # Compile datasets separately when RAM is free — never stack with 150k train:
 # ./scripts/start_auto_research.sh --with-compile
 
