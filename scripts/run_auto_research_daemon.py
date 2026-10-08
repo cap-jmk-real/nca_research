@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""3-day auto-research daemon for nca_research.
+"""Auto-research daemon for nca_research.
 
 Runs on the M1 (MPS training). When engine (192.168.10.29) is reachable,
 offloads Ollama/Klaut/LLM baseline scoring. State + logs stay on the SSD.
 
-Stop when wall clock passes --days, or all non-blocked gates pass, or
-TOUCH_STOP file appears.
+Stop when all non-blocked gates pass, or the STOP file appears.
+A stored deadline is status display only and does not end the loop.
 """
 
 from __future__ import annotations
@@ -326,7 +326,8 @@ def main() -> None:
 
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     state = _load_state()
-    # Preserve an existing mission deadline on restart (supervision ticks).
+    # Deadline fields are for status display. They must not end the loop
+    # while gates are still failing, including after a restart.
     if state.get("deadline_unix") and float(state["deadline_unix"]) > time.time():
         deadline = float(state["deadline_unix"])
     else:
@@ -340,7 +341,8 @@ def main() -> None:
         f"queue_index={state.get('queue_index', 0)} data_root={SSD} ollama={OLLAMA}"
     )
 
-    while time.time() < deadline:
+    reason = "running"
+    while True:
         # Refresh lean status file for agent ticks (few lines, not full logs).
         try:
             subprocess.run(
@@ -366,22 +368,17 @@ def main() -> None:
         )
         if STOP_PATH.is_file():
             _log("STOP file present; exiting")
+            reason = "stop"
             break
         if _gates_all_pass():
-            _log("all non-blocked gates pass; sleeping until deadline for rechecks")
-            _engine_jobs(state)
-            state["cycles"] += 1
-            _write_json(STATE_PATH, state)
-            if args.once:
-                break
-            time.sleep(max(args.sleep_between, 1800))
-            continue
+            _log("all non-blocked gates pass; exiting")
+            reason = "gates_pass"
+            break
 
         # Engine offload attempt each cycle
         _engine_jobs(state)
 
         if state["queue_index"] >= len(QUEUE):
-            # Restart scoreboard + short ablations until deadline
             state["queue_index"] = 0
             state["rollovers"] = int(state.get("rollovers") or 0) + 1
             _log(f"queue rollover #{state['rollovers']}")
@@ -427,11 +424,12 @@ def main() -> None:
             _auto_commit(f"chore(auto): {item['id']} queue item complete")
 
         if args.once:
+            reason = "once"
             break
         time.sleep(args.sleep_between)
 
     state["finished_at"] = _now()
-    state["reason"] = "deadline" if time.time() >= deadline else "stop_or_once"
+    state["reason"] = reason
     _write_json(STATE_PATH, state)
     _log(f"daemon end reason={state['reason']}")
 

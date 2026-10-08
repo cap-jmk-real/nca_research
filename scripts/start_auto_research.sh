@@ -69,18 +69,9 @@ mem_guard() {
 }
 
 if [[ -z "$DAYS" ]]; then
-  DAYS="$("$NCA_PYTHON" - <<'PY'
-import json, time
-from pathlib import Path
-p = Path("/Volumes/Extreme SSD/nca_research/results/auto_research/daemon/state.json")
-if p.is_file():
-    s = json.loads(p.read_text())
-    left = float(s.get("deadline_unix") or 0) - time.time()
-    print(max(0.05, left / 86400) if left > 0 else 3.0)
-else:
-    print(3.0)
-PY
-)"
+  # Deadline in state.json is display-only. Do not shrink --days to the
+  # leftover fraction of a stored deadline; that used to end the queue.
+  DAYS="3"
 fi
 
 command -v tmux >/dev/null || { echo "tmux required"; exit 1; }
@@ -113,7 +104,7 @@ if command -v caffeinate >/dev/null; then
   start_sess "nca-caffeine" "caffeinate -im"
 fi
 
-# Daemon (preserves deadline when state.json still valid)
+# Daemon. --days is a display horizon; the loop continues after it.
 DAEMON_CMD="source '$ROOT/scripts/env.sh' --quiet && export OMP_NUM_THREADS=$OMP_NUM_THREADS MKL_NUM_THREADS=$MKL_NUM_THREADS && $NCA_PYTHON -u scripts/run_auto_research_daemon.py --days $DAYS --sleep-between 180 2>&1 | tee -a '$NCA_DATA_ROOT/auto_research/daemon/console.log'"
 start_sess "nca-daemon" "$DAEMON_CMD"
 

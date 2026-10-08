@@ -136,20 +136,13 @@ if [[ ! -f "$STATE" ]]; then
   exit 0
 fi
 
-deadline_state=0
-python3 - "$STATE" <<'PY' || deadline_state=$?
-import json, sys, time
+# deadline_unix is display-only. A passed deadline must not block resume.
+if ! python3 - "$STATE" <<'PY'
+import json, sys
 from pathlib import Path
-state = json.loads(Path(sys.argv[1]).read_text())
-deadline = float(state.get("deadline_unix") or 0)
-if deadline and deadline <= time.time():
-    raise SystemExit(2)
+json.loads(Path(sys.argv[1]).read_text())
 PY
-if [[ "$deadline_state" -eq 2 ]]; then
-  log "mission deadline already passed; not resuming"
-  exit 0
-fi
-if [[ "$deadline_state" -ne 0 ]]; then
+then
   log "could not read daemon state"
   exit 0
 fi
