@@ -23,17 +23,19 @@ Read first:
 - [docs/hypotheses-backlog.md](../../../docs/hypotheses-backlog.md)
 - [config/benchmark_gates.json](../../../config/benchmark_gates.json)
 
+## Objective
+
+The score that matters is accuracy the runnable harnesses record: curated val next-tool, local Hermes, BFCL AST, BFCL irrelevance, Nestful full sequence. A new hypothesis names one of those. τ2 airline, τ2 retail, and AppWorld stay blocked until those harnesses can run. Do not mark them passed and do not invent scores. Do not edit `config/benchmark_gates.json` unless the change is paired with real NCA and LLM numbers from the same harness. A curated-val gain alone is not success while another runnable harness is still failing or unscored.
+
 ## Each cycle (do in order)
 
 1. **Measure** — Run `python scripts/auto_research.py` from repo root.  
-   - Add `--klaut-search` when engine is reachable.  
-   - Add `--klaut-report --topic "..."` only when starting a **new architecture family** (slow).
+   - Add `--klaut-search` when engine is reachable. That runs 2–3 short queries for the top failing gate (`GAP_TO_QUERY` in `scripts/auto_research.py`). It does not start or stop training.  
+   - Add `--klaut-report` only when intake set `report_recommended` (a new architecture family with code).
 
-2. **Read output** — Open `results/auto_research/latest.json` on the SSD. Note `failing_gates`, `suggested_hypotheses`, `backlog_ranked`.
+2. **Read output** — Open `results/auto_research/latest.json` on the SSD. Note `failing_gates`, `harness_status`, `suggested_hypotheses`, `backlog_ranked`. The intake ledger is `results/auto_research/klaut_intake.json`.
 
-3. **Literature** — For the top failing gate, if Klaut was offline, run:  
-   `python scripts/klaut_gateway.py search "<GAP_TO_QUERY string from auto_research.py>"`  
-   Prefer papers with code; record DOI/arXiv in the hypothesis section you touch.
+3. **Literature** — Use the intake from step 1. Do not search only `next tool prediction imitation learning agent traces`. Reject a hit with no code that is not about text NCA or next-tool prediction; the ledger stores the query, hit id, and reason so the next tick does not report those papers as new. Add a backlog row only for a concrete code-backed change that is not already listed, names a runnable harness, and does not require stopping a 150k run. If nothing qualifies, leave `docs/hypotheses-backlog.md` unchanged.
 
 4. **Pick one hypothesis** — Choose the highest-priority id in `suggested_hypotheses` that is not yet measured. If empty, take priority 1 from [hypotheses-backlog.md](../../../docs/hypotheses-backlog.md).
 
@@ -104,3 +106,6 @@ See [efficiency.md](../../../docs/efficiency.md).
 - Skip the flat baseline when claiming cellular binding helps.
 - Treat Klaut synthesis narrative as measured fact — verify against retrieved paper records.
 - Run full 150k training without a cheaper 8k curated ablation when the hypothesis is architectural.
+- Treat a curated-val gain as success while local Hermes, BFCL, or Nestful is still failing or unscored.
+- Mark τ2 or AppWorld passed, or invent scores for them.
+- Edit `benchmark_gates.json` without paired NCA and LLM numbers from the same harness.

@@ -2,8 +2,8 @@
 """One cycle of the NCA auto-research loop.
 
 1. Load benchmark gates and current scoreboard (NCA metrics, local LLM baselines).
-2. Mark failing gates and map each failure to a Klaut search query.
-3. Optionally call Klaut (search or report) and write a cycle artifact.
+2. Mark failing gates and map the top failure to 2–3 short Klaut queries.
+3. Optionally call Klaut search (hypothesis intake) and write a cycle artifact.
 4. Emit prioritized hypothesis ids from docs/hypotheses-backlog.md.
 
 Run from repo root on a machine that can reach engine (192.168.10.29) for live
@@ -11,7 +11,9 @@ Klaut calls. Offline mode uses SSD cache only.
 
 Example:
   python scripts/auto_research.py --klaut-search
-  python scripts/auto_research.py --klaut-report --topic "tool calling distillation 9B"
+
+``--klaut-search`` writes the scoreboard and the SSD intake note. It does not
+start or stop training. A full Klaut report is not requested from this path.
 """
 
 from __future__ import annotations
@@ -109,16 +111,62 @@ def _parse_backlog() -> list[dict]:
     return rows
 
 
+# Two or three short queries per gate. The retired single string
+# "next tool prediction imitation learning agent traces" is not used:
+# it kept returning the same off-domain papers with no code.
 GAP_TO_QUERY = {
-    "local_hermes_top1_nca": "session memory tool routing neural network small model",
-    "curated_val_top1_nca": "next tool prediction imitation learning agent traces",
-    "bfcl_ast_accuracy": "Berkeley function calling leaderboard small model distillation",
-    "bfcl_irrelevance_accuracy": "tool calling abstention irrelevance detection",
-    "nestful_full_sequence_accuracy": "nested API tool call sequence modeling",
-    "tau2_airline_pass1": "tau-bench multi-turn tool use customer service",
-    "tau2_retail_pass1": "tau2 bench retail airline tool agent",
-    "appworld_dev_tgc": "AppWorld API program synthesis agent benchmark",
+    # Anchor every query to neural cellular automata. Unanchored "top-1" or
+    # "receptive field" searches come back as unrelated papers.
+    "curated_val_top1_nca": [
+        "text neural cellular automata",
+        "next-tool accuracy neural cellular automata",
+        "receptive field halting neural cellular automata",
+    ],
+    "local_hermes_top1_nca": [
+        "local Hermes next-tool accuracy",
+        "session tool-routing accuracy",
+    ],
+    "bfcl_ast_accuracy": [
+        "BFCL AST function-call accuracy",
+        "tool-call argument prediction",
+    ],
+    "bfcl_irrelevance_accuracy": [
+        "BFCL irrelevance abstention",
+        "tool-call abstain detection",
+    ],
+    "nestful_full_sequence_accuracy": [
+        "NESTFUL nested tool sequence",
+        "full-sequence tool-call accuracy",
+    ],
+    "tau2_airline_pass1": [
+        "tau2 airline tool agent",
+    ],
+    "tau2_retail_pass1": [
+        "tau2 retail tool agent",
+    ],
+    "appworld_dev_tgc": [
+        "AppWorld API agent benchmark",
+    ],
 }
+
+
+def queries_for(gate: str) -> list[str]:
+    """Short Klaut queries for one gate. At most three, each under 80 characters."""
+    raw = GAP_TO_QUERY.get(gate, [])
+    if isinstance(raw, str):
+        raw = [raw]
+    queries = [query.strip() for query in raw if isinstance(query, str) and query.strip()][:3]
+    if not queries:
+        queries = [
+            "text neural cellular automata",
+            "next-tool top-1 accuracy",
+        ]
+    for query in queries:
+        if len(query) > 80:
+            raise ValueError(f"Klaut query too long ({len(query)}): {query}")
+        if "imitation learning agent traces" in query:
+            raise ValueError(f"retired imitation-learning query: {query}")
+    return queries
 
 
 GAP_TO_HYPOTHESES = {
@@ -164,8 +212,16 @@ def _evaluate_gates(gates_cfg: dict, scores: dict, baselines: dict) -> list[dict
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--klaut-search", action="store_true", help="Run Klaut search for top failing gate")
-    parser.add_argument("--klaut-report", action="store_true", help="Run Klaut synthesis report (slow)")
+    parser.add_argument(
+        "--klaut-search",
+        action="store_true",
+        help="Search Klaut with 2–3 short queries for the top failing gate",
+    )
+    parser.add_argument(
+        "--klaut-report",
+        action="store_true",
+        help="Run a Klaut report only when intake found a new architecture family with code",
+    )
     parser.add_argument("--topic", default="", help="Override report topic")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
@@ -187,17 +243,39 @@ def main() -> None:
     if top_fail:
         suggested_h = GAP_TO_HYPOTHESES.get(top_fail, [])
 
+    import hypothesis_intake
+
+    harness = hypothesis_intake.harness_status(gate_results)
     klaut_payload = None
     if args.klaut_search and top_fail and not args.dry_run:
-        import klaut_gateway
-
-        query = GAP_TO_QUERY.get(top_fail, top_fail.replace("_", " "))
-        klaut_payload = {"type": "search", "query": query, "result": klaut_gateway.search_papers(query)}
+        klaut_payload = hypothesis_intake.run_intake(
+            gate=top_fail,
+            queries=queries_for(top_fail),
+            gate_results=gate_results,
+        )
+        klaut_payload["type"] = "search"
     if args.klaut_report and not args.dry_run:
-        import klaut_gateway
+        allowed = bool(klaut_payload and klaut_payload.get("report_recommended"))
+        if not allowed:
+            skipped = {
+                "type": "report",
+                "skipped": "no new architecture family with code",
+                "report_ran": False,
+            }
+            if klaut_payload is None:
+                klaut_payload = skipped
+            else:
+                klaut_payload["report"] = skipped
+        else:
+            import klaut_gateway
 
-        topic = args.topic or (GAP_TO_QUERY.get(top_fail or "", "neural cellular automata agent tools"))
-        klaut_payload = {"type": "report", "topic": topic, "result": klaut_gateway.create_report(topic)}
+            topic = args.topic or queries_for(top_fail or "")[0]
+            klaut_payload["report"] = {
+                "type": "report",
+                "topic": topic,
+                "result": klaut_gateway.create_report(topic),
+            }
+            klaut_payload["report_ran"] = True
 
     cycle = {
         "ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
@@ -210,7 +288,9 @@ def main() -> None:
         "blocked_gates": [b["gate"] for b in blocked],
         "passing_gates": [p["gate"] for p in passing],
         "top_fail": top_fail,
+        "queries": queries_for(top_fail) if top_fail else [],
         "suggested_hypotheses": suggested_h,
+        "harness_status": harness,
         "backlog_ranked": _parse_backlog()[:8],
         "distillation_cap_b": gates_cfg.get("distillation_teacher_max_params_b"),
         "klaut": klaut_payload,
@@ -221,7 +301,26 @@ def main() -> None:
     out_path.write_text(json.dumps(cycle, indent=2) + "\n")
     (OUT_DIR / "latest.json").write_text(json.dumps({"path": str(out_path), **cycle}, indent=2) + "\n")
 
-    print(json.dumps({k: cycle[k] for k in ("failing_gates", "blocked_gates", "passing_gates", "top_fail", "suggested_hypotheses")}, indent=2))
+    summary = {
+        k: cycle[k]
+        for k in (
+            "failing_gates",
+            "blocked_gates",
+            "passing_gates",
+            "top_fail",
+            "queries",
+            "suggested_hypotheses",
+        )
+    }
+    summary["harness_failing"] = [item["harness"] for item in harness["failing"]]
+    summary["harness_unscored"] = [item["harness"] for item in harness["unscored"]]
+    summary["harness_blocked"] = [item["harness"] for item in harness["blocked"]]
+    if klaut_payload:
+        summary["klaut_up"] = klaut_payload.get("klaut_up")
+        summary["hypothesis_added"] = klaut_payload.get("hypothesis_added")
+        summary["hits_preview"] = klaut_payload.get("hits_preview")
+        summary["intake_path"] = klaut_payload.get("intake_path")
+    print(json.dumps(summary, indent=2))
     print(f"wrote {out_path}", flush=True)
 
 

@@ -88,7 +88,17 @@ See [multi-harness-and-message-passing.md](multi-harness-and-message-passing.md)
 
 Synthesis uses **`qwen3.5:9b`** on engine — within the distillation cap, but used here for **literature**, not as NCA teacher weights.
 
-When the gateway is unreachable (e.g. cloud agent off-LAN), the client returns the newest cached search/report.
+When the gateway is unreachable (e.g. cloud agent off-LAN), the client returns the newest cached search/report. Hypothesis intake does not treat that fallback as the answer to a new query.
+
+### Hypothesis intake
+
+`python scripts/auto_research.py --klaut-search` is the daemon engine tick. For the top failing gate it runs two or three short queries from `GAP_TO_QUERY` in `scripts/auto_research.py` (text neural cellular automata, next-tool accuracy, receptive field / halting). Each query is anchored to neural cellular automata so a bare “top-1” or “receptive field” search cannot leave the domain. It does not search the old single imitation-learning string.
+
+The objective is the best accuracy the runnable harnesses record: curated val next-tool, local Hermes, BFCL AST, BFCL irrelevance, and Nestful full sequence. A curated-val gain alone is not success while another of those is failing or unscored. τ2 airline, τ2 retail, and AppWorld stay blocked. The tick does not mark them passed and does not invent scores. `config/benchmark_gates.json` changes only when the same harness has real NCA and LLM numbers.
+
+A hit is rejected when it has no code and does not bear on text NCA or next-tool prediction. The query, hit id, and reason go to `results/auto_research/klaut_intake.json` on the SSD. Ids already in that ledger are not reported as new. A backlog row is added only for a concrete code-backed change that is not already listed, names one runnable harness, and does not require stopping a 150k run. A full Klaut report is not requested unless a hit is a new architecture family with code.
+
+`--klaut-search` writes the scoreboard and that intake note. It does not start or stop training.
 
 ## Loop (one cycle)
 
@@ -96,7 +106,7 @@ When the gateway is unreachable (e.g. cloud agent off-LAN), the client returns t
 flowchart TD
   A[Measure scoreboard] --> B{Any gate failing?}
   B -->|no| Z[Stop or raise gates]
-  B -->|yes| C[Klaut search or report for top gap]
+  B -->|yes| C[2-3 Klaut searches for the top gap]
   C --> D[Pick hypothesis from backlog]
   D --> E[Implement + train ablation]
   E --> F[Eval curated val + local Hermes]
