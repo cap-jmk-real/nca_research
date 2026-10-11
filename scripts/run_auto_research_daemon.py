@@ -274,6 +274,44 @@ def _auto_commit(message: str) -> None:
         _log(f"auto_commit skipped: {exc}")
 
 
+def _latest_checkpoint() -> Path | None:
+    roots = (
+        SSD / "checkpoints",
+        SSD / "hypothesis_tests" / "checkpoints",
+    )
+    files: list[Path] = []
+    for root in roots:
+        if root.is_dir():
+            files.extend(
+                path
+                for path in root.glob("*_best.pt")
+                if path.is_file() and not path.name.startswith("._")
+            )
+    variants = [path for path in files if path.name not in {"baseline_best.pt", "flat_best.pt"}]
+    pool = variants or files
+    if not pool:
+        return None
+    return max(pool, key=lambda path: path.stat().st_mtime)
+
+
+def _run_harnesses() -> None:
+    """Score the newest checkpoint on every harness that can run.
+
+    τ2 and AppWorld stay blocked inside the scorer when those packages are
+    absent. The scorer does not invent those scores.
+    """
+    checkpoint = _latest_checkpoint()
+    if checkpoint is None:
+        _log("harness eval skipped: no checkpoint on the SSD")
+        return
+    script = ROOT / "scripts" / "run_text_benchmarks.py"
+    _log(f"harness eval {checkpoint}")
+    _run(
+        [PYTHON, str(script), "--checkpoint", str(checkpoint)],
+        timeout=6 * 3600,
+    )
+
+
 def _run(cmd: list[str], timeout: int | None = None) -> int:
     _log(f"RUN {' '.join(cmd)}")
     try:
@@ -408,8 +446,10 @@ def main() -> None:
         state["cycles"] += 1
         _write_json(STATE_PATH, state)
 
-        # Scoreboard + paper SI after each train
+        # Scoreboard, harnesses, and paper SI after each train.
+        # A curated-val number is not the result. The runnable harnesses are.
         if item["kind"].startswith("train") and code == 0:
+            _run_harnesses()
             _run([PYTHON, str(ROOT / "scripts" / "auto_research.py")], timeout=600)
             _run(
                 [

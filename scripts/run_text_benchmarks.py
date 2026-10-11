@@ -71,23 +71,28 @@ def _eager(state: dict) -> dict:
 
 
 class Policy:
-    def __init__(self) -> None:
+    def __init__(self, checkpoint: Path) -> None:
         import torch
 
-        ckpt = torch.load(CKPT, map_location="cpu", weights_only=False)
+        ckpt = torch.load(checkpoint, map_location="cpu", weights_only=False)
+        weights = ckpt.get("nca") or ckpt.get("state")
+        if not isinstance(weights, dict):
+            raise SystemExit(f"checkpoint has no nca or state weights: {checkpoint}")
         vocab = ckpt["vocab"]
         self.names = [name for name, _ in sorted(vocab.items(), key=lambda item: item[1])]
         self.vocab = {name: i for i, name in enumerate(self.names)}
-        config = ckpt["config"]
+        config = ckpt.get("config") or {}
         self.model = TextNCA(
-            int(config["obs_c"]),
-            int(config["hidden_c"]),
-            int(config["n_classes"]),
-            int(config["steps"]),
-            int(config["seq_len"]),
-            int(config["update_hidden"]),
+            int(config.get("obs_c") or (HASH_DIM + len(self.names) + 1)),
+            int(config.get("hidden_c") or 16),
+            int(config.get("n_classes") or len(self.names)),
+            int(config.get("steps") or 4),
+            int(config.get("seq_len") or SEQ_LEN),
+            int(config.get("update_hidden") or 96),
+            learned_halt=bool(config.get("learned_halt")),
+            long_range_goal=bool(config.get("long_range_goal")),
         )
-        self.model.load_state_dict(_eager(ckpt["nca"]))
+        self.model.load_state_dict(_eager(weights))
         self.device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
         self.model.to(self.device).eval()
         self.torch = torch
@@ -229,7 +234,14 @@ def _nestful_functions(row: dict) -> list[str]:
 
 
 def score_nestful(policy: Policy) -> dict:
-    import pyarrow.parquet as pq
+    try:
+        import pyarrow.parquet as pq
+    except ImportError:
+        return {
+            "n": None,
+            "full_sequence_accuracy": None,
+            "blocker": "pyarrow is not installed, so the Nestful parquet cannot be read.",
+        }
 
     path = _hf("ibm-research/nestful", "data/train-00000-of-00001.parquet")
     table = pq.read_table(path)
@@ -263,6 +275,27 @@ def score_nestful(policy: Policy) -> dict:
     return result
 
 
+def score_labeled(policy: Policy, examples: list, name: str) -> dict:
+    """Top-1 on a labeled trace split. This is curated val and local Hermes."""
+    from nca_text.data import build_trace_obs
+
+    obs, labels, kept = build_trace_obs(examples, policy.vocab)
+    n = int(labels.shape[0])
+    if n == 0:
+        return {"harness": name, "n": 0, "top1": None}
+    correct = 0
+    torch = policy.torch
+    obs_t = torch.from_numpy(obs)
+    y_t = torch.from_numpy(labels)
+    with torch.no_grad():
+        for start in range(0, n, 256):
+            pred = policy.model(obs_t[start : start + 256].to(policy.device)).argmax(dim=-1)
+            correct += int((pred.cpu() == y_t[start : start + 256]).sum().item())
+    top1 = correct / n
+    print(f"{name} n={n} top1={top1:.4f} kept={len(kept)}", flush=True)
+    return {"harness": name, "n": n, "top1": top1}
+
+
 def score_tau2() -> dict:
     try:
         import tau2  # noqa: F401
@@ -286,20 +319,33 @@ def score_appworld() -> dict:
 
 
 def main() -> None:
-    if not CKPT.is_file():
-        raise SystemExit(f"missing checkpoint {CKPT}")
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--checkpoint", type=Path, default=CKPT)
+    args = parser.parse_args()
+    checkpoint = args.checkpoint
+    if not checkpoint.is_file():
+        raise SystemExit(f"missing checkpoint {checkpoint}")
     (SSD / "tmp").mkdir(parents=True, exist_ok=True)
-    policy = Policy()
-    print(f"loaded step {policy.step} labels {policy.names}", flush=True)
+    policy = Policy(checkpoint)
+    print(f"loaded {checkpoint} step {policy.step} labels {policy.names}", flush=True)
+    from nca_text.data import load_curated_split, load_local_test
+
+    curated, curated_note = load_curated_split("val")
+    local, local_note = load_local_test()
     report = {
-        "checkpoint": str(CKPT),
+        "checkpoint": str(checkpoint),
         "step": policy.step,
         "labels": policy.names,
+        "curated_val": {**score_labeled(policy, curated, "curated_val"), "note": curated_note},
+        "local_hermes": {**score_labeled(policy, local, "local_hermes"), "note": local_note},
         "BFCL": score_bfcl(policy),
         "NESTFUL": score_nestful(policy),
         "tau2": score_tau2(),
         "AppWorld": score_appworld(),
     }
+    OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, indent=2) + "\n")
     print(f"wrote {OUT}", flush=True)
 

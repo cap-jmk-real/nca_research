@@ -131,6 +131,8 @@ python scripts/score_local_next_tool.py   # Qwen2.5-1.5B baseline
 ./scripts/push_branch.sh
 ```
 
+After every successful train, the daemon runs `scripts/run_text_benchmarks.py` on the newest variant checkpoint before it updates the scoreboard. That scores curated val, local Hermes, BFCL, and Nestful. τ2 and AppWorld stay blocked when those packages are absent, and the blocker is written down instead of a score.
+
 First-time Mac: `./install.sh --deps` — see [mac-worker-prep.md](mac-worker-prep.md).
 
 Cycle JSON: `/Volumes/Extreme SSD/nca_research/results/auto_research/latest.json`.

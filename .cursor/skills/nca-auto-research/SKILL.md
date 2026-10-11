@@ -43,10 +43,7 @@ The score that matters is accuracy the runnable harnesses record: curated val ne
 
 6. **Train/eval — long enough** — Default **≥150k** AdamW steps for any architectural claim (matches mix13). ≤8k is plumbing only; 20k is not a verdict. Recent Sudoku / iterative-reasoning work (e.g. Giannoulis et al. NeurIPS 2025, arXiv:2509.22023) shows structured policies need long imitation before they settle — treat NCA the same. Daemon: `NCA_HYP_STEPS=150000`. Log to SSD TensorBoard.
 
-7. **Score paired baselines** — Whenever benchmarks change, run **both**:  
-   - `python scripts/run_text_benchmarks.py` (NCA checkpoint)  
-   - `python scripts/score_local_next_tool.py` (Qwen2.5-1.5B)  
-   Do not update `benchmark_gates.json` pass/fail without LLM comparison on the same task.
+7. **Score paired baselines** — After every train, the daemon runs `python scripts/run_text_benchmarks.py --checkpoint <newest best>` before the scoreboard. That scores curated val, local Hermes, BFCL, and Nestful. τ2 and AppWorld stay blocked when those packages are absent, and the script records the blocker instead of a score. Do not update `benchmark_gates.json` pass/fail without the LLM comparison on the same task.
 
 8. **Record for the paper (required)** — Register an SI experiment and rebuild tables:
    ```bash
