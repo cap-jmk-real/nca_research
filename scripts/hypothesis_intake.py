@@ -1,9 +1,13 @@
 """Hypothesis intake for one auto-research tick.
 
 Called from ``scripts/auto_research.py --klaut-search`` (the daemon engine
-tick). Searches the top failing gate with two or three short Klaut queries,
-rejects off-domain hits that have no code, and records that ledger on the
-SSD so the next tick does not treat the same papers as new.
+tick). Searches the top failing gate with two or three short Klaut queries.
+A missing code URL is not a reject by itself. Off-domain work is rejected
+(mammography segmentation, genetics drift, surveys with no method we can
+implement). A hit is queued only when the record describes a concrete change
+for text NCA or next-tool prediction that we can implement and score on a
+named runnable harness. The ledger on the SSD keeps the next tick from
+treating the same papers as new.
 
 Does not start or stop training, does not clear STOP, and does not edit
 ``config/benchmark_gates.json``.
@@ -73,13 +77,62 @@ _CODE_URL = re.compile(
     r"https?://(?:www\.)?(?:github|gitlab)\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+",
     re.I,
 )
+# "Neural cellular automata" alone is not enough. Mammography, materials, and
+# genetics papers use that phrase and are still off-domain for this loop.
 _ON_TOPIC = re.compile(
-    r"neural cellular autom|"
+    r"text neural cellular|"
     r"\btext nca\b|"
+    r"neural cellular automata?.{0,60}\btext\b|"
+    r"\btext\b.{0,60}neural cellular|"
     r"next[- ]tool|"
-    r"(?:tool[- ]call(?:ing)?|function[- ]calling).{0,48}(?:accura|predict|top-?1)|"
-    r"(?:accura|predict|top-?1).{0,48}(?:tool[- ]call(?:ing)?|function[- ]calling)",
+    r"(?:tool|function)[- ]call(?:ing)?.{0,48}(?:accura|predict|top-?1|sequence|abstain|argument)|"
+    r"(?:accura|predict|top-?1).{0,48}(?:tool|function)[- ]call",
     re.I,
+)
+# A code URL is strong evidence of a change we can implement. These phrases
+# are the other way a record describes that change without a repository link.
+_IMPLEMENTABLE = re.compile(
+    r"\battention|"
+    r"\bhierarchical\b|"
+    r"receptive field|"
+    r"\bhalt(?:ing|ed)?\b|"
+    r"message[- ]passing|"
+    r"skip connection|"
+    r"\babstain|"
+    r"\birrelevan|"
+    r"\bargument|"
+    r"\bnested\b|"
+    r"\breadout\b|"
+    r"update rule|"
+    r"local rule|"
+    r"full[- ]sequence|"
+    r"session memory",
+    re.I,
+)
+_OFF_DOMAIN = (
+    (re.compile(r"mammograph|breast tumor", re.I), "mammography segmentation"),
+    (re.compile(r"brain tumor|\bmri\b", re.I), "medical image segmentation"),
+    (
+        re.compile(r"genetic drift|self-replicat|spontaneous mutation", re.I),
+        "genetics drift",
+    ),
+    (re.compile(r"solidification|microstructure|corrosion", re.I), "materials modelling"),
+    (re.compile(r"quantum[- ]dot", re.I), "quantum-dot hardware"),
+    (re.compile(r"fungal morphology|graphics generation", re.I), "graphics morphology"),
+    (re.compile(r"living systems create meaning", re.I), "unrelated essay"),
+    (
+        re.compile(r"elementary cellular automata|cellular automata classification", re.I),
+        "elementary CA classification",
+    ),
+    (re.compile(r"toxic text", re.I), "toxic text classification"),
+)
+# Reasons written by the old "no code URL" rule. Re-judge those hits.
+_STALE_CODE_REASONS = frozenset(
+    {
+        "on-topic but no code in the Klaut record",
+        "no code and off-domain",
+        "has code but not text NCA or next-tool prediction",
+    }
 )
 _SURVEY = re.compile(
     r"\b(survey|a review|critical review|overview|state of the art)\b",
@@ -268,19 +321,61 @@ def blocked_only(paper: dict) -> bool:
     return names_blocked and pick_harness(paper, set(RUNNABLE)) is None
 
 
-def reject_reason(paper: dict, listed_text: str) -> str | None:
-    """None means the hit can be queued as a backlog hypothesis."""
-    has_code = code_url(paper) is not None
-    on_topic = bears_on_text_nca_or_next_tool(paper)
-    if not has_code and not on_topic:
-        return "no code and off-domain"
-    if not on_topic:
-        return "has code but not text NCA or next-tool prediction"
-    if not has_code:
-        return "on-topic but no code in the Klaut record"
+def off_domain_label(paper: dict) -> str | None:
+    text = _blob(paper)
+    for pattern, label in _OFF_DOMAIN:
+        if pattern.search(text):
+            return label
+    return None
+
+
+def describes_concrete_change(paper: dict) -> bool:
+    """True when the record itself says what we would implement.
+
+    A code URL is strong evidence. A named mechanism, or a real abstract
+    about text NCA or next-tool prediction, also counts. An empty Klaut
+    record that only shares the words "neural cellular automata" does not.
+    """
+    if code_url(paper) is not None:
+        return True
+    if _IMPLEMENTABLE.search(_blob(paper)):
+        return True
     title = str(paper.get("title") or "")
     if _SURVEY.search(title):
-        return "survey or review, not a concrete change"
+        return False
+    return len(str(paper.get("abstract") or "").strip()) >= 120
+
+
+def named_duplicate(paper: dict) -> str | None:
+    """H6, H20, and H_long_range_prod are already on the backlog."""
+    blob = _blob(paper).lower()
+    if re.search(r"long[- ]range", blob):
+        return "duplicate of H6 or H_long_range_prod"
+    if re.search(r"\bensemble\b", blob) and re.search(r"logit", blob):
+        return "duplicate of H20"
+    return None
+
+
+def reject_reason(paper: dict, listed_text: str) -> str | None:
+    """None means the hit can be queued as a backlog hypothesis.
+
+    A missing code URL does not reject a paper. Off-domain work is rejected.
+    What remains must describe a concrete change for text NCA or next-tool
+    prediction that we can implement and score on a runnable harness.
+    """
+    off = off_domain_label(paper)
+    if off:
+        return f"off-domain ({off})"
+    title = str(paper.get("title") or "")
+    if _SURVEY.search(title) and not describes_concrete_change(paper):
+        return "survey or review with no method we can implement"
+    if not bears_on_text_nca_or_next_tool(paper):
+        return "not a change for text NCA or next-tool prediction"
+    if not describes_concrete_change(paper):
+        return "record does not describe a concrete change we can implement"
+    duplicate = named_duplicate(paper)
+    if duplicate:
+        return duplicate
     blob = _blob(paper)
     if _FORBIDDEN_DISTILL.search(blob):
         return "requires teacher hidden states or logits into TextNCA"
@@ -341,10 +436,14 @@ def _append_hypothesis(paper: dict, *, query: str, gate: str) -> str | None:
         if gate == "curated_val_top1_nca"
         else "Score it on this harness; do not treat a curated-val-only gain as clearing the rest. "
     )
+    if url:
+        lead = f"Implement the method at `{url}` ({title})"
+    else:
+        lead = f"Implement the change described by {title} (no code URL on the Klaut record)"
     block = (
         f"### {hyp_id} — {title}\n"
         "\n"
-        f"- **Claim:** Queue the code at `{url}` ({title}) as an ablation scored on {label}. "
+        f"- **Claim:** {lead} as an ablation scored on {label}. "
         f"{other}"
         "Do not copy teacher hidden states or logits into TextNCA.\n"
         f"- **Gate:** `{gate}`\n"
@@ -410,6 +509,46 @@ def _klaut_up() -> bool:
     return bool(klaut_gateway.ping(timeout=5))
 
 
+def _best_per_query(hits: list[dict], queries: list[str]) -> list[dict]:
+    """First hit of each query, in search order. That is the query's best hit."""
+    best: list[dict] = []
+    for query in queries:
+        for hit in hits:
+            if hit.get("query") != query:
+                continue
+            best.append(
+                {
+                    "query": query,
+                    "id": hit.get("id"),
+                    "title": hit.get("title"),
+                    "decision": hit.get("decision"),
+                    "reason": hit.get("reason"),
+                    "harness": hit.get("harness"),
+                }
+            )
+            break
+    return best
+
+
+def intake_note(status: dict) -> str:
+    """Scoreboard reminder. Values come from the gate file, not from Klaut."""
+    parts: list[str] = []
+    for item in status.get("failing") or []:
+        value = item.get("value")
+        minimum = item.get("min")
+        harness = item.get("harness") or item.get("gate")
+        if isinstance(value, (int, float)) and isinstance(minimum, (int, float)):
+            parts.append(f"{harness} {value:.3f} vs {minimum:g}")
+        else:
+            parts.append(str(harness))
+    failing = "; ".join(parts) if parts else "none"
+    return (
+        f"{OBJECTIVE} Failing harnesses: {failing}. "
+        "A curated-val-only gain is not a pass while another runnable harness fails. "
+        "τ2 and AppWorld stay blocked; no scores invented."
+    )
+
+
 def _slim(paper: dict, *, query: str, reason: str | None, repeat: bool, gate: str | None) -> dict:
     return {
         "id": paper_id(paper),
@@ -449,7 +588,10 @@ def run_intake(*, gate: str, queries: list[str], gate_results: list[dict]) -> di
             "report_recommended": False,
             "report_ran": False,
             "harness_status": status,
-            "note": f"{BLOCKED.get(gate, gate)} is blocked. Not marked passed. No score invented.",
+            "note": (
+                f"{BLOCKED.get(gate, gate)} is blocked. Not marked passed. No score invented. "
+                + intake_note(status)
+            ),
             "hits": [],
         }
         ledger = _load_ledger()
@@ -512,9 +654,10 @@ def run_intake(*, gate: str, queries: list[str], gate_results: list[dict]) -> di
         if not pid or pid in seen:
             continue
         seen.add(pid)
-        repeat = pid in prior
+        prior_reason = str((prior.get(pid) or {}).get("reason") or "")
+        repeat = pid in prior and prior_reason not in _STALE_CODE_REASONS
         if repeat:
-            reason = str((prior.get(pid) or {}).get("reason") or "already rejected")
+            reason = prior_reason or "already rejected"
             chosen_gate = None
         else:
             reason = reject_reason(paper, listed)
@@ -572,7 +715,8 @@ def run_intake(*, gate: str, queries: list[str], gate_results: list[dict]) -> di
         "report_recommended": report_recommended,
         "report_ran": False,
         "harness_status": status,
-        "note": OBJECTIVE,
+        "note": intake_note(status),
+        "best_per_query": _best_per_query(new_hits, list(queries[:3])),
         "new_hit_count": len(new_hits),
         "repeat_ids": [hit["id"] for hit in hits if hit["repeat"]],
         "hits": new_hits,
