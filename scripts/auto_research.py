@@ -150,6 +150,47 @@ GAP_TO_QUERY = {
 }
 
 
+# GitHub repository search for the same gate. These look for code, not papers.
+# Two queries stay under the unauthenticated search rate limit.
+GITHUB_QUERIES = {
+    "curated_val_top1_nca": [
+        "neural cellular automata",
+        "text neural cellular automata",
+    ],
+    "local_hermes_top1_nca": [
+        "hermes function calling",
+        "tool calling agent",
+    ],
+    "bfcl_ast_accuracy": [
+        "berkeley function calling leaderboard",
+        "function calling ast",
+    ],
+    "bfcl_irrelevance_accuracy": [
+        "function calling irrelevance",
+        "tool call abstention",
+    ],
+    "nestful_full_sequence_accuracy": [
+        "NESTFUL nested function calling",
+        "nested tool calling",
+    ],
+    "tau2_airline_pass1": [
+        "tau2-bench airline",
+    ],
+    "tau2_retail_pass1": [
+        "tau2-bench retail",
+    ],
+    "appworld_dev_tgc": [
+        "appworld stonybrook",
+    ],
+}
+
+
+def github_queries_for(gate: str) -> list[str]:
+    """Short GitHub repository queries for one gate. At most two."""
+    raw = GITHUB_QUERIES.get(gate, [])
+    return [query.strip() for query in raw if isinstance(query, str) and query.strip()][:2]
+
+
 def queries_for(gate: str) -> list[str]:
     """Short Klaut queries for one gate. At most three, each under 80 characters."""
     raw = GAP_TO_QUERY.get(gate, [])
@@ -215,7 +256,7 @@ def main() -> None:
     parser.add_argument(
         "--klaut-search",
         action="store_true",
-        help="Search Klaut with 2–3 short queries for the top failing gate",
+        help="Search Klaut and GitHub for the top failing gate",
     )
     parser.add_argument(
         "--klaut-report",
@@ -252,6 +293,7 @@ def main() -> None:
             gate=top_fail,
             queries=queries_for(top_fail),
             gate_results=gate_results,
+            github_queries=github_queries_for(top_fail),
         )
         klaut_payload["type"] = "search"
     if args.klaut_report and not args.dry_run:
@@ -289,6 +331,7 @@ def main() -> None:
         "passing_gates": [p["gate"] for p in passing],
         "top_fail": top_fail,
         "queries": queries_for(top_fail) if top_fail else [],
+        "github_queries": github_queries_for(top_fail) if top_fail else [],
         "suggested_hypotheses": suggested_h,
         "harness_status": harness,
         "backlog_ranked": _parse_backlog()[:8],
@@ -309,6 +352,7 @@ def main() -> None:
             "passing_gates",
             "top_fail",
             "queries",
+            "github_queries",
             "suggested_hypotheses",
         )
     }
@@ -317,6 +361,8 @@ def main() -> None:
     summary["harness_blocked"] = [item["harness"] for item in harness["blocked"]]
     if klaut_payload:
         summary["klaut_up"] = klaut_payload.get("klaut_up")
+        summary["github_ok"] = klaut_payload.get("github_ok")
+        summary["github_hits"] = klaut_payload.get("github_hits")
         summary["hypothesis_added"] = klaut_payload.get("hypothesis_added")
         summary["hits_preview"] = klaut_payload.get("hits_preview")
         summary["intake_path"] = klaut_payload.get("intake_path")

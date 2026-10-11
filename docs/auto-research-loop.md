@@ -92,11 +92,11 @@ When the gateway is unreachable (e.g. cloud agent off-LAN), the client returns t
 
 ### Hypothesis intake
 
-`python scripts/auto_research.py --klaut-search` is the daemon engine tick. For the top failing gate it runs two or three short queries from `GAP_TO_QUERY` in `scripts/auto_research.py` (text neural cellular automata, next-tool accuracy, receptive field / halting). Each query is anchored to neural cellular automata so a bare “top-1” or “receptive field” search cannot leave the domain. It does not search the old single imitation-learning string.
+`python scripts/auto_research.py --klaut-search` is the daemon engine tick. For the top failing gate it runs two or three short Klaut queries from `GAP_TO_QUERY` in `scripts/auto_research.py` (text neural cellular automata, next-tool accuracy, receptive field / halting) and two GitHub repository queries from `GITHUB_QUERIES`. Klaut is the paper index. GitHub is the code search. Each Klaut query is anchored to neural cellular automata so a bare “top-1” or “receptive field” search cannot leave the domain. It does not search the old single imitation-learning string. GitHub results are cached on the SSD under `results/cache/github/search` for 12 hours.
 
 The objective is the best accuracy the runnable harnesses record: curated val next-tool, local Hermes, BFCL AST, BFCL irrelevance, and Nestful full sequence. A curated-val gain alone is not success while another of those is failing or unscored. τ2 airline, τ2 retail, and AppWorld stay blocked. The tick does not mark them passed and does not invent scores. `config/benchmark_gates.json` changes only when the same harness has real NCA and LLM numbers.
 
-A hit is rejected when it is off-domain, including mammography segmentation, genetics drift, and a survey with no method we can implement. A missing code URL is not a reject by itself. A code URL is strong evidence. A backlog row is added when the record describes a concrete change for text NCA or next-tool prediction that we can implement and score on a named runnable harness (curated val, local Hermes, BFCL AST, BFCL irrelevance, Nestful), the change is not already listed (including H6, H20, and H_long_range_prod), and it does not require stopping a 150k run. The query, hit id, and reason go to `results/auto_research/klaut_intake.json` on the SSD. Ids already judged under the current rule are not reported as new. The intake note lists the failing harnesses. A curated-val-only gain is not a pass while those harnesses fail. A full Klaut report is not requested unless a hit is a new architecture family with code.
+A hit is rejected when it is off-domain, including mammography segmentation, genetics drift, a survey with no method we can implement, and an image-only NCA demo. A missing code URL is not a reject by itself. A GitHub repository counts as code. A backlog row is added when the record describes a concrete change for text NCA or next-tool prediction that we can implement and score on a named runnable harness (curated val, local Hermes, BFCL AST, BFCL irrelevance, Nestful), the change is not already listed (including H6, H20, and H_long_range_prod), and it does not require stopping a 150k run. The query, hit id, and reason go to `results/auto_research/klaut_intake.json` on the SSD. Ids already judged under the current rule are not reported as new. The intake note lists the failing harnesses. A curated-val-only gain is not a pass while those harnesses fail. A full Klaut report is not requested unless a hit is a new architecture family with code.
 
 `--klaut-search` writes the scoreboard and that intake note. It does not start or stop training.
 
@@ -106,7 +106,7 @@ A hit is rejected when it is off-domain, including mammography segmentation, gen
 flowchart TD
   A[Measure scoreboard] --> B{Any gate failing?}
   B -->|no| Z[Stop or raise gates]
-  B -->|yes| C[2-3 Klaut searches for the top gap]
+  B -->|yes| C[Klaut papers and GitHub repos for the top gap]
   C --> D[Pick hypothesis from backlog]
   D --> E[Implement + train ablation]
   E --> F[Eval curated val + local Hermes]

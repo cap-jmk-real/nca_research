@@ -30,12 +30,12 @@ The score that matters is accuracy the runnable harnesses record: curated val ne
 ## Each cycle (do in order)
 
 1. **Measure** — Run `python scripts/auto_research.py` from repo root.  
-   - Add `--klaut-search` when engine is reachable. That runs 2–3 short queries for the top failing gate (`GAP_TO_QUERY` in `scripts/auto_research.py`). It does not start or stop training.  
+   - Add `--klaut-search` when engine is reachable. That runs 2–3 short Klaut queries and 2 GitHub repository queries for the top failing gate (`GAP_TO_QUERY` and `GITHUB_QUERIES` in `scripts/auto_research.py`). It does not start or stop training.  
    - Add `--klaut-report` only when intake set `report_recommended` (a new architecture family with code).
 
 2. **Read output** — Open `results/auto_research/latest.json` on the SSD. Note `failing_gates`, `harness_status`, `suggested_hypotheses`, `backlog_ranked`. The intake ledger is `results/auto_research/klaut_intake.json`.
 
-3. **Literature** — Use the intake from step 1. Do not search only `next tool prediction imitation learning agent traces`. Reject off-domain work (mammography segmentation, genetics drift, generic surveys with no method we can implement). A code URL is strong evidence, not a requirement: do not drop a paper only because Klaut omitted one. Add a backlog row when the record describes a concrete change for text NCA or next-tool prediction that we can implement and score on a named runnable harness, the change is not already listed (including H6, H20, and H_long_range_prod), and it does not require stopping a 150k run. The ledger stores the query, hit id, and reason so the next tick does not report those papers as new. If nothing qualifies, leave `docs/hypotheses-backlog.md` unchanged.
+3. **Literature** — Use the intake from step 1. It searches Klaut and GitHub. Do not search only `next tool prediction imitation learning agent traces`. Reject off-domain work (mammography segmentation, genetics drift, generic surveys with no method we can implement) and image-only NCA demos. A GitHub repository is the code check Klaut often misses. Add a backlog row when the record describes a concrete change for text NCA or next-tool prediction that we can implement and score on a named runnable harness, the change is not already listed (including H6, H20, and H_long_range_prod), and it does not require stopping a 150k run. The ledger stores the query, hit id, and reason so the next tick does not report those papers or repos as new. If nothing qualifies, leave `docs/hypotheses-backlog.md` unchanged.
 
 4. **Pick one hypothesis** — Choose the highest-priority id in `suggested_hypotheses` that is not yet measured. If empty, take priority 1 from [hypotheses-backlog.md](../../../docs/hypotheses-backlog.md).
 

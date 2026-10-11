@@ -1,7 +1,9 @@
 """Hypothesis intake for one auto-research tick.
 
 Called from ``scripts/auto_research.py --klaut-search`` (the daemon engine
-tick). Searches the top failing gate with two or three short Klaut queries.
+tick). Searches the top failing gate with two or three short Klaut queries
+and two GitHub repository queries. GitHub is where the code lives; Klaut is
+the paper index.
 A missing code URL is not a reject by itself. Off-domain work is rejected
 (mammography segmentation, genetics drift, surveys with no method we can
 implement). A hit is queued only when the record describes a concrete change
@@ -15,9 +17,13 @@ Does not start or stop training, does not clear STOP, and does not edit
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -32,6 +38,7 @@ LISTED_PATHS = (
 INTAKE_PATH = Path(
     "/Volumes/Extreme SSD/nca_research/results/auto_research/klaut_intake.json"
 )
+GITHUB_CACHE = Path("/Volumes/Extreme SSD/nca_research/results/cache/github/search")
 
 RUNNABLE = {
     "curated_val_top1_nca": "curated val next-tool",
@@ -134,6 +141,24 @@ _STALE_CODE_REASONS = frozenset(
         "has code but not text NCA or next-tool prediction",
     }
 )
+# GitHub repos use hyphens. "neural-cellular-automata" is the same phrase.
+_GITHUB_TOPIC = re.compile(
+    r"neural cellular automata|"
+    r"text neural cellular|"
+    r"next[- ]tool|"
+    r"function[- ]call|"
+    r"tool[- ]call",
+    re.I,
+)
+# A pixel-growing demo is not a text or tool-call change, even with a repo.
+_GITHUB_IMAGE_ONLY = re.compile(
+    r"\b(pixel|texture|growing|segmentation|video frame)\b",
+    re.I,
+)
+_GITHUB_TEXT_OR_TOOL = re.compile(
+    r"\b(?:text|language|tokens?|tools?|function call(?:ing)?|sequences?|readout)\b",
+    re.I,
+)
 _SURVEY = re.compile(
     r"\b(survey|a review|critical review|overview|state of the art)\b",
     re.I,
@@ -200,7 +225,10 @@ def harness_status(gate_results: list[dict]) -> dict:
 
 def _blob(paper: dict) -> str:
     abstract = paper.get("abstract") or ""
-    return f"{paper.get('title') or ''} {abstract}"
+    title = str(paper.get("title") or "")
+    if paper.get("source") == "github":
+        title = title.replace("-", " ").replace("_", " ").replace("/", " ")
+    return f"{title} {abstract}"
 
 
 def paper_id(paper: dict) -> str:
@@ -230,7 +258,10 @@ def code_url(paper: dict) -> str | None:
 
 
 def bears_on_text_nca_or_next_tool(paper: dict) -> bool:
-    return _ON_TOPIC.search(_blob(paper)) is not None
+    blob = _blob(paper)
+    if paper.get("source") == "github":
+        return _GITHUB_TOPIC.search(blob) is not None
+    return _ON_TOPIC.search(blob) is not None
 
 
 def citation(paper: dict) -> str:
@@ -366,6 +397,12 @@ def reject_reason(paper: dict, listed_text: str) -> str | None:
     off = off_domain_label(paper)
     if off:
         return f"off-domain ({off})"
+    if paper.get("source") == "github":
+        blob = _blob(paper)
+        if _GITHUB_IMAGE_ONLY.search(blob) and not _GITHUB_TEXT_OR_TOOL.search(blob):
+            return "image NCA repo, not a text or tool-call change"
+        if not _GITHUB_TEXT_OR_TOOL.search(blob) and not _IMPLEMENTABLE.search(blob):
+            return "repo does not describe a text or tool-call change"
     title = str(paper.get("title") or "")
     if _SURVEY.search(title) and not describes_concrete_change(paper):
         return "survey or review with no method we can implement"
@@ -436,10 +473,15 @@ def _append_hypothesis(paper: dict, *, query: str, gate: str) -> str | None:
         if gate == "curated_val_top1_nca"
         else "Score it on this harness; do not treat a curated-val-only gain as clearing the rest. "
     )
-    if url:
+    if paper.get("source") == "github" and url:
+        lead = f"Adapt the repository `{url}` ({title})"
+        origin = "github-intake"
+    elif url:
         lead = f"Implement the method at `{url}` ({title})"
+        origin = "klaut-intake"
     else:
         lead = f"Implement the change described by {title} (no code URL on the Klaut record)"
+        origin = "klaut-intake"
     block = (
         f"### {hyp_id} — {title}\n"
         "\n"
@@ -449,9 +491,9 @@ def _append_hypothesis(paper: dict, *, query: str, gate: str) -> str | None:
         f"- **Gate:** `{gate}`\n"
         f"- **Harness:** {label}\n"
         "- **Priority:** 12\n"
-        f"- **Klaut query:** `{query}`\n"
+        f"- **Query:** `{query}`\n"
         f"- **Cite:** {cite} ({pid})\n"
-        "- **Source:** klaut-intake\n"
+        f"- **Source:** {origin}\n"
         "- **Cost:** After the current 150k AdamW run. Do not stop a live train.\n"
         "\n"
         "---\n"
@@ -459,6 +501,66 @@ def _append_hypothesis(paper: dict, *, query: str, gate: str) -> str | None:
     )
     BACKLOG_PATH.write_text(text.replace(marker, block + marker, 1))
     return hyp_id
+
+
+def _repo_record(item: dict) -> dict:
+    full = str(item.get("full_name") or "").strip()
+    html = str(item.get("html_url") or (f"https://github.com/{full}" if full else ""))
+    return {
+        "id": f"github:{full}" if full else html,
+        "title": full or html,
+        "abstract": item.get("description") or "",
+        "doi": "",
+        "url": html,
+        "code_url": html,
+        "source": "github",
+        "stars": item.get("stargazers_count"),
+    }
+
+
+def _search_github(query: str) -> dict:
+    """Repository search. Cache on the SSD for 12 hours. Never write to the boot disk."""
+    if not Path("/Volumes/Extreme SSD").is_dir():
+        return {"query": query, "ok": False, "error": "Extreme SSD is not mounted", "repos": []}
+    phrase = " ".join(query.split())
+    api_q = f'"{phrase}" in:name,description'
+    digest = hashlib.sha256(api_q.encode()).hexdigest()[:16]
+    cache = GITHUB_CACHE / f"{digest}.json"
+    if cache.is_file() and time.time() - cache.stat().st_mtime < 12 * 3600:
+        try:
+            cached = json.loads(cache.read_text())
+            cached["cached"] = True
+            return cached
+        except (OSError, json.JSONDecodeError):
+            pass
+    params = urllib.parse.urlencode(
+        {
+            "q": api_q,
+            "sort": "stars",
+            "order": "desc",
+            "per_page": "5",
+        }
+    )
+    request = urllib.request.Request(
+        f"https://api.github.com/search/repositories?{params}",
+        headers={
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "nca-research-intake",
+        },
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=20) as response:
+            payload = json.loads(response.read().decode())
+    except urllib.error.HTTPError as exc:
+        return {"query": query, "ok": False, "error": f"HTTP {exc.code}", "repos": []}
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+        return {"query": query, "ok": False, "error": str(exc), "repos": []}
+    items = payload.get("items") if isinstance(payload, dict) else None
+    repos = [_repo_record(item) for item in items or [] if isinstance(item, dict)]
+    result = {"query": query, "ok": True, "repos": repos, "cached": False}
+    GITHUB_CACHE.mkdir(parents=True, exist_ok=True)
+    cache.write_text(json.dumps(result) + "\n")
+    return result
 
 
 def _search_one(query: str) -> dict:
@@ -557,6 +659,7 @@ def _slim(paper: dict, *, query: str, reason: str | None, repeat: bool, gate: st
         "query": query,
         "has_code": code_url(paper) is not None,
         "code_url": code_url(paper),
+        "source": paper.get("source") or "klaut",
         "on_topic": bears_on_text_nca_or_next_tool(paper),
         "decision": "reject" if reason else "candidate",
         "reason": reason,
@@ -567,7 +670,13 @@ def _slim(paper: dict, *, query: str, reason: str | None, repeat: bool, gate: st
     }
 
 
-def run_intake(*, gate: str, queries: list[str], gate_results: list[dict]) -> dict:
+def run_intake(
+    *,
+    gate: str,
+    queries: list[str],
+    gate_results: list[dict],
+    github_queries: list[str] | None = None,
+) -> dict:
     """Search, ledger rejects, and maybe append one backlog row.
 
     A blocked gate is recorded and not searched. τ2 and AppWorld are never
@@ -644,6 +753,23 @@ def run_intake(*, gate: str, queries: list[str], gate_results: list[dict]) -> di
                 if isinstance(paper, dict):
                     pairs.append((cache_query, paper))
 
+    github_queries = [query for query in (github_queries or []) if query.strip()][:2]
+    github_searches: list[dict] = []
+    for query in github_queries:
+        one = _search_github(query)
+        github_searches.append(
+            {
+                "query": query,
+                "ok": one.get("ok"),
+                "n": len(one.get("repos") or []),
+                "cached": one.get("cached"),
+                "error": one.get("error"),
+            }
+        )
+        for repo in one.get("repos") or []:
+            if isinstance(repo, dict):
+                pairs.append((query, repo))
+
     ledger = _load_ledger()
     prior = ledger.get("rejected") or {}
     hits: list[dict] = []
@@ -667,6 +793,7 @@ def run_intake(*, gate: str, queries: list[str], gate_results: list[dict]) -> di
         hit = _slim(paper, query=query, reason=reason, repeat=repeat, gate=chosen_gate)
         if (
             not repeat
+            and paper.get("source") != "github"
             and code_url(paper)
             and "neural cellular" in str(paper.get("title") or "").lower()
             and not already_listed(paper, listed)
@@ -686,6 +813,7 @@ def run_intake(*, gate: str, queries: list[str], gate_results: list[dict]) -> di
     candidates = [hit for hit in hits if hit["decision"] == "candidate" and not hit["repeat"]]
     candidates.sort(
         key=lambda hit: (
+            hit.get("source") == "github",
             hit.get("harness_gate") in failing_gates and hit.get("harness_gate") != "curated_val_top1_nca",
             hit.get("harness_gate") in failing_gates,
         ),
@@ -707,6 +835,9 @@ def run_intake(*, gate: str, queries: list[str], gate_results: list[dict]) -> di
         "ts": ts,
         "top_fail": gate,
         "queries": list(queries[:3]),
+        "github_queries": github_queries,
+        "github_ok": bool(github_searches) and any(item.get("ok") for item in github_searches),
+        "github_searches": github_searches,
         "source": source,
         "klaut_up": klaut_up,
         "cache_path": cache_path,
@@ -716,7 +847,7 @@ def run_intake(*, gate: str, queries: list[str], gate_results: list[dict]) -> di
         "report_ran": False,
         "harness_status": status,
         "note": intake_note(status),
-        "best_per_query": _best_per_query(new_hits, list(queries[:3])),
+        "best_per_query": _best_per_query(new_hits, list(queries[:3]) + github_queries),
         "new_hit_count": len(new_hits),
         "repeat_ids": [hit["id"] for hit in hits if hit["repeat"]],
         "hits": new_hits,
@@ -736,4 +867,15 @@ def run_intake(*, gate: str, queries: list[str], gate_results: list[dict]) -> di
         for hit in new_hits[:4]
     ]
     tick["hits_preview"] = preview
+    tick["github_hits"] = [
+        {
+            "id": hit["id"],
+            "title": hit["title"],
+            "code_url": hit.get("code_url"),
+            "decision": hit["decision"],
+            "reason": hit["reason"],
+        }
+        for hit in new_hits
+        if hit.get("source") == "github"
+    ][:6]
     return tick
