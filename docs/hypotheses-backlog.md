@@ -89,6 +89,28 @@ Each item links to a **gate** in `config/benchmark_gates.json` or a **research-d
 - **Klaut query:** `Mamba graph neural network message passing`
 - **Cost:** Moderate; keep param count < 100k.
 
+### H38 — Staged narrow-to-wide windows on the trace
+
+- **Claim:** Mittal et al. (TextNCA, arXiv:2608.02050) find that a narrow-to-wide window schedule, not extra iteration, carries most of a 1D NCA language model, with a measured optimum at 4 shared-weight steps and a GRU gate required for that gain. On the 5-cell tool trace, two shared-weight stages (a narrow window over the recent steps, then a wider window that includes the goal) beat the single radius-1 stack. This is not the fixed long-range edge (H6) and not a selective scan (H10).
+- **Gate:** `curated_val_top1_nca`
+- **Harness:** curated val next-tool
+- **Priority:** 12
+- **Query:** `TextNCA hierarchical local attention`
+- **Cite:** https://doi.org/10.48550/arxiv.2608.02050, arXiv:2608.02050 (2608.02050v1)
+- **Source:** adjacent-field
+- **Cost:** After the current 150k AdamW run. Do not stop a live train. A curated-val gain still has to be scored on local Hermes, BFCL, and Nestful.
+
+### H39 — Attention perception instead of a fixed kernel
+
+- **Claim:** Tesfaldet, Nowrouzezahrai, and Pal (arXiv:2211.01233) put attention inside an image NCA’s local rule. The transfer is the perception, not the pixels: mix the five trace cells with a small attention kernel, then keep the residual update. Score it on curated val next-tool. This is not H5 (which cell is read out) and not H6 (a hard goal skip).
+- **Gate:** `curated_val_top1_nca`
+- **Harness:** curated val next-tool
+- **Priority:** 12
+- **Query:** `attention neural cellular automata`
+- **Cite:** https://doi.org/10.48550/arxiv.2211.01233, arXiv:2211.01233 (W4308163363, W7133207985, https://doi.org/10.52202/068431-0593)
+- **Source:** adjacent-field
+- **Cost:** After the current 150k AdamW run. Do not stop a live train. A curated-val gain still has to be scored on local Hermes, BFCL, and Nestful.
+
 ---
 
 ## Distillation (teacher ≤ 9B — **labels and text only**, not NCA weights)

@@ -28,12 +28,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BACKLOG_PATH = ROOT / "docs" / "hypotheses-backlog.md"
+# A citation in the literature notes is not an experiment. Only the backlog
+# and the measured tests block a new transfer hypothesis.
 LISTED_PATHS = (
     BACKLOG_PATH,
     ROOT / "docs" / "hypothesis-tests.md",
-    ROOT / "docs" / "multi-harness-and-message-passing.md",
-    ROOT / "docs" / "research-design.md",
-    ROOT / "docs" / "text-nca-architecture.md",
 )
 INTAKE_PATH = Path(
     "/Volumes/Extreme SSD/nca_research/results/auto_research/klaut_intake.json"
@@ -155,6 +154,15 @@ _GITHUB_IMAGE_ONLY = re.compile(
     r"\b(pixel|texture|growing|segmentation|video frame)\b",
     re.I,
 )
+# Image and language NCA papers count when they name a mechanism we can port
+# onto the tool trace. Growing-pixel reproductions still do not.
+_TRANSFER = re.compile(
+    r"attention[- ]based neural cellular|"
+    r"hierarchical (?:local attention|neural cellular)|"
+    r"\btextnca\b|"
+    r"windowed attention",
+    re.I,
+)
 _GITHUB_TEXT_OR_TOOL = re.compile(
     r"\b(?:text|language|tokens?|tools?|function call(?:ing)?|sequences?|readout)\b",
     re.I,
@@ -259,6 +267,8 @@ def code_url(paper: dict) -> str | None:
 
 def bears_on_text_nca_or_next_tool(paper: dict) -> bool:
     blob = _blob(paper)
+    if _TRANSFER.search(blob):
+        return True
     if paper.get("source") == "github":
         return _GITHUB_TOPIC.search(blob) is not None
     return _ON_TOPIC.search(blob) is not None
@@ -399,7 +409,11 @@ def reject_reason(paper: dict, listed_text: str) -> str | None:
         return f"off-domain ({off})"
     if paper.get("source") == "github":
         blob = _blob(paper)
-        if _GITHUB_IMAGE_ONLY.search(blob) and not _GITHUB_TEXT_OR_TOOL.search(blob):
+        if (
+            _GITHUB_IMAGE_ONLY.search(blob)
+            and not _GITHUB_TEXT_OR_TOOL.search(blob)
+            and not _TRANSFER.search(blob)
+        ):
             return "image NCA repo, not a text or tool-call change"
         if not _GITHUB_TEXT_OR_TOOL.search(blob) and not _IMPLEMENTABLE.search(blob):
             return "repo does not describe a text or tool-call change"
@@ -676,6 +690,7 @@ def run_intake(
     queries: list[str],
     gate_results: list[dict],
     github_queries: list[str] | None = None,
+    adjacent_queries: list[str] | None = None,
 ) -> dict:
     """Search, ledger rejects, and maybe append one backlog row.
 
@@ -715,8 +730,12 @@ def run_intake(
     pairs: list[tuple[str, dict]] = []
     cache_path = None
     source = "live"
+    search_queries = list(queries[:3])
+    for query in (adjacent_queries or [])[:2]:
+        if query not in search_queries:
+            search_queries.append(query)
     if klaut_up:
-        for query in queries[:3]:
+        for query in search_queries:
             one = _search_one(query)
             searches.append(
                 {
@@ -834,7 +853,7 @@ def run_intake(
     tick = {
         "ts": ts,
         "top_fail": gate,
-        "queries": list(queries[:3]),
+        "queries": search_queries,
         "github_queries": github_queries,
         "github_ok": bool(github_searches) and any(item.get("ok") for item in github_searches),
         "github_searches": github_searches,
@@ -847,7 +866,7 @@ def run_intake(
         "report_ran": False,
         "harness_status": status,
         "note": intake_note(status),
-        "best_per_query": _best_per_query(new_hits, list(queries[:3]) + github_queries),
+        "best_per_query": _best_per_query(new_hits, search_queries + github_queries),
         "new_hit_count": len(new_hits),
         "repeat_ids": [hit["id"] for hit in hits if hit["repeat"]],
         "hits": new_hits,

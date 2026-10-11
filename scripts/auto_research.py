@@ -185,6 +185,18 @@ GITHUB_QUERIES = {
 }
 
 
+# Adjacent fields. These are not the failing-gate phrase. They look for a
+# mechanism we can port onto the text trace (attention perception, hierarchy).
+ADJACENT_QUERIES = [
+    "attention neural cellular automata",
+    "TextNCA hierarchical local attention",
+]
+
+
+def adjacent_queries() -> list[str]:
+    return list(ADJACENT_QUERIES)
+
+
 def github_queries_for(gate: str) -> list[str]:
     """Short GitHub repository queries for one gate. At most two."""
     raw = GITHUB_QUERIES.get(gate, [])
@@ -294,6 +306,7 @@ def main() -> None:
             queries=queries_for(top_fail),
             gate_results=gate_results,
             github_queries=github_queries_for(top_fail),
+            adjacent_queries=adjacent_queries(),
         )
         klaut_payload["type"] = "search"
     if args.klaut_report and not args.dry_run:
