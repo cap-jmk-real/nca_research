@@ -4,29 +4,30 @@
 Tests fp16/bf16, fp8 (floating), int8, nf4, and ~2.5 bpw IQ2-class when
 backends exist. Missing backends → status=blocked (not a hard fail).
 
-Does not publish. Writes quant_report.json under results/hf/quant/.
+Does not publish. Writes quant_report.json under the Extreme SSD
+results/hf/quant/. Refuses a repo-local results/ directory.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import sys
 import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from nca_text.ssd import assert_external  # noqa: E402
+
 CFG = json.loads((ROOT / "config" / "hf_publish.json").read_text())
-OUT = ROOT / "results" / "hf" / "quant"
-SSD_OUT = Path("/Volumes/Extreme SSD/nca_research/results/hf/quant")
+OUT = Path("/Volumes/Extreme SSD/nca_research/results/hf/quant")
 
 
 def _outdir() -> Path:
-    for path in (SSD_OUT, OUT):
-        try:
-            path.mkdir(parents=True, exist_ok=True)
-            return path
-        except OSError:
-            continue
+    assert_external(OUT)
     OUT.mkdir(parents=True, exist_ok=True)
     return OUT
 
@@ -140,17 +141,14 @@ def main() -> None:
 
     ckpt = args.checkpoint
     if args.from_top4:
-        for base in (
-            Path("/Volumes/Extreme SSD/nca_research/results/hf/top4.json"),
-            ROOT / "results" / "hf" / "top4.json",
-        ):
-            if base.is_file():
-                top4 = json.loads(base.read_text())
-                winner = (top4.get("slots") or {}).get(args.slot, {}).get("winner") or {}
-                p = winner.get("path")
-                if p:
-                    ckpt = Path(p)
-                break
+        base = Path("/Volumes/Extreme SSD/nca_research/results/hf/top4.json")
+        assert_external(base)
+        if base.is_file():
+            top4 = json.loads(base.read_text())
+            winner = (top4.get("slots") or {}).get(args.slot, {}).get("winner") or {}
+            p = winner.get("path")
+            if p:
+                ckpt = Path(p)
 
     report = run_ladder(ckpt, args.slot)
     out = _outdir() / f"quant_{args.slot}_{int(time.time())}.json"

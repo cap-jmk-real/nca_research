@@ -10,20 +10,24 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from nca_text.ssd import assert_external  # noqa: E402
+
 CFG = json.loads((ROOT / "config" / "hf_publish.json").read_text())
 
 
 def _load_top4() -> dict:
-    for base in (
-        Path("/Volumes/Extreme SSD/nca_research/results/hf/top4.json"),
-        ROOT / "results" / "hf" / "top4.json",
-    ):
-        if base.is_file():
-            return json.loads(base.read_text())
+    base = Path("/Volumes/Extreme SSD/nca_research/results/hf/top4.json")
+    assert_external(base)
+    if base.is_file():
+        return json.loads(base.read_text())
     raise SystemExit("top4.json missing — run scripts/select_top4_artifacts.py --write")
 
 

@@ -9,7 +9,7 @@ Large datasets, Hugging Face caches, and training artifacts stay off the interna
 | Datasets | `/Volumes/Extreme SSD/nca_research/datasets` |
 | Results | `/Volumes/Extreme SSD/nca_research/results` |
 
-`scripts/curate_traces.py` defaults to this data root. Override with `NCA_DATA_ROOT` (must be a directory on `/Volumes/`, and not `Macintosh HD`). The script sets these before any Hugging Face download:
+`scripts/curate_traces.py` defaults to this data root. Override with `NCA_DATA_ROOT` (must be a directory on `/Volumes/`, and not `Macintosh HD`). Training, the auto-research daemon, and `scripts/env.sh` refuse a data root whose device is the internal disk, including a `/Volumes/Extreme SSD` folder created while the drive is unmounted. They do not fall back to `results/` inside this repo. `scripts/env.sh` replaces an inherited internal `TMPDIR`, `HF_HOME`, `TORCH_HOME`, or pip cache with the Results directory above. The script sets these before any Hugging Face download:
 
 - `HF_HOME=/Volumes/Extreme SSD/nca_research/datasets/hf_home`
 - `HF_HUB_CACHE` and `HF_XET_CACHE` under that `HF_HOME`

@@ -1,33 +1,33 @@
 #!/usr/bin/env python3
 """Prepare scrubbed specialist / next-tool jsonl packs for Hugging Face.
 
-Writes under results/hf/datasets/<name>/ — never uploads parquet dumps.
+Writes under /Volumes/Extreme SSD/nca_research/results/hf/datasets/<name>/.
+Refuses the repo results/ directory. Never uploads parquet dumps.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import sys
 import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from nca_text.ssd import assert_external  # noqa: E402
+
 CFG = json.loads((ROOT / "config" / "hf_publish.json").read_text())
 SCRUB = CFG["scrub"]
 SRC = Path("/Volumes/Extreme SSD/nca_research/datasets/specialists")
 OUT = Path("/Volumes/Extreme SSD/nca_research/results/hf/datasets")
-LOCAL_OUT = ROOT / "results" / "hf" / "datasets"
 
 
 def _outdir(name: str) -> Path:
-    for base in (OUT, LOCAL_OUT):
-        try:
-            dest = base / name
-            dest.mkdir(parents=True, exist_ok=True)
-            return dest
-        except OSError:
-            continue
-    dest = LOCAL_OUT / name
+    dest = OUT / name
+    assert_external(dest)
     dest.mkdir(parents=True, exist_ok=True)
     return dest
 

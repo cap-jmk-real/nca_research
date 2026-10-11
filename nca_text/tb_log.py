@@ -40,6 +40,12 @@ def require_ssd() -> None:
             "Extreme SSD is not mounted. Refusing to write TensorBoard events "
             "into the repo or the home directory."
         )
+    from nca_text.ssd import assert_external
+
+    try:
+        assert_external(RESULTS)
+    except SystemExit as exc:
+        raise TensorBoardPathError(str(exc)) from exc
     resolved = str(VOLUME.resolve())
     if not resolved.startswith("/Volumes/Extreme SSD"):
         raise TensorBoardPathError(f"refusing TensorBoard volume {resolved}")

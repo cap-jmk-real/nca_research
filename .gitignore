@@ -10,3 +10,6 @@ __pycache__/
 # data/extra/sample.jsonl is the committed exception.
 data/extra/*.jsonl
 !data/extra/sample.jsonl
+
+# Checkpoints, logs, and HF packs belong on the Extreme SSD, not in the repo.
+results/

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Select the four best HF publish slots from paper SI + SSD metrics.
 
-Writes results/hf/top4.json (SSD if available, else ./results/hf/).
+Writes results/hf/top4.json on the Extreme SSD only.
 Does not upload. Exit 0 always when --write succeeds; use --check-push
 to fail if any slot lacks a promoter.
 """
@@ -10,25 +10,25 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from nca_text.ssd import assert_external  # noqa: E402
+
 CFG = json.loads((ROOT / "config" / "hf_publish.json").read_text())
 SSD = Path("/Volumes/Extreme SSD/nca_research/results/hf")
-LOCAL = ROOT / "results" / "hf"
 SI = ROOT / "paper" / "si" / "experiments"
 
 
 def _out_dir() -> Path:
-    if SSD.parent.is_dir():
-        try:
-            SSD.mkdir(parents=True, exist_ok=True)
-            return SSD
-        except OSError:
-            pass
-    LOCAL.mkdir(parents=True, exist_ok=True)
-    return LOCAL
+    assert_external(SSD)
+    SSD.mkdir(parents=True, exist_ok=True)
+    return SSD
 
 
 def _load_exps() -> list[dict]:

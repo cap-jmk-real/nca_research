@@ -22,6 +22,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from nca_text.ssd import apply_cache_env, assert_external  # noqa: E402
+
 SSD = Path("/Volumes/Extreme SSD/nca_research/results")
 STATE_DIR = SSD / "auto_research" / "daemon"
 LOG_PATH = STATE_DIR / "daemon.log"
@@ -150,6 +155,7 @@ def _now() -> str:
 
 def _log(msg: str) -> None:
     """Append to SSD log; print only milestones (cut agent/terminal noise)."""
+    assert_external(STATE_DIR)
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     line = f"{_now()} {msg}"
     with LOG_PATH.open("a") as handle:
@@ -160,6 +166,7 @@ def _log(msg: str) -> None:
 
 
 def _write_json(path: Path, payload: dict) -> None:
+    assert_external(path.parent)
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.write_text(json.dumps(payload, indent=2) + "\n")
@@ -180,14 +187,10 @@ def _load_state() -> dict:
 
 
 def _env() -> dict:
+    assert_external(SSD)
     env = os.environ.copy()
     env["NCA_DATA_ROOT"] = str(SSD)
-    env["TMPDIR"] = str(SSD / "tmp")
-    env["PYTHONPYCACHEPREFIX"] = str(SSD / "pycache")
-    env["HF_HOME"] = str(SSD / "hf-home")
-    env["HF_HUB_CACHE"] = str(SSD / "hf-home" / "hub")
-    env["TORCH_HOME"] = str(SSD / "torch-home")
-    env["XDG_CACHE_HOME"] = str(SSD / "xdg-cache")
+    env.update(apply_cache_env(SSD))
     env["NCA_OLLAMA"] = OLLAMA
     env["NCA_TEACHER"] = os.environ.get("NCA_TEACHER", "qwen3.5:9b")
     env.setdefault("PYTHONPATH", str(ROOT))
@@ -324,6 +327,7 @@ def main() -> None:
     parser.add_argument("--once", action="store_true", help="Run one queue item then exit")
     args = parser.parse_args()
 
+    assert_external(SSD)
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     state = _load_state()
     # Deadline fields are for status display. They must not end the loop
