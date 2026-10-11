@@ -194,6 +194,12 @@ def _env() -> dict:
     env["NCA_OLLAMA"] = OLLAMA
     env["NCA_TEACHER"] = os.environ.get("NCA_TEACHER", "qwen3.5:9b")
     env.setdefault("PYTHONPATH", str(ROOT))
+    root = Path("/Volumes/Extreme SSD/nca_research")
+    env.setdefault("NCA_TAU2_PYTHON", str(root / "venvs" / "tau2" / "bin" / "python"))
+    env.setdefault("NCA_APPWORLD_PYTHON", str(root / "venvs" / "appworld" / "bin" / "python"))
+    env.setdefault("TAU2_DATA_DIR", str(root / "src" / "tau2-bench" / "data"))
+    env.setdefault("APPWORLD_ROOT", str(root / "appworld"))
+    env.setdefault("COPYFILE_DISABLE", "1")
     return env
 
 

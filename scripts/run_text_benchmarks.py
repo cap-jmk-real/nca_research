@@ -3,8 +3,9 @@
 The checkpoint emits one of 13 Hermes tool names. BFCL AST and NESTFUL require
 a function call with arguments, so those official checks fail when the name
 or the arguments do not match. Irrelevance treats ``respond`` as no call.
-tau2 and AppWorld need a live environment; this script records that result
-when the package is not installed.
+tau2 and AppWorld need a live episode runner. This script records that
+blocker. tau2 is imported with the Python 3.12 venv, AppWorld with its own
+venv, because those packages are not installed into the training interpreter.
 
 Caches and downloads stay on the external SSD.
 """
@@ -13,6 +14,7 @@ from __future__ import annotations
 
 import json
 import os
+import subprocess
 import sys
 from collections import Counter
 from pathlib import Path
@@ -24,6 +26,10 @@ SSD = Path("/Volumes/Extreme SSD/nca_research")
 BENCH = SSD / "datasets" / "benchmarks"
 CKPT = SSD / "results" / "checkpoints" / "text_nca_1d_mix13_best.pt"
 OUT = SSD / "results" / "benchmarks_run.json"
+TAU2_PY = Path(os.environ.get("NCA_TAU2_PYTHON", SSD / "venvs" / "tau2" / "bin" / "python"))
+APPWORLD_PY = Path(
+    os.environ.get("NCA_APPWORLD_PYTHON", SSD / "venvs" / "appworld" / "bin" / "python")
+)
 
 os.environ["HF_HOME"] = str(SSD / "hf-cache")
 os.environ["HF_HUB_CACHE"] = str(SSD / "hf-cache" / "hub")
@@ -296,26 +302,58 @@ def score_labeled(policy: Policy, examples: list, name: str) -> dict:
     return {"harness": name, "n": n, "top1": top1}
 
 
-def score_tau2() -> dict:
+def _venv_module(python: Path, module: str) -> str | None:
+    """Import module with a harness venv. Training Python cannot import tau2."""
+    if not python.is_file():
+        return None
+    env = os.environ.copy()
+    env.setdefault("TAU2_DATA_DIR", str(SSD / "src" / "tau2-bench" / "data"))
+    env.setdefault("APPWORLD_ROOT", str(SSD / "appworld"))
     try:
-        import tau2  # noqa: F401
-    except ImportError:
+        proc = subprocess.run(
+            [str(python), "-c", f"import {module}; print({module}.__file__)"],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=180,
+            env=env,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    if proc.returncode != 0:
+        return None
+    lines = [line.strip() for line in proc.stdout.splitlines() if line.strip()]
+    return lines[-1] if lines else ""
+
+
+def score_tau2() -> dict:
+    where = _venv_module(TAU2_PY, "tau2")
+    if where is None:
         return {
             "score": None,
             "blocker": "tau2 is not installed. The official score is a database end-state reward over a user-simulator episode, which this tool-name head cannot emit.",
         }
-    return {"score": None, "blocker": "tau2 imported but no episode runner is wired."}
+    return {
+        "score": None,
+        "python": str(TAU2_PY),
+        "module": where,
+        "blocker": "tau2 imported but no episode runner is wired.",
+    }
 
 
 def score_appworld() -> dict:
-    try:
-        import appworld  # noqa: F401
-    except ImportError:
+    where = _venv_module(APPWORLD_PY, "appworld")
+    if where is None:
         return {
             "score": None,
             "blocker": "appworld is not installed. Official tgc/sgc need the local app databases and a program that calls their APIs.",
         }
-    return {"score": None, "blocker": "appworld imported but no episode runner is wired."}
+    return {
+        "score": None,
+        "python": str(APPWORLD_PY),
+        "module": where,
+        "blocker": "appworld imported but no episode runner is wired.",
+    }
 
 
 def main() -> None:

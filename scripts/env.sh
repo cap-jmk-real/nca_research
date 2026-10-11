@@ -73,6 +73,16 @@ unset _nca_internal_dev _nca_vol_dev
 export NCA_ENGINE_HOST="${NCA_ENGINE_HOST:-192.168.10.29}"
 export NCA_OLLAMA="${NCA_OLLAMA:-http://$NCA_ENGINE_HOST:11434}"
 export NCA_PYTHON="${NCA_PYTHON:-/opt/homebrew/bin/python3.14}"
+# The Extreme SSD is ExFAT. Without these, macOS writes AppleDouble sidecars
+# that break pip builds and git pack indexes on that volume.
+export COPYFILE_DISABLE=1
+export COPY_EXTENDED_ATTRIBUTES_DISABLE=1
+# tau2-bench needs Python >=3.12,<3.14. Training stays on NCA_PYTHON (3.14).
+export NCA_TAU2_PYTHON="${NCA_TAU2_PYTHON:-$NCA_ROOT/venvs/tau2/bin/python}"
+export NCA_APPWORLD_PYTHON="${NCA_APPWORLD_PYTHON:-$NCA_ROOT/venvs/appworld/bin/python}"
+export TAU2_DATA_DIR="${TAU2_DATA_DIR:-$NCA_ROOT/src/tau2-bench/data}"
+export APPWORLD_ROOT="${APPWORLD_ROOT:-$NCA_ROOT/appworld}"
+_nca_pin UV_CACHE_DIR "$NCA_DATA_ROOT/uv-cache"
 
 # Prefer repo checkout under ~/code (TCC-safe) when present.
 if [[ -d "$HOME/code/nca_research/.git" && "$NCA_REPO" == *"/Documents/"* ]]; then

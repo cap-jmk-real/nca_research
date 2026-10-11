@@ -22,7 +22,7 @@ Do not claim victory on BFCL/NESTFUL until the same scoring scripts used for the
 | Curated val top-1 | 65.2% (step 26k mix13) | flat 60.7% ✓ |
 | Local Hermes top-1 | 40.1% | always-terminal **49.5%** ✗, Qwen2.5-1.5B **6.3%** ✓ |
 | BFCL AST | not re-run on latest ckpt | set after paired LLM run |
-| τ2 / AppWorld | blocked (packages) | — |
+| τ2 / AppWorld | blocked (no episode runner) | packages installed on the SSD |
 
 Local Qwen numbers: [`results/local_next_tool_qwen25_1_5b.json`](file:///Volumes/Extreme%20SSD/nca_research/results/local_next_tool_qwen25_1_5b.json) on the SSD.
 
@@ -131,7 +131,7 @@ python scripts/score_local_next_tool.py   # Qwen2.5-1.5B baseline
 ./scripts/push_branch.sh
 ```
 
-After every successful train, the daemon runs `scripts/run_text_benchmarks.py` on the newest variant checkpoint before it updates the scoreboard. That scores curated val, local Hermes, BFCL, and Nestful. τ2 and AppWorld stay blocked when those packages are absent, and the blocker is written down instead of a score.
+After every successful train, the daemon runs `scripts/run_text_benchmarks.py` on the newest variant checkpoint before it updates the scoreboard. That scores curated val, local Hermes, BFCL, and Nestful. τ2 and AppWorld are installed in SSD venvs, and the scorer imports them there. They stay blocked until an episode runner writes a real score, and the blocker is written down instead of a score.
 
 First-time Mac: `./install.sh --deps` — see [mac-worker-prep.md](mac-worker-prep.md).
 
