@@ -1,6 +1,6 @@
 # Hypothesis tests: message passing ablations
 
-**Date:** 2026-10-06
+**Date:** 2026-10-14
 
 Equal-budget runs on curated Hermes train / curated val. Each variant trained for 150000 AdamW steps (batch 512, seed 0, lr 0.001, MPS when available).
 
