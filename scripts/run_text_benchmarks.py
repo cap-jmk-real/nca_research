@@ -23,6 +23,10 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 SSD = Path("/Volumes/Extreme SSD/nca_research")
+# pyarrow (and other SSD-only deps) live here — never on the boot volume.
+_PYDEPS = SSD / "results" / "pydeps"
+if _PYDEPS.is_dir() and str(_PYDEPS) not in sys.path:
+    sys.path.insert(0, str(_PYDEPS))
 BENCH = SSD / "datasets" / "benchmarks"
 CKPT = SSD / "results" / "checkpoints" / "text_nca_1d_mix13_best.pt"
 OUT = SSD / "results" / "benchmarks_run.json"
