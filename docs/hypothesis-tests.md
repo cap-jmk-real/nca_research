@@ -9,13 +9,15 @@ Equal-budget runs on curated Hermes train / curated val. Each variant trained fo
 | Variant | What changes | Best val top-1 | Step | Local top-1 | Params |
 | --- | --- | --- | --- | --- | --- |
 | `baseline` | Current 1D rule; hidden reset every row | 0.6260 | 10000 | 0.2586 | 26749 |
-| `halt` | Learned soft halt on update depth (AMP analogue) | 0.6267 | 10000 | 0.2977 | 26766 |
+| `long_range` | Goal-cell long-range edge into every position | 0.6355 | 10000 | 0.2301 | 34238 |
+| `flat` | Hypothesis 4: linear readout, no cellular update | 0.6249 | 15000 | 0.3737 | 4043 |
 
 Always-terminal on curated val: **0.5430**.
 
 ## Verdicts
 
-- **H_halt:** learned halt beats baseline (0.6267 vs 0.6260).
+- **H4 (flat baseline):** cellular baseline beats flat (0.6260 vs 0.6249).
+- **H_long_range:** goal edge beats baseline (0.6355 vs 0.6260).
 
 ## H3 regeneration (baseline checkpoint)
 
