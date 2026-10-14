@@ -19,3 +19,5 @@
 | `EXP-20261014-003` | primary | — | — |
 | `EXP-20261014-004` | primary | Cellular baseline beats flat on curated val (0.6260 vs 0.6249) at 150000 steps | — |
 | `EXP-20261014-005` | primary | Cellular baseline beats flat on curated val (0.6260 vs 0.6249) at 150000 steps | — |
+| `EXP-20261014-006` | primary | — | — |
+| `EXP-20261014-007` | primary | — | — |
