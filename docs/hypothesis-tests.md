@@ -1,6 +1,6 @@
 # Hypothesis tests: message passing ablations
 
-**Date:** 2026-10-14
+**Date:** 2026-10-15
 
 Equal-budget runs on curated Hermes train / curated val. Each variant trained for 150000 AdamW steps (batch 512, seed 0, lr 0.001, MPS when available).
 
@@ -9,13 +9,13 @@ Equal-budget runs on curated Hermes train / curated val. Each variant trained fo
 | Variant | What changes | Best val top-1 | Step | Local top-1 | Params |
 | --- | --- | --- | --- | --- | --- |
 | `baseline` | Current 1D rule; hidden reset every row | 0.6260 | 10000 | 0.2586 | 26749 |
-| `carry` | Hidden carried across consecutive session decisions in training | 0.6277 | 5000 | 0.3903 | 26749 |
+| `halt` | Learned soft halt on update depth (AMP analogue) | 0.6267 | 10000 | 0.2977 | 26766 |
 
 Always-terminal on curated val: **0.5430**.
 
 ## Verdicts
 
-- **H2 (carry):** carry training beats baseline (0.6277 vs 0.6260). Val still resets hidden per row.
+- **H_halt:** learned halt beats baseline (0.6267 vs 0.6260).
 
 ## H3 regeneration (baseline checkpoint)
 

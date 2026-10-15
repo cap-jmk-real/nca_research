@@ -44,3 +44,7 @@ Smoke runs are listed but **not** for main-text claims.
 | `EXP-20261014-006` | primary | ablation `baseline` @ 150000 | 62.60% | — | — | 25.86% | best step 10000 |
 | `EXP-20261014-007` | primary | ablation `carry` @ 150000 | 62.77% | — | — | 39.03% | best step 5000 |
 | `EXP-20261014-007` | primary | ablation `baseline` @ 150000 | 62.60% | — | — | 25.86% | best step 10000 |
+| `EXP-20261015-001` | primary | ablation `halt` @ 150000 | 62.67% | — | — | 29.77% | best step 10000 |
+| `EXP-20261015-001` | primary | ablation `baseline` @ 150000 | 62.60% | — | — | 25.86% | best step 10000 |
+| `EXP-20261015-002` | primary | ablation `halt` @ 150000 | 62.67% | — | — | 29.77% | best step 10000 |
+| `EXP-20261015-002` | primary | ablation `baseline` @ 150000 | 62.60% | — | — | 25.86% | best step 10000 |
