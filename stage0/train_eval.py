@@ -6,8 +6,8 @@ import argparse, json, math, time
 from pathlib import Path
 import numpy as np, torch, torch.nn as nn, torch.nn.functional as F
 from common import DATA, load_split, metrics, pct
-from nca_text.data import build_trace_obs, build_obs
 from nca_text.model import TextNCA, FlatPolicy
+from obs_pack import fit_or_load_tfidf, pack_arch
 
 LABELS = json.load(open(Path(__file__).with_name("labels.json")))
 VOCAB = {n: i for i, n in enumerate(LABELS)}
@@ -62,8 +62,8 @@ class SeqBaseline(nn.Module):
         return self.head(self.enc(x + self.pos[:, : x.shape[1]]).mean(1))
 
 
-def pack(arch, ex):
-    return build_obs(ex, VOCAB)[:2] if arch == "nca2d" else build_trace_obs(ex, VOCAB)[:2]
+def pack(arch, ex, text_feat="hash48", goal_tfidf=None):
+    return pack_arch(arch, ex, VOCAB, text_feat, goal_tfidf)
 
 
 def build(arch, obs, hidden, steps):
@@ -116,13 +116,16 @@ def main():
     ap.add_argument("--temp", type=float, default=1.0); ap.add_argument("--tag", default="")
     ap.add_argument("--no-class-weight", action="store_true")
     ap.add_argument("--patience", type=int, default=0, help="stop if train>=99%% and no val gain for N steps")
+    ap.add_argument("--text_feat", default="hash48", choices=["hash48", "tfidf_svd128", "hash_wide"],
+                    help="goal cell encoding; hash48 = legacy nca_text (default)")
     a = ap.parse_args()
     torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     name = f"{time.strftime('%Y%m%dT%H%M%S')}_{a.tag or a.arch}_{a.dataset}_s{a.seed}"
     out = DATA / "stage0_runs" / name; out.mkdir(parents=True, exist_ok=False)
     (out / "args.json").write_text(json.dumps(vars(a), indent=2))
-    sp = {s: pack(a.arch, load_split(a.dataset, s)) for s in ("train", "val", "test")}
+    goal_tfidf = fit_or_load_tfidf(load_split(a.dataset, "train"), a.seed) if a.text_feat == "tfidf_svd128" else None
+    sp = {s: pack(a.arch, load_split(a.dataset, s), a.text_feat, goal_tfidf) for s in ("train", "val", "test")}
     Xtr, ytr = map(torch.from_numpy, sp["train"])
     soft = teacher_soft(a.distill, len(ytr), a.temp) if a.distill else None
     idx_pool = np.arange(len(ytr))

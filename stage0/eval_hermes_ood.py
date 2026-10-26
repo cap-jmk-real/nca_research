@@ -5,6 +5,7 @@ import numpy as np, torch
 sys.path.insert(0, str(Path(__file__).parent))
 from common import DATA, load_split, metrics
 from train_eval import pack, build, LABELS
+from obs_pack import fit_or_load_tfidf
 torch.set_num_threads(2)
 ex = load_split("hermes_ood", "test"); sess = np.array([e.session_id if hasattr(e,"session_id") else e[0] for e in ex])
 OUT = DATA / "stage0_results/hermes_ood_20261026"; OUT.mkdir(parents=True, exist_ok=True)
@@ -24,9 +25,11 @@ for d in sorted(glob.glob(str(DATA / "stage0_runs/*"))):
     if tag.startswith("G1p") or not os.path.exists(d + "/result.json"): continue
     ck = torch.load(d + "/best.pt", map_location="cpu"); a = ck["args"]
     if a.get("distill"): continue
-    if a["arch"] not in cache:
-        X, y = pack(a["arch"], ex); cache[a["arch"]] = (torch.from_numpy(X), y)
-    X, y = cache[a["arch"]]
+    tf = fit_or_load_tfidf(load_split("curated", "train"), a["seed"]) if a.get("text_feat") == "tfidf_svd128" else None
+    key = (a["arch"], a.get("text_feat", "hash48"))
+    if key not in cache:
+        X, y = pack(a["arch"], ex, a.get("text_feat", "hash48"), tf); cache[key] = (torch.from_numpy(X), y)
+    X, y = cache[key]
     m = build(a["arch"], X, a["hidden"], a["nca_steps"]); m.load_state_dict(ck["state"]); m.eval()
     with torch.no_grad(): lg = torch.cat([m(X[i:i+1024]) for i in range(0, len(X), 1024)])
     ranked = torch.argsort(lg, 1, descending=True).tolist(); mt = metrics(y.tolist(), ranked, len(LABELS))

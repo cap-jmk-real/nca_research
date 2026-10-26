@@ -10,6 +10,7 @@ from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import load_split, metrics, DATA
+from features import goal_text, struct_feats
 LABELS = json.load(open(Path(__file__).resolve().parent / "labels.json")); L = {t: i for i, t in enumerate(LABELS)}
 seed = int(sys.argv[1]); out = DATA / "stage0_results" / "sota_baselines_20261026"; out.mkdir(parents=True, exist_ok=True)
 S = {s: load_split("curated", s) for s in ("train", "val", "test")}
@@ -24,18 +25,9 @@ def tools_of(ex):
     return list(ex[3])
 def goal_of(ex): return getattr(ex, "goal", None) if hasattr(ex, "goal") else ex[2]
 def label_of(ex): return L[ex.label]
-def feats(ex):
-    st = tools_of(ex)[-4:]; K = len(LABELS) + 1
-    v = np.zeros(4 * K + 4, dtype=np.float32)
-    for j in range(4):
-        k = len(st) - 1 - j  # j=0 most recent
-        v[j * K + (L.get(st[k][0], len(LABELS)) if k >= 0 else len(LABELS))] = 1 if k >= 0 else 0
-        if k < 0: v[j * K + len(LABELS)] = 1
-    v[4 * K] = len(st); v[4 * K + 1] = np.log1p(len(str(st[-1][1]))) if st else 0
-    v[4 * K + 2] = float(any("error" in str(r).lower() for _, r in st[-1:])); v[4 * K + 3] = np.log1p(len(goal_of(ex) or ""))
-    return v
+def feats(ex): return struct_feats(ex)
 tf = TfidfVectorizer(max_features=50000, ngram_range=(1, 2), min_df=2, sublinear_tf=True)
-G = {s: [ (goal_of(e) or "") + " || " + " ".join(str(r)[:200] for _, r in tools_of(e)[-1:]) for e in S[s]] for s in S}
+G = {s: [goal_text(e, True) for e in S[s]] for s in S}
 Xt = tf.fit_transform(G["train"]); svd = TruncatedSVD(128, random_state=seed).fit(Xt)
 X = {s: np.hstack([svd.transform(tf.transform(G[s])), np.stack([feats(e) for e in S[s]])]) for s in S}
 Y = {s: np.array([label_of(e) for e in S[s]]) for s in S}

@@ -17,6 +17,14 @@ def body(r):
     seq = " > ".join(x["tool"] for x in st[-10:]) or "(none)"
     last = "\n".join(f"- {x['tool']}: {x['result'][:100]}" for x in st[-1:]) or "(none)"
     return f"Goal: {r['goal'][:160]}\nTools so far: {seq}\nLast results:\n{last}"
+
+
+def body_parity(r):
+    """HistGB-matched caps (500-char goal, 200-char last result). Code only — do not run without budget."""
+    st = r.get("recent_steps", [])
+    seq = " > ".join(x["tool"] for x in st[-10:]) or "(none)"
+    last = "\n".join(f"- {x['tool']}: {x['result'][:200]}" for x in st[-1:]) or "(none)"
+    return f"Goal: {r['goal'][:500]}\nTools so far: {seq}\nLast results:\n{last}"
 def header(tr):
     c = Counter(r["target_tool"] for r in tr); n = len(tr); rng = random.Random(SEED + 7)
     per = {l: [r for r in tr if r["target_tool"] == l] for l in LABELS}

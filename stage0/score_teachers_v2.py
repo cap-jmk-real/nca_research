@@ -28,6 +28,13 @@ def body(e):
     hist = "\n".join(f"- {t}: {r[:200]}" for t, r in e.steps[-4:]) or "(none yet)"
     return f"Goal: {e.goal[:300]}\nTool-call sequence so far: {seq}\nLast results:\n{hist}"
 
+
+def body_parity(e):
+    """HistGB-matched caps for Azure/Sol parity experiments (do not run without budget)."""
+    seq = " -> ".join(t for t, _ in e.steps[-10:]) or "(none)"
+    hist = "\n".join(f"- {t}: {r[:200]}" for t, r in e.steps[-4:]) or "(none yet)"
+    return f"Goal: {e.goal[:500]}\nTool-call sequence so far: {seq}\nLast results:\n{hist}"
+
 def main():
     model, ds, outdir = sys.argv[1:4]; cap = int(sys.argv[4]) if len(sys.argv) > 4 else 0
     split = sys.argv[5] if len(sys.argv) > 5 else "val"; k = int(sys.argv[6]) if len(sys.argv) > 6 else 13
