@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Append-only backup (cron every 3h). Always: local timestamped tarball of results/logs/splits
+# under ~/nca_backups (engine-only rollback copy). If ~/.config/nca_restic.env exists
+# (RESTIC_REPOSITORY, RESTIC_PASSWORD, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY), also restic
+# backup with tags; restic is client-side encrypted, so Hermes-derived files only leave engine encrypted.
+# Never runs forget/prune.
+set -u; D=$HOME/nca_data; L=$D/sync.log; TS=$(date +%Y%m%dT%H%M%S); mkdir -p $HOME/nca_backups
+tar -czf $HOME/nca_backups/stage_$TS.tgz -C $D --exclude='datasets/hf_home' --exclude='*.pt' stage0_splits stage0_results stage0_runs queue_state teacher_rows 2>/dev/null
+echo "$TS local tarball ok" >> $L
+# denoiseopt (reelsynth PR13) runs: local tarball tagged denoiseopt (before restic gate)
+DR=$(cd $HOME/reel_runs 2>/dev/null && ls -d denoiseopt_* 2>/dev/null); [ -n "$DR" ] && tar -czf $HOME/nca_backups/denoiseopt_$TS.tgz -C $HOME/reel_runs --exclude="*.pt" --exclude="*/repo/target" --exclude="*/repo/ui" --exclude="*/repo/app" $DR 2>/dev/null && echo "$TS denoiseopt local tarball ok" >> $L
+if [ ! -f $HOME/.config/nca_restic.env ]; then echo "$TS restic BLOCKED: no credentials file (Vault read of secret/sailblack/backups/nca-research-restic denied for AppRole cursor-agents)" >> $L; exit 0; fi
+set -a; . $HOME/.config/nca_restic.env; set +a; R=$(command -v restic)
+for t in results:stage0_results logs:queue_state checkpoints:stage0_runs datasets:stage0_splits datasets:datasets/curated teacher_rows:stage0_results teacher_rows:teacher_rows hermes_raw:hermes_raw paper_src:paper_src; do
+  tag=${t%%:*}; p=$D/${t#*:}; [ -e "$p" ] || continue
+  $R backup --tag "$tag" --tag nca_research --host engine "$p" >> $L 2>&1 && echo "$TS $tag ok" >> $L || echo "$TS $tag FAIL" >> $L
+done
+[ -n "$DR" ] && $R backup --tag denoiseopt --host engine $HOME/reel_runs --exclude="*/repo/target" >> $L 2>&1 && echo "$TS denoiseopt restic ok" >> $L

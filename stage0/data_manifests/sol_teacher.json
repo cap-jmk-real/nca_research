@@ -1,0 +1,61 @@
+{
+  "dataset": "sol_teacher_20261026",
+  "model": "gpt-6.1-sol (deployment si-sol)",
+  "prompt_version": "sol_v2c",
+  "splits_seed": 20261026,
+  "files": {
+    "preds_sol_test.jsonl": {
+      "sha256": "7a7718ab0e74edbab4d2631bbe7b47bfd3467e550b8e3f2324276204a3d6b5c8",
+      "bytes": 281677,
+      "lines": 1506
+    },
+    "preds_sol_trainsub.jsonl": {
+      "sha256": "08bc08f1a19abac7095ab78dca97e18921535dda70e4d33562c4b9117407d9de",
+      "bytes": 105484,
+      "lines": 556
+    },
+    "preds_sol_val.jsonl": {
+      "sha256": "355d27b822ba4bd804263301a4b3b0e5d5b9658e8af27316d65738138035c708",
+      "bytes": 37314,
+      "lines": 200
+    },
+    "sol_spend_ledger.jsonl": {
+      "sha256": "3e207bb80106d67e5bbfb822965cd53d41065fcb5d9183683babafa26cae6eef",
+      "bytes": 262393,
+      "lines": 2263
+    },
+    "sol_test.json": {
+      "sha256": "1b95e79a5fa0d2b1376c8eccab5cbf627ce82dac4e67daa30eb4781fcb4559b6",
+      "bytes": 277,
+      "lines": 12
+    },
+    "sol_val.json": {
+      "sha256": "9558e741f48a094320d8ffe2f53b9327cf8172ae5c64456f407ae24b8a526b5b",
+      "bytes": 563,
+      "lines": 21
+    }
+  },
+  "runs": {
+    "val200": {
+      "rows": 200,
+      "source_run": "val200_20261026_0923",
+      "usd": 0.3606
+    },
+    "test": {
+      "rows": 1506,
+      "of": 3530,
+      "source_run": "sol_20261026_0950:test",
+      "usd": 2.6968
+    },
+    "trainsub": {
+      "rows": 556,
+      "planned": 2410,
+      "status": "partial",
+      "stopped_by": "Julian M. Kleber",
+      "stopped_reason": "distillation cancelled 2026-10-26 11:30 Europe/Berlin (NCA already better)",
+      "usd": 0.9818
+    }
+  },
+  "total_sol_usd": 4.0394,
+  "note": "teacher outputs only (predictions/stated top-3 probs); no hidden states or weights"
+}
