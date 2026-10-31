@@ -1,0 +1,10 @@
+name = "NCAMetaLearning"
+version = "0.1.0"
+defaultTargets = ["ncametalearning"]
+
+[[lean_lib]]
+name = "NCAMetaLearning"
+
+[[lean_exe]]
+name = "ncametalearning"
+root = "Main"
