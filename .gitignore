@@ -13,3 +13,9 @@ data/extra/*.jsonl
 
 # Checkpoints, logs, and HF packs belong on the Extreme SSD, not in the repo.
 results/
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
