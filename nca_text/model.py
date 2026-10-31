@@ -168,7 +168,8 @@ def build_adjacency(topology: str, seq_len: int = 5) -> torch.Tensor:
 
 
 class GraphNCA(nn.Module):
-    """Graph Neural Cellular Automata with multi-topology support and architecture meta-learning.
+    """Graph Neural Cellular Automata with multi-topology support, architecture meta-learning,
+    and configurable deep recurrence / rule depth.
     
     Topologies supported:
       - '1d': 1D nearest-neighbor lattice
@@ -182,6 +183,7 @@ class GraphNCA(nn.Module):
         hidden_c: int,
         n_classes: int,
         steps: int = 4,
+        rule_depth: int = 2,
         seq_len: int = 5,
         update_hidden: int = 96,
         topology: str = "tree",
@@ -193,6 +195,7 @@ class GraphNCA(nn.Module):
         self.hidden_c = hidden_c
         self.channels = obs_c + hidden_c
         self.steps = steps
+        self.rule_depth = rule_depth
         self.seq_len = seq_len
         self.topology = topology
         self.learned_halt = learned_halt
@@ -207,9 +210,26 @@ class GraphNCA(nn.Module):
             
         self.step_embed = nn.Parameter(torch.zeros(steps, hidden_c))
         perc_in = self.channels * 3
-        self.w1 = nn.Conv1d(perc_in, update_hidden, kernel_size=1)
-        self.w2 = nn.Conv1d(update_hidden, hidden_c * 2, kernel_size=1, bias=False)
-        nn.init.zeros_(self.w2.weight)
+        
+        # Local cell update network with configurable rule_depth
+        if rule_depth <= 2:
+            self.w1 = nn.Conv1d(perc_in, update_hidden, kernel_size=1)
+            self.w2 = nn.Conv1d(update_hidden, hidden_c * 2, kernel_size=1, bias=False)
+            nn.init.zeros_(self.w2.weight)
+            self.deep_layers = None
+        else:
+            # Deep update network with residual pre-activation and group normalization
+            self.w1 = nn.Conv1d(perc_in, update_hidden, kernel_size=1)
+            layers = []
+            for _ in range(rule_depth - 2):
+                layers.append(nn.Sequential(
+                    nn.GroupNorm(1, update_hidden),
+                    nn.GELU(),
+                    nn.Conv1d(update_hidden, update_hidden, kernel_size=1),
+                ))
+            self.deep_layers = nn.ModuleList(layers)
+            self.w2 = nn.Conv1d(update_hidden, hidden_c * 2, kernel_size=1, bias=False)
+            nn.init.zeros_(self.w2.weight)
         
         if learned_halt:
             self.halt = nn.Linear(hidden_c, 1)
@@ -252,7 +272,11 @@ class GraphNCA(nn.Module):
             embed = self.step_embed[min(t, self.steps - 1)].view(1, -1, 1)
             h = hidden + embed
             perceived = self._perceive(obs, h)
-            update = self.w2(F.relu(self.w1(perceived)))
+            feat = F.relu(self.w1(perceived))
+            if self.deep_layers is not None:
+                for block in self.deep_layers:
+                    feat = feat + block(feat)
+            update = self.w2(feat)
             delta, gate_logit = update.chunk(2, dim=1)
             residual = torch.sigmoid(gate_logit) * delta
             hidden = hidden + alive.view(b, 1, 1) * residual
