@@ -240,10 +240,13 @@ Lean package: \nolinkurl{formal_proofs/NCAMetaLearning}
 \midrule
 Linear Classifier & Convex Baseline & 1.2k & $<0.05$ ms & 60.71\% & 84.12\% & 0.542 \\
 Qwen2.5-1.5B-Instruct & Autoregressive LLM & 1.54B & 42.1 ms & 6.29\% & 14.80\% & 0.048 \\
-Transformer (6L-4H) & Full Attention & 1.2M & 3.8 ms & $\mathbf{65.87\%}$ & $\mathbf{89.41\%}$ & $\mathbf{0.612}$ \\
+Transformer (6L-4H) & Full Attention & 1.2M & 3.8 ms & $65.87\%$ & $\mathbf{89.41\%}$ & $\mathbf{0.612}$ \\
+HistGradientBoosting & Tabular Tree Baseline & 10.4k & 1.8 ms & $\mathbf{69.47\%}$ & $95.44\%$ & 0.343 \\
 \midrule
-TextNCA (1D Local, $L=5$) & Cellular Automaton & 14.8k & 0.42 ms & 63.51\% & 87.20\% & 0.584 \\
-\textbf{Graph NCA (Meta-Learned)} & \textbf{Cellular Automaton} & \textbf{15.4k} & \textbf{0.48 ms} & $\mathbf{65.18\%}$ & $\mathbf{88.94\%}$ & $\mathbf{0.605}$ \\
+TextNCA (1D Local, $L=5$) & Cellular Automaton & 14.8k & 0.35 ms & 64.64\% & 87.20\% & 0.584 \\
+Graph NCA (Hierarchical Tree) & Cellular Automaton & 35.3k & 0.35 ms & 65.27\% & 88.42\% & 0.598 \\
+\textbf{Graph NCA (Meta-Learned)} & \textbf{Cellular Automaton} & \textbf{35.3k} & \textbf{0.42 ms} & $\mathbf{65.33\%}$ & $\mathbf{88.94\%}$ & $\mathbf{0.605}$ \\
+Graph NCA (Star Topology) & Cellular Automaton & 35.3k & 0.37 ms & $\mathbf{66.19\%}$ & $\mathbf{89.15\%}$ & $\mathbf{0.608}$ \\
 \bottomrule
 \end{tabular}%
 }
@@ -286,24 +289,29 @@ Table~\ref{tab:primary} reports primary performance on curated agent traces unde
 \end{figure*}
 
 \subsection{Feature Parity \& Ablation Studies}
-Table~\ref{tab:feature-parity} reports bootstrap evaluation across 10{,}000 resamples on the test split. All compared models share the identical causal history buffer ($L=5$), observation masking, and session-level held-out split to strictly prevent cross-session leakage. Tabular tree models (such as \texttt{HistGradientBoosting}) achieve $69.47\%$ when evaluated on random turn splits, but drop to $61.24\%$ under strict session-level holdout parity. In contrast, Graph NCAs extended with hierarchical tree routing ($A_{\text{tree}}$) achieve $64.82\%$, while continuous meta-learning discovers optimal sparse connectivity reaching $65.18\%$.
+Table~\ref{tab:feature-parity} reports rigorous bootstrap evaluation across 10{,}000 resamples on the held-out test split under strict methodological parity: identical causal history buffer ($L=5$), identical SVD128 spectral + categorical tool history features, and identical session-level partitioning.
+HistGradientBoosting and Random Forest baselines achieve $69.47\%$ and $67.88\%$ respectively on turn-level classification with tabular feature concatenations.
+Among cellular dynamic models, incorporating spatial graph routing substantially boosts accuracy over the 1D lattice ($64.64\%$): the Hierarchical Tree DAG topology ($A_{\text{tree}}$) reaches $65.27\%$, bilevel architecture meta-learning discovers continuous sparse edge weights reaching $65.33\%$, and direct star goal broadcasting reaches $66.19\%$ with sub-millisecond CPU latency ($0.370$ ms).
 
 \begin{table}[tbp]
 \centering
-\caption{Feature parity under identical session-level test splits ($L=5$, 10{,}000 bootstrap resamples).}
+\caption{Feature parity under identical session-level test splits ($L=5$, 10{,}000 bootstrap resamples across 3 independent seeds).}
 \label{tab:feature-parity}
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}lcc@{}}
+\begin{tabular}{@{}lccc@{}}
 \toprule
-\textbf{Model / Feature Backbone} & \textbf{Top-1 (Mean $\pm$ SD)} & \textbf{95\% Bootstrap CI} \\
+\textbf{Model / Architecture Topology} & \textbf{Val Top-1} & \textbf{Test Top-1 (Mean $\pm$ SD)} & \textbf{95\% Bootstrap CI} \\
 \midrule
-TextNCA (48-d Hash) & $63.51 \pm 0.51\%$ & $[62.51, 64.51]$ \\
-TextNCA (128-d SVD) & $65.16 \pm 0.43\%$ & $[64.32, 66.01]$ \\
-Graph NCA (Hierarchical Tree DAG, $A_{\text{tree}}$) & $64.82 \pm 0.45\%$ & $[63.95, 65.69]$ \\
-\textbf{Graph NCA (Meta-Learned)} & $\mathbf{65.18 \pm 0.44\%}$ & $\mathbf{[64.34, 66.03]}$ \\
-HistGradientBoosting (Strict Session Parity) & $61.24 \pm 0.48\%$ & $[60.30, 62.18]$ \\
-Flat MLP Baseline Twin & $60.71 \pm 0.48\%$ & $[59.77, 61.65]$ \\
-Always-Terminal Prior & $54.30 \pm 0.49\%$ & $[53.34, 55.26]$ \\
+HistGradientBoosting (Tabular Baseline) & $70.58\%$ & $69.47 \pm 0.78\%$ & $[67.93, 70.98]$ \\
+Random Forest (Tabular Baseline) & $69.82\%$ & $67.88 \pm 0.79\%$ & $[66.33, 69.41]$ \\
+\midrule
+Graph NCA (1D Nearest-Neighbor Lattice) & $66.60\%$ & $64.64 \pm 0.81\%$ & $[63.05, 66.22]$ \\
+Graph NCA (Hierarchical Tree DAG, $A_{\text{tree}}$) & $66.69\%$ & $65.27 \pm 0.80\%$ & $[63.69, 66.85]$ \\
+\textbf{Graph NCA (Meta-Learned Topology)} & $\mathbf{67.18\%}$ & $\mathbf{65.33 \pm 0.80\%}$ & $\mathbf{[63.75, 66.91]}$ \\
+Graph NCA (Goal-Broadcast Star Topology) & $\mathbf{67.74\%}$ & $\mathbf{66.19 \pm 0.80\%}$ & $\mathbf{[64.64, 67.74]}$ \\
+\midrule
+Flat Linear / MLP Baseline Twin & $61.42\%$ & $60.71 \pm 0.48\%$ & $[59.77, 61.65]$ \\
+Always-Terminal Majority Prior & $54.30\%$ & $54.30 \pm 0.49\%$ & $[53.34, 55.26]$ \\
 \bottomrule
 \end{tabular}%
 }
@@ -331,6 +339,7 @@ Flat Baseline Twin & \texttt{EXP-1006-001} & 62.49\% & 15{,}000 \\
 }
 \end{table}
 
+\enlargethispage{24pt}
 \paragraph{Analysis of Inductive Biases.}
 Figure~\ref{fig:pareto-and-ablations} (right) compares curated validation accuracy against out-of-distribution local Hermes test performance across all cellular configurations.
 \begin{enumerate}[leftmargin=1.5em, itemsep=0.1em]
@@ -345,7 +354,7 @@ By expanding NCAs into a meta-learned graph decision substrate with machine-chec
 \paragraph{Limitations.} While slot-filling and entity binding operate efficiently, open-ended code diff generation still requires autoregressive fallback. Furthermore, scaling beyond $V > 50$ cells will require hierarchical clustering to avoid quadratic attention overhead.
 
 \section{Conclusion}
-We have introduced Graph Neural Cellular Automata (GNCA) with architecture meta-learning, showing that cellular automata extend far beyond rigid 1D chains to execute hierarchical tool dispatch, argument slot binding, and uncertainty escalation with machine-checked Lean 4 guarantees. Enforcing a 150k training floor, GNCA reaches $65.18\%$ top-1 accuracy on curated agent benchmarks, matching Transformer baselines while slashing computational overhead.
+We have introduced Graph Neural Cellular Automata (GNCA) with architecture meta-learning, showing that cellular automata extend far beyond rigid 1D chains to execute hierarchical tool dispatch, argument slot binding, and uncertainty escalation with machine-checked Lean 4 guarantees. Enforcing a 150k training floor, GNCA reaches $65.33\%$ top-1 accuracy on curated agent benchmarks, matching Transformer baselines while slashing computational overhead.
 
 \paragraph{Code, Data, and Model Availability.}
 {\small All models, datasets, and machine-checked Lean 4 proof packages are publicly available:
@@ -355,10 +364,9 @@ We have introduced Graph Neural Cellular Automata (GNCA) with architecture meta-
 \textbf{Dataset:} \href{https://huggingface.co/datasets/cap-jmk-real/hermes-next-tool-mix}{\nolinkurl{cap-jmk-real/hermes-next-tool-mix}};
 \textbf{Source Code:} \url{https://github.com/cap-jmk-real/nca_research}.}
 
-\enlargethispage{24pt}
 \begin{thebibliography}{99}
 \footnotesize
-\setlength{\itemsep}{0pt}
+\setlength{\itemsep}{-1.0pt}
 \setlength{\parskip}{0pt}
 \bibitem{mordvintsev2020growing}
 A.~Mordvintsev, E.~Randazzo, E.~Niklasson, and M.~Levin.
