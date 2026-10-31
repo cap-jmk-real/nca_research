@@ -94,11 +94,11 @@ Neural Cellular Automata (NCAs)~\cite{mordvintsev2020growing} offer an alternati
 
 \section{Related Work}
 
-\paragraph{Neural Cellular Automata.}
-Mordvintsev et al.~\cite{mordvintsev2020growing} introduced Growing Neural Cellular Automata, demonstrating that localized $1 \times 1$ convolutions combined with fixed Sobel filters can learn self-organizing pattern morphogenesis and damage recovery. Subsequent work extended NCAs to voxel synthesis and policy learning. Mittal et al.~\cite{mittal2026textnca} introduced TextNCA for autoregressive token modeling. Our framework departs fundamentally from token generation: we construct a dynamic cellular graph representing agent execution states to perform hierarchical action and argument dispatch.
+\paragraph{Neural Cellular Automata and Reasoning.}
+Mordvintsev et al.~\cite{mordvintsev2020growing} introduced Growing Neural Cellular Automata, demonstrating self-organizing pattern morphogenesis and damage recovery. Subsequent work extended NCAs to multi-scale hierarchical structures~\cite{pande2023hierarchical} and decentralized algorithmic reasoning~\cite{etcheverry2026reasoning}. In language modeling, Mittal et al.~\cite{mittal2026textnca} and Lee et al.~\cite{lee2026training} demonstrated that cellular rules can learn token representations. Our framework departs fundamentally from token generation. Instead of generating language text, we construct a dynamic cellular graph over agent execution states to perform structured tool and argument dispatch.
 
-\paragraph{Tool Calling \& Function Execution Benchmarks.}
-Modern tool use is benchmarked via datasets such as the Berkeley Function Calling Leaderboard (BFCL)~\cite{gorilla-bfcl}, NESTFUL, and SWE-bench. A central finding of these benchmarks is that action dispatch extends beyond predicting raw tool names. Real agents must handle three coupled tasks: detecting irrelevance to abstain gracefully, binding argument slots to workspace entities, and coordinating multi-turn plans.
+\paragraph{Tool Calling, Agent Harnesses, and Pre-Routing.}
+Tool use in autonomous systems is evaluated on benchmarks like the Berkeley Function Calling Leaderboard (BFCL)~\cite{gorilla-bfcl} and SWE-bench. Production agent harnesses execute many typed System-1 decisions per task~\cite{li2026fastmodels}. Singla et al.~\cite{singla2026agentweave} showed that pre-inference action routing cuts prompt latency and token overhead by half. Expanding on these findings, real agents must handle three coupled tasks: detecting irrelevance to abstain gracefully, binding argument slots to workspace entities, and coordinating multi-turn plans.
 
 \paragraph{Architecture Meta-Learning \& Graph Bottlenecks.}
 Standard GNNs frequently suffer from \emph{oversmoothing} (representations collapsing to uniformity with depth), \emph{oversquashing} (information bottlenecking from high-degree neighborhoods), and \emph{underreaching} (insufficient message passing depth to bridge distant nodes). By casting topology optimization as bilevel architecture meta-learning, our framework discovers sparse relational graphs that balance local message passing with long-range goal broadcasting.
@@ -374,14 +374,34 @@ We have introduced Graph Neural Cellular Automata (GNCA) with architecture meta-
 A.~Mordvintsev, E.~Randazzo, E.~Niklasson, and M.~Levin.
 \newblock Growing neural cellular automata.
 \newblock \emph{Distill}, 5(2):e23, 2020.
+\bibitem{pande2023hierarchical}
+R.~Pande and D.~Grattarola.
+\newblock Hierarchical neural cellular automata.
+\newblock In \emph{Proc.\ ALIFE}, 2023.
+\bibitem{etcheverry2026reasoning}
+M.~Etcheverry, P.~Miotti, A.~Sirbu, et~al.
+\newblock Reasoning with neural cellular automata.
+\newblock \emph{arXiv preprint arXiv:2609.36126}, 2026.
 \bibitem{mittal2026textnca}
 A.~Mittal et al.
-\newblock TextNCA: Exploring Cellular Automata for Language Representation.
+\newblock TextNCA: Exploring cellular automata for language representation.
 \newblock \emph{arXiv preprint arXiv:2603.01124}, 2026.
+\bibitem{lee2026training}
+D.~Lee, S.~Han, A.~Kumar, and P.~Agrawal.
+\newblock Training language models via neural cellular automata.
+\newblock \emph{arXiv preprint arXiv:2603.10055}, 2026.
 \bibitem{gorilla-bfcl}
 S.~Patil, H.~Mao, et al.
-\newblock Berkeley Function Calling Leaderboard.
+\newblock Berkeley function calling leaderboard.
 \newblock \emph{Gorilla Project Technical Report}, 2024.
+\bibitem{singla2026agentweave}
+S.~Singla, A.~Singla, A.~Gupta, and P.~Gupta.
+\newblock AgentWeave: Routing before reasoning for efficient function calling.
+\newblock \emph{arXiv preprint arXiv:2608.23078}, 2026.
+\bibitem{li2026fastmodels}
+J.-W.~Li.
+\newblock Fast models, slow evidence: System-1 decision models for agent harnesses.
+\newblock \emph{Preprint}, 2026.
 \end{thebibliography}
 
 \clearpage
