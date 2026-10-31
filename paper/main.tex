@@ -105,6 +105,13 @@ Standard GNNs frequently suffer from \emph{oversmoothing} (representations colla
 
 \section{Task Formulation \& Architecture}
 
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.92\textwidth]{figures/fig1_arch_topology.pdf}
+\caption{\textbf{Architectural schematic and topological comparison.} (a) Traditional 1D cellular automata restrict message passing to adjacent linear neighbors, requiring $\Omega(V)$ updates for global goal integration. (b) Our meta-learned Graph NCA framework relaxes topology via bilevel optimization ($A_{ij} = \sigma(W_\theta x_i^\top x_j)$), enabling direct goal-broadcasting with diameter $\le 2$ ($O(1)$ receptive field) and permutation-equivariant cellular state updates.}
+\label{fig:arch}
+\end{figure*}
+
 \subsection{Hierarchical Action Formulation}
 Rather than treating next-tool selection as a flat $1$-of-$K$ classification problem, we formulate agent dispatch as synthesizing an action tuple:
 \begin{equation}
@@ -244,7 +251,21 @@ Because iterative cellular dynamics learn spatial coordination gradually, premat
 \section{Results}
 
 \subsection{Primary Benchmark Evaluation}
-Table~\ref{tab:primary} reports primary performance on curated agent traces under the 150k AdamW budget across candidate architectures.
+Table~\ref{tab:primary} reports primary performance on curated agent traces under the 150k AdamW budget across candidate architectures. Figure~\ref{fig:learning-curves} depicts empirical validation accuracy across 150k steps.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig2_learning_curves.pdf}
+\caption{\textbf{Empirical training and validation trajectories across the 150k AdamW step budget.} Curated validation top-1 accuracy plotted against training steps for Graph NCA (mix13 champion), Long-Range ($k=2$), 1D Regular Lattice, Flat MLP baseline, and Always-Terminal heuristic. Shaded ribbons denote $\pm 1\sigma$ standard deviation across 3 independent evaluation seeds.}
+\label{fig:learning-curves}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig3_pareto_efficiency.pdf}
+\caption{\textbf{Pareto trade-off between parameter scale and held-out accuracy.} Held-out local Hermes top-1 accuracy plotted against model parameters ($\log_{10}$ scale). Graph NCA configurations achieve $39.0$--$40.1\%$ top-1 with only $26.7\text{k}$ parameters ($<0.5\text{ ms}$ latency), outperforming 1.5B autoregressive LLMs ($6.3\%$) by $6.2\times$ while reducing parameter footprint by $57{,}000\times$.}
+\label{fig:pareto}
+\end{figure}
 
 \subsection{Feature Parity \& Ablation Studies}
 Table~\ref{tab:feature-parity} reports bootstrap evaluation across 10{,}000 resamples on the test split. The continuous spectral SVD representation improves cellular gradient estimation over discrete hashing by $+1.64\text{ pp}$.
@@ -290,11 +311,19 @@ Flat Baseline Twin & \texttt{EXP-1006-001} & 62.49\% & 15{,}000 \\
 \end{table}
 
 \paragraph{Analysis of Inductive Biases.}
+Figure~\ref{fig:ablation-bars} compares curated validation accuracy against out-of-distribution local Hermes test performance across all cellular configurations.
 \begin{enumerate}[leftmargin=1.5em, itemsep=0.1em]
   \item \textbf{Meta-Learned Topology:} By learning sparse continuous edge weights $A_\alpha$ via bilevel optimization, the model bridges the root goal with active execution states in $O(1)$ steps, outperforming 1D local chains by $+2.58\text{ pp}$.
-  \item \textbf{Cross-Turn Carry:} Carrying hidden states forward across turns ($62.77\%$) maintains temporal continuity on long iterative debugging trajectories.
+  \item \textbf{Cross-Turn Carry:} Carrying hidden states forward across turns ($62.77\%$ val, $39.03\%$ local) maintains temporal continuity on long iterative debugging trajectories.
   \item \textbf{Dynamic Soft Halting:} Achieves $62.67\%$ with an average of only $2.8$ effective iteration cycles, reducing execution latency by $\approx 30\%$.
 \end{enumerate}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig4_ablation_bars.pdf}
+\caption{\textbf{Ablation breakdown across cellular inductive biases.} Curated validation top-1 accuracy (blue) and out-of-distribution local Hermes test top-1 accuracy (orange) across message-passing variants with standard error bars.}
+\label{fig:ablation-bars}
+\end{figure}
 
 \section{Discussion \& Limitations}
 By expanding NCAs into a meta-learned graph decision substrate with machine-checked mathematical guarantees, we show that neural cellular automata can replace autoregressive decoders for deterministic agent actions while retaining mathematical interpretability.
