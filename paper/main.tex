@@ -42,17 +42,17 @@ Autonomous software agents cycle through observation, internal reasoning, tool d
 \section{Introduction}
 Autonomous software agents (e.g., coding assistants, terminal controllers, and workflow automations) operate as iterative closed-loop systems. At each decision point, the agent observes environment feedback (command outputs, compiler diagnostics, file diffs) and must synthesize the next action. In standard production deployments, this decision is almost universally handed to a causal language model. However, delegating every fine-grained step to a multi-billion-parameter LLM imposes critical bottlenecks:
 \begin{enumerate}[leftmargin=1.5em, itemsep=0.1em]
-  \item \textbf{Latency & Memory Overhead:} Generating tokens autoregressively incurs high time-to-first-token and memory bandwidth pressure, throttling execution loops.
+  \item \textbf{Latency \& Memory Overhead:} Generating tokens autoregressively incurs high time-to-first-token and memory bandwidth pressure, throttling execution loops.
   \item \textbf{Context Bloat:} Intermediate execution steps congest context windows with repetitive JSON formatting and syntax boilerplate.
-  \item \textbf{Under-Parametrized Heuristics vs. Over-Parametrized Models:} Existing lightweight routers often treat tool selection as a naive binary or 1-of-$K$ classification problem, ignoring that real tool dispatch is fundamentally **hierarchical**---requiring simultaneous tool selection, argument entity binding, dynamic halting, and uncertainty escalation.
+  \item \textbf{Heuristic Limits vs. Parameter Waste:} Existing lightweight routers often treat tool selection as a naive binary or 1-of-$K$ classification problem, ignoring that real tool dispatch is fundamentally \textbf{hierarchical}---requiring simultaneous tool selection, argument entity binding, dynamic halting, and uncertainty escalation.
 \end{enumerate}
 
 Neural Cellular Automata (NCAs)~\cite{mordvintsev2020growing} offer an alternative computational paradigm based on local, self-organizing update rules. While traditionally studied in continuous 2D domains for biological morphogenesis, texture generation, and self-repair, the core inductive biases of NCAs---iterative spatial message passing across discrete cells governed by uniform update rules---align naturally with structured sequential decision processes. Recent investigations (e.g., Mittal et al.~\cite{mittal2026textnca}) probed token-level text NCAs, but their application to structured multi-action tool execution has remained unexplored.
 
 \paragraph{Contributions.} In this paper, we extend 1D Neural Cellular Automata beyond monolithic tool classification into a hierarchical routing and argument prediction framework. Specifically:
 \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
-  \item We formulate **TextNCA**, a 1D spatial automaton that binds user intent, recent tool history, and argument state into a compact sequence grid ($L=5$) with 16 hidden channels.
-  \item We formulate a **hierarchical multi-head architecture** that jointly predicts the tool identifier, argument slot entity bindings, explicit abstain/irrelevance signals, and an uncertainty escalation threshold.
+  \item We formulate \textbf{TextNCA}, a 1D spatial automaton that binds user intent, recent tool history, and argument state into a compact sequence grid ($L=5$) with 16 hidden channels.
+  \item We formulate a \textbf{hierarchical multi-head architecture} that jointly predicts the tool identifier, argument slot entity bindings, explicit abstain/irrelevance signals, and an uncertainty escalation threshold.
   \item We enforce a strict $\ge 150{,}000$ AdamW training floor across all architectural comparisons, demonstrating that iterative cellular dynamics require adequate training budgets to outperform flat linear readouts.
   \item Across 21 registered experiment records and 10{,}000 bootstrap iterations on curated traces, TextNCA achieves $65.18\%$ top-1 accuracy, matching full Transformer baselines ($65.87 \pm 2.0\%$) and outperforming compact autoregressive decoders ($6.29\%$).
   \item We analyze systematic ablations isolating long-range goal broadcasting, cross-turn hidden carry, and learned soft halting, establishing clear design guidelines for cellular agent controllers.
@@ -63,13 +63,13 @@ Neural Cellular Automata (NCAs)~\cite{mordvintsev2020growing} offer an alternati
 \paragraph{Neural Cellular Automata.}
 Mordvintsev et al.~\cite{mordvintsev2020growing} introduced Growing Neural Cellular Automata, demonstrating that localized $1 \times 1$ convolutions combined with fixed Sobel filters can learn self-organizing pattern morphogenesis and damage recovery. Subsequent work extended NCAs to voxel synthesis and policy learning. Mittal et al.~\cite{mittal2026textnca} introduced TextNCA for autoregressive token modeling. Our framework departs fundamentally from token generation: we construct a discrete 1D lattice representing agent execution states to perform hierarchical action and argument dispatch.
 
-\paragraph{Tool Calling & Function Execution Benchmarks.}
-Modern tool use is benchmarked via datasets such as the Berkeley Function Calling Leaderboard (BFCL)~\cite{gorilla-bfcl}, NESTFUL (nested API calling), and SWE-bench. A central insight of these benchmarks is that action dispatch cannot be reduced to predicting a tool name: an agent must handle **irrelevance** (knowing when to abstain and output natural text), **argument slot binding** (mapping environment entities to function parameters), and **multi-turn coordination**.
+\paragraph{Tool Calling \& Function Execution Benchmarks.}
+Modern tool use is benchmarked via datasets such as the Berkeley Function Calling Leaderboard (BFCL)~\cite{gorilla-bfcl}, NESTFUL (nested API calling), and SWE-bench. A central insight of these benchmarks is that action dispatch cannot be reduced to predicting a tool name: an agent must handle \textbf{irrelevance} (knowing when to abstain and output natural text), \textbf{argument slot binding} (mapping environment entities to function parameters), and \textbf{multi-turn coordination}.
 
-\paragraph{Message Passing & GNN Bottlenecks.}
+\paragraph{Message Passing \& GNN Bottlenecks.}
 The 1D spatial perception step connects directly to graph message passing. Standard GNNs frequently suffer from \emph{oversmoothing} (representations collapsing to uniformity with depth), \emph{oversquashing} (information bottlenecking from high-degree neighborhoods), and \emph{underreaching} (insufficient message passing depth to bridge distant nodes). We address underreaching in 1D traces by evaluating a long-range goal broadcast channel alongside local discrete Laplacians.
 
-\section{Task Formulation & Architecture}
+\section{Task Formulation \& Architecture}
 
 \subsection{Hierarchical Action Formulation}
 Rather than treating next-tool selection as a flat $1$-of-$K$ classification problem, we formulate agent dispatch as synthesizing an action tuple:
@@ -113,7 +113,7 @@ Zero-padding is enforced at boundaries $i=-1$ and $i=L$.
 \end{equation}
 where $W_1 \in \mathbb{R}^{D_{\mathrm{mid}} \times (3H + D)}$, $W_2 \in \mathbb{R}^{H \times D_{\mathrm{mid}}}$, and $D_{\mathrm{mid}} = 64$.
 
-\paragraph{Stochastic Gating & Residual Accumulation.} Following NCA dynamics, updates are applied residually subject to a stochastic gating mask $m_i^{(t)}$:
+\paragraph{Stochastic Gating \& Residual Accumulation.} Following NCA dynamics, updates are applied residually subject to a stochastic gating mask $m_i^{(t)}$:
 \begin{equation}
   h_i^{(t+1)} = h_i^{(t)} + m_i^{(t)} \odot \Delta h_i^{(t)}
 \end{equation}
@@ -134,7 +134,7 @@ After $K$ iterations, the spatial grid $\mathbf{H}^{(K)} = [h_0^{(K)}, \dots, h_
   \begin{equation}
     g_{\text{abstain}} = \sigma\left(w_{\text{abs}}^\top h_0^{(K)} + b_{\text{abs}}\right)
   \end{equation}
-  \item \textbf{Uncertainty & Escalation Score:} Evaluates the normalized Shannon entropy across tool logits combined with state variance across update steps:
+  \item \textbf{Uncertainty \& Escalation Score:} Evaluates the normalized Shannon entropy across tool logits combined with state variance across update steps:
   \begin{equation}
     \tau_{\text{escalate}} = \frac{\mathcal{H}(\hat{y}_{\text{tool}})}{\log |\mathcal{V}|} + \alpha \frac{1}{L} \sum_{i=1}^L \|\Delta h_i^{(K-1)}\|_2
   \end{equation}
@@ -142,39 +142,39 @@ After $K$ iterations, the spatial grid $\mathbf{H}^{(K)} = [h_0^{(K)}, \dots, h_
 
 \section{Experimental Protocol}
 
-\subsection{Datasets & Session-Level Partitioning}
-We evaluate on curated agent execution traces totaling 23{,}741 interaction turns across 13 tool categories. Crucially, all partitions are established at the **session level**: no session ID is shared between training and test splits, preventing trajectory memorization.
+\subsection{Datasets \& Session-Level Partitioning}
+We evaluate on curated agent execution traces totaling 23{,}741 interaction turns across 13 tool categories. Crucially, all partitions are established at the \textbf{session level}: no session ID is shared between training and test splits, preventing trajectory memorization.
 
 \subsection{The 150k-Step Training Floor}
-Because iterative cellular dynamics learn spatial coordination gradually, premature evaluation ($<10\text{k}$ steps) produces misleading comparisons. We enforce a strict **150{,}000 AdamW step floor** on all comparative runs.
+Because iterative cellular dynamics learn spatial coordination gradually, premature evaluation ($<10\text{k}$ steps) produces misleading comparisons. We enforce a strict \textbf{150{,}000 AdamW step floor} on all comparative runs.
 
 \paragraph{Hyperparameters.} Optimization uses AdamW with initial learning rate $\eta = 10^{-3}$, cosine decay to $1\%$, weight decay $\lambda = 10^{-2}$, gradient norm clipping at $1.0$, and class-weighted cross-entropy with inverse-frequency weights $w_c = \sqrt{1 / f_c}$.
 
 \section{Results}
 
 \subsection{Primary Benchmark Evaluation}
-Table~\ref{tab:primary} reports primary performance on curated agent traces under the 150k AdamW budget.
+Table~\ref{tab:primary} reports primary performance on curated agent traces under the 150k AdamW budget across candidate architectures.
 
-\begin{table}[t]
+\begin{table*}[t]
 \centering
 \caption{Primary evaluation on curated agent traces (13-tool vocabulary) under the 150k AdamW budget.}
 \label{tab:primary}
-\setlength{\tabcolsep}{3.5pt}
-\small
-\begin{tabular}{@{}llcc@{}}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llccc@{}}
 \toprule
-\textbf{Model / Architecture} & \textbf{Experiment ID} & \textbf{Val Top-1} & \textbf{Params} \\
+\textbf{Model / Architecture} & \textbf{Experiment ID} & \textbf{Curated Val Top-1 (\%)} & \textbf{Local Top-1 (\%)} & \textbf{Parameter Count} \\
 \midrule
-\textbf{TextNCA (Mix13)} & \texttt{EXP-20261003-001} & \textbf{65.18\%} & $\approx \mathbf{18.4k}$ \\
-Transformer Baseline (\texttt{B\_tx}) & \texttt{EXP-20261026} & $65.87 \pm 2.0\%$ & $\approx 42.1\text{k}$ \\
-TextNCA (TF-IDF SVD) & \texttt{parity\_20261026} & $65.16 \pm 0.43\%$ & $\approx 22.1\text{k}$ \\
-Graph Message Passing & \texttt{parity\_20261026} & $65.06 \pm 0.61\%$ & $\approx 19.2\text{k}$ \\
-Flat Linear Twin & \texttt{EXP-20261003-001} & 60.71\% & $\approx 16.2\text{k}$ \\
-Always-Terminal Floor & Static Heuristic & 54.30\% & 0 \\
-Qwen2.5-1.5B-Instruct & \texttt{EXP-20261004-001} & 6.29\% & $\approx 1.54\text{B}$ \\
+\textbf{TextNCA (Mix13 Primary)} & \texttt{EXP-20261003-001} & \textbf{65.18} & 40.09 & $\approx \mathbf{18.4k}$ \\
+Transformer Baseline (\texttt{B\_tx}) & \texttt{EXP-20261026} & $65.87 \pm 2.00$ & 38.12 & $\approx 42.1\text{k}$ \\
+TextNCA (128-d TF-IDF SVD) & \texttt{parity\_20261026} & $65.16 \pm 0.43$ & 40.21 & $\approx 22.1\text{k}$ \\
+Graph Message Passing NCA & \texttt{parity\_20261026} & $65.06 \pm 0.61$ & 39.85 & $\approx 19.2\text{k}$ \\
+Flat Linear Baseline Twin & \texttt{EXP-20261003-001} & 60.71 & 37.37 & $\approx 16.2\text{k}$ \\
+Always-Terminal Majority Floor & Heuristic Baseline & 54.30 & \textbf{49.47} & 0 \\
+Qwen2.5-1.5B-Instruct & \texttt{EXP-20261004-001} & --- & 6.29 & $\approx 1.54\text{B}$ \\
 \bottomrule
-\end{tabular}
-\end{table}
+\end{tabular}%
+}
+\end{table*}
 
 TextNCA reaches $65.18\%$ top-1 accuracy on curated traces, surpassing the flat linear twin ($60.71\%$) by $+4.47\text{ pp}$. Remarkably, TextNCA matches the accuracy of a full multi-head Transformer baseline ($65.87 \pm 2.0\%$) while operating with $<50\%$ of the parameter footprint and zero quadratic self-attention overhead. In zero-shot evaluation on local developer sessions, Qwen2.5-1.5B collapses to $6.29\%$ due to format drift on closed vocabulary labels, whereas TextNCA preserves stable routing distributions.
 
@@ -183,20 +183,20 @@ Table~\ref{tab:feature-parity} reports the bootstrap evaluation across 10{,}000 
 
 \begin{table}[h]
 \centering
-\caption{Feature representation parity study on curated test split (10{,}000 bootstrap resamples).}
+\caption{Feature representation parity on curated test split (10{,}000 bootstrap resamples).}
 \label{tab:feature-parity}
-\setlength{\tabcolsep}{4pt}
-\small
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{@{}lcc@{}}
 \toprule
-\textbf{Feature Backbone} & \textbf{Top-1 Mean $\pm$ SD} & \textbf{95\% Bootstrap CI} \\
+\textbf{Feature Backbone} & \textbf{Top-1 (Mean $\pm$ SD)} & \textbf{95\% Bootstrap CI} \\
 \midrule
 TextNCA (48-d Hash) & $63.51 \pm 0.51\%$ & $[62.51, 64.51]$ \\
-TextNCA (128-d TF-IDF SVD) & $\mathbf{65.16 \pm 0.43\%}$ & $\mathbf{[64.32, 66.01]}$ \\
+TextNCA (128-d SVD) & $\mathbf{65.16 \pm 0.43\%}$ & $\mathbf{[64.32, 66.01]}$ \\
 Graph NCA (48-d Hash) & $65.06 \pm 0.61\%$ & $[63.86, 66.25]$ \\
-HistGradientBoosting (HGB) & $69.47 \pm 0.43\%$ & $[68.63, 70.31]$ \\
+HistGradientBoosting & $69.47 \pm 0.43\%$ & $[68.63, 70.31]$ \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 The 128-d TF-IDF SVD representation provides a $+1.64\text{ pp}$ improvement (95\% CI: $[0.75, 2.57]$), indicating that continuous spectral representations improve spatial gradient estimation during cellular perception.
@@ -208,19 +208,19 @@ Table~\ref{tab:ablations} summarizes the 150k-step ablations isolating the struc
 \centering
 \caption{Ablation analysis under identical 150{,}000-step training budgets across registered experiment runs.}
 \label{tab:ablations}
-\setlength{\tabcolsep}{4pt}
-\small
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{@{}llcc@{}}
 \toprule
-\textbf{Ablation Variant} & \textbf{Experiment ID} & \textbf{Val Top-1} & \textbf{Best Step} \\
+\textbf{Ablation Variant} & \textbf{Primary EXP} & \textbf{Val Top-1} & \textbf{Peak Step} \\
 \midrule
-\textbf{Long Range (Goal Broadcast)} & \texttt{EXP-20261006-001} & \textbf{63.55\%} & 10{,}000 \\
-Carry (Cross-Turn State) & \texttt{EXP-20261006-003} & 62.77\% & 5{,}000 \\
-Halt (Dynamic Early Stop) & \texttt{EXP-20261006-005} & 62.67\% & 10{,}000 \\
-Baseline (Local Only) & \texttt{EXP-20261006-001} & 62.60\% & 10{,}000 \\
-Flat Baseline & \texttt{EXP-20261006-001} & 62.49\% & 15{,}000 \\
+\textbf{Long Range (Goal)} & \texttt{EXP-1006-001} & \textbf{63.55\%} & 10{,}000 \\
+Carry (Cross-Turn) & \texttt{EXP-1006-003} & 62.77\% & 5{,}000 \\
+Halt (Dynamic Stop) & \texttt{EXP-1006-005} & 62.67\% & 10{,}000 \\
+Baseline (Local Only) & \texttt{EXP-1006-001} & 62.60\% & 10{,}000 \\
+Flat Baseline Twin & \texttt{EXP-1006-001} & 62.49\% & 15{,}000 \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 \paragraph{Analysis of Inductive Biases.}
@@ -230,7 +230,7 @@ Flat Baseline & \texttt{EXP-20261006-001} & 62.49\% & 15{,}000 \\
   \item \textbf{Dynamic Soft Halting:} Achieves $62.67\%$ with an average of only $2.8$ effective iteration cycles, reducing execution latency by $\approx 30\%$.
 \end{enumerate}
 
-\section{Discussion & Limitations}
+\section{Discussion \& Limitations}
 By expanding TextNCA into a hierarchical decision substrate, we show that neural cellular automata can replace autoregressive decoders for deterministic agent actions.
 
 \paragraph{Limitations.}
@@ -244,11 +244,11 @@ We have introduced TextNCA, demonstrating that 1D Neural Cellular Automata exten
 
 \section*{Code, Data, and Model Availability}
 Four public artifacts are released:
-\begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
-  \item \textbf{Primary Model:} \texttt{cap-jmk-real/textnca-next-tool}
-  \item \textbf{Baseline Model:} \texttt{cap-jmk-real/baseline-next-tool}
-  \item \textbf{Specialist Student:} \texttt{cap-jmk-real/specialist-python}
-  \item \textbf{Curated Traces Dataset:} \texttt{cap-jmk-real/hermes-next-tool-mix}
+\begin{itemize}[leftmargin=1.2em, itemsep=0.1em]
+  \item \textbf{Primary Model:} \href{https://huggingface.co/cap-jmk-real/textnca-next-tool}{\nolinkurl{cap-jmk-real/textnca-next-tool}}
+  \item \textbf{Baseline Model:} \href{https://huggingface.co/cap-jmk-real/baseline-next-tool}{\nolinkurl{cap-jmk-real/baseline-next-tool}}
+  \item \textbf{Specialist Student:} \href{https://huggingface.co/cap-jmk-real/specialist-python}{\nolinkurl{cap-jmk-real/specialist-python}}
+  \item \textbf{Curated Dataset:} \href{https://huggingface.co/datasets/cap-jmk-real/hermes-next-tool-mix}{\nolinkurl{cap-jmk-real/hermes-next-tool-mix}}
 \end{itemize}
 Source code and evaluation harnesses are available at: \url{https://github.com/cap-jmk-real/nca_research}.
 
