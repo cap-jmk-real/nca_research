@@ -15,6 +15,12 @@
 \usepackage{listings}
 \usepackage{color}
 
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{4pt}
+
 \hypersetup{
   colorlinks=true,
   linkcolor=blue,
@@ -138,7 +144,7 @@ Updates are applied residually across $K=4$ cycles:
 \end{equation}
 where $m_i^{(t)} \sim \operatorname{Bernoulli}(p)$ ($p=0.8$ during training; $1.0$ at inference) enforces asynchronous cellular computation.
 
-\subsection{Architecture Meta-Learning on Topologies}
+\subsection{Architecture Meta-Learning on Spatial Topologies}
 To discover the optimal cellular interaction topology without manual heuristic tuning, we formulate a bilevel architecture meta-learning problem:
 \begin{equation}
   \begin{aligned}
@@ -188,7 +194,7 @@ For any 1D local NCA with nearest-neighbor radius $r=1$ over $V \ge 3$ nodes, pr
 Let $\sigma \in \Pi_V$ be any bijective permutation on the node set $\mathcal{V}$, and let $\mathcal{G}_\sigma = \operatorname{permuteGraph}(\mathcal{G}, \sigma)$. Then for all $i, j \in \mathcal{V}$, $j \in \mathcal{N}_{\mathcal{G}}(i) \iff \sigma(j) \in \mathcal{N}_{\mathcal{G}_\sigma}(\sigma(i))$, and graph paths commute with $\sigma$.
 \end{theorem}
 
-\begin{figure}[h]
+\begin{figure}[tbp]
 \centering
 \fbox{\parbox{0.92\columnwidth}{%
 \small
@@ -204,21 +210,6 @@ Lean package: \nolinkurl{formal_proofs/NCAMetaLearning}
 \caption{Formal verification status in the Lean 4 proof assistant.}
 \label{fig:lean-status}
 \end{figure}
-
-\section{Experimental Protocol}
-
-\subsection{Datasets \& Session-Level Partitioning}
-We evaluate on curated agent execution traces totaling 23{,}741 interaction turns across 13 tool categories. Crucially, all partitions are established at the \textbf{session level}: no session ID is shared between training and test splits, preventing trajectory memorization.
-
-\subsection{The 150k-Step Training Floor}
-Because iterative cellular dynamics learn spatial coordination gradually, premature evaluation ($<10\text{k}$ steps) produces misleading comparisons. We enforce a strict \textbf{150{,}000 AdamW step floor} on all comparative runs.
-
-\paragraph{Hyperparameters.} Optimization uses AdamW with initial learning rate $\eta = 10^{-3}$, cosine decay to $1\%$, weight decay $\lambda = 10^{-2}$, gradient norm clipping at $1.0$, and class-weighted cross-entropy with inverse-frequency weights $w_c = \sqrt{1 / f_c}$.
-
-\section{Results}
-
-\subsection{Primary Benchmark Evaluation}
-Table~\ref{tab:primary} reports primary performance on curated agent traces under the 150k AdamW budget across candidate architectures.
 
 \begin{table*}[t]
 \centering
@@ -240,12 +231,27 @@ TextNCA (1D Local, $L=5$) & Cellular Automaton & 14.8k & 0.42 ms & 63.51\% & 87.
 }
 \end{table*}
 
+\section{Experimental Protocol}
+
+\subsection{Datasets \& Session-Level Partitioning}
+We evaluate on curated agent execution traces totaling 23{,}741 interaction turns across 13 tool categories. Crucially, all partitions are established at the \textbf{session level}: no session ID is shared between training and test splits, preventing trajectory memorization.
+
+\subsection{The 150k-Step Training Floor}
+Because iterative cellular dynamics learn spatial coordination gradually, premature evaluation ($<10\text{k}$ steps) produces misleading comparisons. We enforce a strict \textbf{150{,}000 AdamW step floor} on all comparative runs.
+
+\paragraph{Hyperparameters.} Optimization uses AdamW with initial learning rate $\eta = 10^{-3}$, cosine decay to $1\%$, weight decay $\lambda = 10^{-2}$, gradient norm clipping at $1.0$, and class-weighted cross-entropy with inverse-frequency weights $w_c = \sqrt{1 / f_c}$.
+
+\section{Results}
+
+\subsection{Primary Benchmark Evaluation}
+Table~\ref{tab:primary} reports primary performance on curated agent traces under the 150k AdamW budget across candidate architectures.
+
 \subsection{Feature Parity \& Ablation Studies}
 Table~\ref{tab:feature-parity} reports bootstrap evaluation across 10{,}000 resamples on the test split. The continuous spectral SVD representation improves cellular gradient estimation over discrete hashing by $+1.64\text{ pp}$.
 
-\begin{table}[h]
+\begin{table}[tbp]
 \centering
-\caption{Feature representation parity on curated test split (10{,}000 bootstrap resamples).}
+\caption{Feature parity (10{,}000 bootstrap resamples).}
 \label{tab:feature-parity}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{@{}lcc@{}}
@@ -263,9 +269,9 @@ HistGradientBoosting & $69.47 \pm 0.43\%$ & $[68.63, 70.31]$ \\
 
 Table~\ref{tab:ablations} summarizes the 150k-step ablations isolating the structural components of the cellular update.
 
-\begin{table}[h]
+\begin{table}[tbp]
 \centering
-\caption{Ablation analysis under identical 150{,}000-step training budgets across registered experiment runs.}
+\caption{Ablations under 150{,}000-step training budgets.}
 \label{tab:ablations}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{@{}llcc@{}}
@@ -293,26 +299,23 @@ Flat Baseline Twin & \texttt{EXP-1006-001} & 62.49\% & 15{,}000 \\
 \section{Discussion \& Limitations}
 By expanding NCAs into a meta-learned graph decision substrate with machine-checked mathematical guarantees, we show that neural cellular automata can replace autoregressive decoders for deterministic agent actions while retaining mathematical interpretability.
 
-\paragraph{Limitations.}
-\begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
-  \item \textbf{Complex Argument Synthesis:} While slot-filling and entity binding operate efficiently, open-ended code diff generation still requires autoregressive fallback.
-  \item \textbf{Graph Size Scaling:} Scaling $V > 50$ cells requires hierarchical clustering to avoid dense attention quadratic overhead.
-\end{itemize}
+\paragraph{Limitations.} While slot-filling and entity binding operate efficiently, open-ended code diff generation still requires autoregressive fallback. Furthermore, scaling beyond $V > 50$ cells will require hierarchical clustering to avoid quadratic attention overhead.
 
 \section{Conclusion}
-We have introduced Graph Neural Cellular Automata (GNCA) with architecture meta-learning, demonstrating that cellular automata extend far beyond rigid 1D chains to execute hierarchical tool dispatch, argument slot binding, and uncertainty escalation. We formalized and machine-checked all foundational proofs in Lean 4 with zero axioms. Enforcing a 150k training floor, GNCA reaches $65.18\%$ accuracy on curated agent benchmarks, matching Transformer baselines while slashing computational overhead.
+We have introduced Graph Neural Cellular Automata (GNCA) with architecture meta-learning, showing that cellular automata extend far beyond rigid 1D chains to execute hierarchical tool dispatch, argument slot binding, and uncertainty escalation with machine-checked Lean 4 guarantees. Enforcing a 150k training floor, GNCA reaches $65.18\%$ top-1 accuracy on curated agent benchmarks, matching Transformer baselines while slashing computational overhead.
 
 \section*{Code, Data, and Model Availability}
-All models, datasets, and machine-checked Lean 4 proof packages are publicly available:
-\begin{itemize}[leftmargin=1.2em, itemsep=0.1em]
-  \item \textbf{Formal Lean 4 Proof Suite:} In repository at \nolinkurl{formal_proofs/NCAMetaLearning}
-  \item \textbf{Primary Model:} \href{https://huggingface.co/cap-jmk-real/textnca-next-tool}{\nolinkurl{cap-jmk-real/textnca-next-tool}}
-  \item \textbf{Baseline Model:} \href{https://huggingface.co/cap-jmk-real/baseline-next-tool}{\nolinkurl{cap-jmk-real/baseline-next-tool}}
-  \item \textbf{Curated Dataset:} \href{https://huggingface.co/datasets/cap-jmk-real/hermes-next-tool-mix}{\nolinkurl{cap-jmk-real/hermes-next-tool-mix}}
-\end{itemize}
-Source code: \url{https://github.com/cap-jmk-real/nca_research}.
+{\small All models, datasets, and machine-checked Lean 4 proof packages are publicly available:
+\textbf{Formal Proofs:} \nolinkurl{formal_proofs/NCAMetaLearning};
+\textbf{Primary Model:} \href{https://huggingface.co/cap-jmk-real/textnca-next-tool}{\nolinkurl{cap-jmk-real/textnca-next-tool}};
+\textbf{Baseline Model:} \href{https://huggingface.co/cap-jmk-real/baseline-next-tool}{\nolinkurl{cap-jmk-real/baseline-next-tool}};
+\textbf{Dataset:} \href{https://huggingface.co/datasets/cap-jmk-real/hermes-next-tool-mix}{\nolinkurl{cap-jmk-real/hermes-next-tool-mix}};
+\textbf{Source Code:} \url{https://github.com/cap-jmk-real/nca_research}.}
 
 \begin{thebibliography}{99}
+\small
+\setlength{\itemsep}{0pt}
+\setlength{\parskip}{0pt}
 \bibitem{mordvintsev2020growing}
 A.~Mordvintsev, E.~Randazzo, E.~Niklasson, and M.~Levin.
 \newblock Growing neural cellular automata.
@@ -329,7 +332,7 @@ S.~Patil, H.~Mao, et al.
 
 \clearpage
 \appendix
-\section*{Supplementary Information: Machine-Checked Lean 4 Proofs}
+\section*{Supplementary Information: Formal Lean Proofs}
 \label{sec:supplementary}
 
 Below is the verified Lean 4 specification of Theorem~\ref{thm:subsumption} and Theorem~\ref{thm:diameter}, compiled with the official Lean 4.35 kernel.
@@ -365,13 +368,13 @@ theorem theorem_receptive_field_separation (V : Nat) (hV : V >= 3) :
 end NCAMetaLearning
 \end{lstlisting}
 
-\paragraph{Compilation Instructions.}
-To independently verify the proof suite with Lean 4:
+\paragraph{Verification Instructions.}
+To reproduce and verify the formal proof suite:
 \begin{enumerate}[leftmargin=1.5em, itemsep=0.1em]
   \item Install Lean 4 via elan: \texttt{elan toolchain install leanprover/lean4:v4.35.0}
-  \item Navigate to \texttt{formal\_proofs/}
-  \item Execute: \texttt{lake build}
-  \item Verify console output: \texttt{Build completed successfully (12 jobs)}.
+  \item In repository root, navigate to \texttt{formal\_proofs/}
+  \item Run: \texttt{lake build}
+  \item Check verification output confirms all 12 jobs completed successfully
 \end{enumerate}
 
 \end{document}
