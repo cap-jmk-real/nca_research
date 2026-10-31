@@ -1,0 +1,301 @@
+{
+  "experiments": [
+    {
+      "id": "EXP-20261003-001",
+      "title": "1D TextNCA mix13 primary 150k (Hermes tools)",
+      "status": "primary",
+      "date": "2026-10-03",
+      "hypothesis_ids": [
+        "H4",
+        "hermes-first-run"
+      ],
+      "path": "paper/si/experiments/EXP-20261003-001.json"
+    },
+    {
+      "id": "EXP-20261004-001",
+      "title": "Baseline Qwen2.5-1.5B-Instruct local Hermes next-tool",
+      "status": "primary",
+      "date": "2026-10-04",
+      "hypothesis_ids": [
+        "benchmark-gates"
+      ],
+      "path": "paper/si/experiments/EXP-20261004-001.json"
+    },
+    {
+      "id": "EXP-20261005-001",
+      "title": "1D TextNCA FineEnvs-prior continuation 150k",
+      "status": "primary",
+      "date": "2026-10-05",
+      "hypothesis_ids": [
+        "H14",
+        "H16"
+      ],
+      "path": "paper/si/experiments/EXP-20261005-001.json"
+    },
+    {
+      "id": "EXP-20261005-002",
+      "title": "Message-passing ablations curated equal-budget (8000 steps)",
+      "status": "smoke",
+      "date": "2026-10-05",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range"
+      ],
+      "path": "paper/si/experiments/EXP-20261005-002.json"
+    },
+    {
+      "id": "EXP-20261005-003",
+      "title": "Specialist dataset compile (python + typescript) from staged coding dumps",
+      "status": "preliminary",
+      "date": "2026-10-05",
+      "hypothesis_ids": [
+        "H31",
+        "H32"
+      ],
+      "path": "paper/si/experiments/EXP-20261005-003.json"
+    },
+    {
+      "id": "EXP-20261006-001",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-06",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261006-001.json"
+    },
+    {
+      "id": "EXP-20261006-002",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-06",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261006-002.json"
+    },
+    {
+      "id": "EXP-20261006-003",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-06",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261006-003.json"
+    },
+    {
+      "id": "EXP-20261006-004",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-06",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261006-004.json"
+    },
+    {
+      "id": "EXP-20261006-005",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-06",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261006-005.json"
+    },
+    {
+      "id": "EXP-20261006-006",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-06",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261006-006.json"
+    },
+    {
+      "id": "EXP-20261006-007",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-06",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261006-007.json"
+    },
+    {
+      "id": "EXP-20261014-001",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-14",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261014-001.json"
+    },
+    {
+      "id": "EXP-20261014-002",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-14",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261014-002.json"
+    },
+    {
+      "id": "EXP-20261014-003",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-14",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261014-003.json"
+    },
+    {
+      "id": "EXP-20261014-004",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-14",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261014-004.json"
+    },
+    {
+      "id": "EXP-20261014-005",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-14",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261014-005.json"
+    },
+    {
+      "id": "EXP-20261014-006",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-14",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261014-006.json"
+    },
+    {
+      "id": "EXP-20261014-007",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-14",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261014-007.json"
+    },
+    {
+      "id": "EXP-20261015-001",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-15",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261015-001.json"
+    },
+    {
+      "id": "EXP-20261015-002",
+      "title": "Message-passing ablations curated equal-budget (150000 steps)",
+      "status": "primary",
+      "date": "2026-10-15",
+      "hypothesis_ids": [
+        "H2",
+        "H3",
+        "H4",
+        "H_halt",
+        "H_long_range",
+        "H6"
+      ],
+      "path": "paper/si/experiments/EXP-20261015-002.json"
+    }
+  ]
+}

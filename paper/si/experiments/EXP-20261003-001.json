@@ -1,0 +1,169 @@
+{
+  "id": "EXP-20261003-001",
+  "title": "1D TextNCA mix13 primary 150k (Hermes tools)",
+  "status": "primary",
+  "date": "2026-10-03",
+  "hypothesis_ids": [
+    "H4",
+    "hermes-first-run"
+  ],
+  "claims_supported": [
+    "1D TextNCA beats flat linear readout on curated Hermes val at 150k steps",
+    "Always-terminal is stronger than NCA on held-out local Hermes sessions"
+  ],
+  "claims_not_supported": [
+    "Local Hermes generalization without prior matching"
+  ],
+  "hardware": {
+    "device": "mps",
+    "brand": "Apple M1",
+    "mem_gib": 16.0,
+    "ncpu": 8,
+    "mps": true
+  },
+  "software": {
+    "torch": "2.13.0",
+    "compile": false
+  },
+  "data": {
+    "train_note": "curated/train.jsonl (57675 rows); extra/train.jsonl (88541 rows); extra/openhands_train.jsonl (9630 rows); extra/swe_smith_partial_train.jsonl (329140 rows)",
+    "val_note": "curated/val.jsonl (6995 rows)",
+    "train_rows": 484986,
+    "val_rows": 6995,
+    "local_test_rows": 843,
+    "n_classes": 13,
+    "labels": [
+      "delegate_task",
+      "execute_code",
+      "memory",
+      "patch",
+      "process",
+      "read_file",
+      "respond",
+      "search_files",
+      "session_search",
+      "skill_view",
+      "terminal",
+      "todo",
+      "write_file"
+    ],
+    "train_hist": {
+      "delegate_task": 486,
+      "execute_code": 4601,
+      "memory": 332,
+      "patch": 35220,
+      "process": 827,
+      "read_file": 53474,
+      "respond": 179330,
+      "search_files": 14384,
+      "session_search": 1116,
+      "skill_view": 1114,
+      "terminal": 142388,
+      "todo": 3676,
+      "write_file": 48038
+    },
+    "val_hist": {
+      "delegate_task": 5,
+      "execute_code": 12,
+      "memory": 3,
+      "patch": 197,
+      "process": 50,
+      "read_file": 951,
+      "respond": 331,
+      "search_files": 767,
+      "session_search": 6,
+      "skill_view": 16,
+      "terminal": 3798,
+      "todo": 21,
+      "write_file": 838
+    },
+    "local_test_hist": {
+      "delegate_task": 4,
+      "execute_code": 39,
+      "memory": 3,
+      "patch": 73,
+      "process": 5,
+      "read_file": 79,
+      "respond": 64,
+      "search_files": 23,
+      "session_search": 11,
+      "skill_view": 17,
+      "terminal": 417,
+      "todo": 17,
+      "write_file": 91
+    }
+  },
+  "model": {
+    "hidden_c": 16,
+    "update_hidden": 96,
+    "steps": 4,
+    "seq_len": 5,
+    "trace_steps": 4,
+    "hash_dim": 48,
+    "obs_c": 62,
+    "n_classes": 13,
+    "total_steps": 150000,
+    "lr": 0.001,
+    "weight_decay": 0.01,
+    "seed": 0,
+    "arch": "trace-1d"
+  },
+  "training": {
+    "optimizer": "AdamW",
+    "total_steps": 150000,
+    "batch": 1024,
+    "lr": 0.001,
+    "weight_decay": 0.01,
+    "seed": 0,
+    "resumed": true,
+    "loss": "sqrt-inverse-frequency cross-entropy"
+  },
+  "metrics": {
+    "best_val_top1": {
+      "nca": 0.6517512508934954,
+      "flat": 0.6071479628305932,
+      "always_terminal": 0.5429592566118656,
+      "step": 26000
+    },
+    "final_val_top1": {
+      "nca": 0.6428877769835597,
+      "flat": 0.5979985704074339,
+      "always_terminal": 0.5429592566118656
+    },
+    "best_local_test_top1": {
+      "nca": 0.40094899169632264,
+      "flat": 0.4472123368920522,
+      "always_terminal": 0.49466192170818507,
+      "step": 26000
+    },
+    "final_local_test_top1": {
+      "nca": 0.3760379596678529,
+      "flat": 0.4412811387900356,
+      "always_terminal": 0.49466192170818507
+    },
+    "best_tracked": {
+      "val_top1_nca": 0.6517512508934954,
+      "val_top1_flat": 0.6071479628305932,
+      "step": 26000
+    }
+  },
+  "baselines": {
+    "flat": "same observation, linear head",
+    "always_terminal": "constant predictor"
+  },
+  "artifacts": {
+    "metrics_json": "/Volumes/Extreme SSD/nca_research/results/text_nca_1d_mix13_metrics.json",
+    "checkpoint_best": "/Volumes/Extreme SSD/nca_research/results/checkpoints/text_nca_1d_mix13_best.pt",
+    "checkpoint_last": "/Volumes/Extreme SSD/nca_research/results/checkpoints/text_nca_1d_mix13_last.pt",
+    "log": "/Volumes/Extreme SSD/nca_research/results/logs/text_nca_1d_mix13.jsonl",
+    "repo_metrics_copy": "docs/text_nca_1d_mix13_metrics.json",
+    "architecture_doc": "docs/text-nca-architecture.md"
+  },
+  "repro": {
+    "command": "python -m nca_text.train",
+    "seed": 0,
+    "git_commit": "dbc0f6952746f4ea87fc425ffc3e320abd9e6efe",
+    "notes": "Primary 150k mix run; best val at step 26000."
+  },
+  "si_notes": "Primary result for H4 on public curated val."
+}

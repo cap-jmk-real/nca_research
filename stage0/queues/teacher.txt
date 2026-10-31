@@ -1,0 +1,7 @@
+# T1 teachers on curated test (all rows), then Track D teacher rows (5k pilot, then 50k)
+~/nca_venv/bin/python score_teachers.py qwen3.5:9b curated $HOME/nca_data/stage0_results/teachers_20261026 0 test
+~/nca_venv/bin/python score_teachers.py gemma4:12b-it-q4_K_M curated $HOME/nca_data/stage0_results/teachers_20261026 0 test
+~/nca_venv/bin/python score_teachers.py qwen3.5:9b curated $HOME/nca_data/stage0_results/teachers_20261026 0 val
+~/nca_venv/bin/python score_teachers.py qwen3.5:9b curated $HOME/nca_data/stage0_results/teachers_20261026_pilot5k 5000 train
+# HELD (Stage-1 gate: qwen3.5:9b 35.0% < floor 52.9% on curated test; rethink prompt before distilling): ~/nca_venv/bin/python score_teachers.py qwen3.5:9b curated $HOME/nca_data/stage0_results/teachers_20261026 50000 train
+# Hermes teacher jobs: add once ~/.hermes data is on engine and splits/hermes exists

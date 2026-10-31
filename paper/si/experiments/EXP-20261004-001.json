@@ -1,0 +1,76 @@
+{
+  "id": "EXP-20261004-001",
+  "title": "Baseline Qwen2.5-1.5B-Instruct local Hermes next-tool",
+  "status": "primary",
+  "date": "2026-10-04",
+  "hypothesis_ids": [
+    "benchmark-gates"
+  ],
+  "claims_supported": [
+    "Closed-set Qwen2.5-1.5B greedy next-tool top-1 is far below always-terminal and below TextNCA on the same local rows"
+  ],
+  "hardware": {
+    "note": "local transformers load; see script"
+  },
+  "software": {
+    "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+  },
+  "data": {
+    "n": 843,
+    "protocol": "Same local ~/.hermes rows as the 1D NCA test, restricted to the 13 training labels. Greedy decode, max 8 new tokens. A reply counts only when it contains exactly one of those names.",
+    "gold": {
+      "respond": 64,
+      "delegate_task": 4,
+      "execute_code": 39,
+      "write_file": 91,
+      "terminal": 417,
+      "read_file": 79,
+      "todo": 17,
+      "session_search": 11,
+      "patch": 73,
+      "skill_view": 17,
+      "process": 5,
+      "search_files": 23,
+      "memory": 3
+    },
+    "local_note": "local ~/.hermes/state.db held out as test; transcripts not written to disk"
+  },
+  "model": {
+    "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+    "decode": "greedy max_new_tokens=8"
+  },
+  "training": {
+    "trained": false
+  },
+  "metrics": {
+    "top1": 0.06287069988137604,
+    "correct": 53,
+    "unparsed": 7,
+    "per_label_recall": {
+      "delegate_task": 0.0,
+      "execute_code": 0.20512820512820512,
+      "memory": 0.0,
+      "patch": 0.0,
+      "process": 0.0,
+      "read_file": 0.0,
+      "respond": 0.03125,
+      "search_files": 0.08695652173913043,
+      "session_search": 0.2727272727272727,
+      "skill_view": 0.058823529411764705,
+      "terminal": 0.08872901678657075,
+      "todo": 0.0,
+      "write_file": 0.0
+    },
+    "always_terminal": 0.49466192170818507
+  },
+  "artifacts": {
+    "metrics_json": "/Volumes/Extreme SSD/nca_research/results/local_next_tool_qwen25_1_5b.json",
+    "script": "scripts/score_local_next_tool.py"
+  },
+  "repro": {
+    "command": "python scripts/score_local_next_tool.py",
+    "seed": 0,
+    "git_commit": "dbc0f6952746f4ea87fc425ffc3e320abd9e6efe"
+  },
+  "si_notes": "Paired baseline for gate local_hermes_top1_nca."
+}

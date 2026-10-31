@@ -82,30 +82,16 @@ def data_root() -> Path:
 
 
 def assert_external(path: Path) -> None:
-    resolved = str(path.resolve())
-    if not resolved.startswith("/Volumes/"):
-        raise SystemExit(f"refusing to write outside /Volumes: {resolved}")
-    if "Macintosh HD" in resolved:
-        raise SystemExit(f"refusing internal volume: {resolved}")
+    from nca_text.ssd import assert_external as _assert_external
+
+    _assert_external(path)
 
 
 def prepare_env(root: Path) -> None:
     """Point caches at the external SSD before any framework import side effects."""
-    assert_external(root)
-    mapping = {
-        "HF_HOME": root / "hf-home",
-        "HF_HUB_CACHE": root / "hf-home" / "hub",
-        "HF_DATASETS_CACHE": root / "hf-home" / "datasets",
-        "TMPDIR": root / "tmp",
-        "TORCH_HOME": root / "torch-home",
-        "TORCHINDUCTOR_CACHE_DIR": root / "inductor-cache",
-        "XDG_CACHE_HOME": root / "xdg-cache",
-        "PYTHONPYCACHEPREFIX": root / "pycache",
-        "PIP_CACHE_DIR": root / "pip-cache",
-    }
-    for key, dest in mapping.items():
-        dest.mkdir(parents=True, exist_ok=True)
-        os.environ[key] = str(dest)
+    from nca_text.ssd import apply_cache_env
+
+    apply_cache_env(root)
 
 
 def _short(value: str, cap: int = TEXT_CAP) -> str:

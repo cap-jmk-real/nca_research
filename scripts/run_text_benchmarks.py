@@ -1,0 +1,396 @@
+"""Score the trained 1D NCA on BFCL, NESTFUL, tau2, and AppWorld.
+
+The checkpoint emits one of 13 Hermes tool names. BFCL AST and NESTFUL require
+a function call with arguments, so those official checks fail when the name
+or the arguments do not match. Irrelevance treats ``respond`` as no call.
+tau2 and AppWorld need a live episode runner. This script records that
+blocker. tau2 is imported with the Python 3.12 venv, AppWorld with its own
+venv, because those packages are not installed into the training interpreter.
+
+Caches and downloads stay on the external SSD.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+import sys
+from collections import Counter
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+SSD = Path("/Volumes/Extreme SSD/nca_research")
+# pyarrow (and other SSD-only deps) live here — never on the boot volume.
+_PYDEPS = SSD / "results" / "pydeps"
+if _PYDEPS.is_dir() and str(_PYDEPS) not in sys.path:
+    sys.path.insert(0, str(_PYDEPS))
+BENCH = SSD / "datasets" / "benchmarks"
+CKPT = SSD / "results" / "checkpoints" / "text_nca_1d_mix13_best.pt"
+OUT = SSD / "results" / "benchmarks_run.json"
+TAU2_PY = Path(os.environ.get("NCA_TAU2_PYTHON", SSD / "venvs" / "tau2" / "bin" / "python"))
+APPWORLD_PY = Path(
+    os.environ.get("NCA_APPWORLD_PYTHON", SSD / "venvs" / "appworld" / "bin" / "python")
+)
+
+os.environ["HF_HOME"] = str(SSD / "hf-cache")
+os.environ["HF_HUB_CACHE"] = str(SSD / "hf-cache" / "hub")
+os.environ["HUGGINGFACE_HUB_CACHE"] = str(SSD / "hf-cache" / "hub")
+os.environ["TMPDIR"] = str(SSD / "tmp")
+
+from nca_text.data import HASH_DIM, SEQ_LEN, hash_features  # noqa: E402
+from nca_text.model import TextNCA  # noqa: E402
+
+BFCL_AST = (
+    "BFCL_v3_simple.json",
+    "BFCL_v3_multiple.json",
+    "BFCL_v3_parallel.json",
+    "BFCL_v3_parallel_multiple.json",
+)
+BFCL_IRREL = "BFCL_v3_irrelevance.json"
+
+
+def _hf(repo: str, filename: str) -> Path:
+    from huggingface_hub import hf_hub_download
+
+    BENCH.mkdir(parents=True, exist_ok=True)
+    path = hf_hub_download(
+        repo_id=repo,
+        filename=filename,
+        repo_type="dataset",
+        local_dir=str(BENCH / repo.replace("/", "__")),
+    )
+    return Path(path)
+
+
+def _load_json_rows(path: Path) -> list[dict]:
+    text = path.read_text()
+    rows = []
+    for line in text.splitlines():
+        line = line.strip()
+        if line:
+            rows.append(json.loads(line))
+    return rows
+
+
+def _eager(state: dict) -> dict:
+    prefix = "_orig_mod."
+    return {k[len(prefix) :] if k.startswith(prefix) else k: v for k, v in state.items()}
+
+
+class Policy:
+    def __init__(self, checkpoint: Path) -> None:
+        import torch
+
+        ckpt = torch.load(checkpoint, map_location="cpu", weights_only=False)
+        weights = ckpt.get("nca") or ckpt.get("state")
+        if not isinstance(weights, dict):
+            raise SystemExit(f"checkpoint has no nca or state weights: {checkpoint}")
+        vocab = ckpt["vocab"]
+        self.names = [name for name, _ in sorted(vocab.items(), key=lambda item: item[1])]
+        self.vocab = {name: i for i, name in enumerate(self.names)}
+        config = ckpt.get("config") or {}
+        self.model = TextNCA(
+            int(config.get("obs_c") or (HASH_DIM + len(self.names) + 1)),
+            int(config.get("hidden_c") or 16),
+            int(config.get("n_classes") or len(self.names)),
+            int(config.get("steps") or 4),
+            int(config.get("seq_len") or SEQ_LEN),
+            int(config.get("update_hidden") or 96),
+            learned_halt=bool(config.get("learned_halt")),
+            long_range_goal=bool(config.get("long_range_goal")),
+        )
+        self.model.load_state_dict(_eager(weights))
+        self.device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+        self.model.to(self.device).eval()
+        self.torch = torch
+        self.step = int(ckpt.get("step") or 0)
+
+    def predict(self, goals: list[str]) -> list[str]:
+        import numpy as np
+
+        n_classes = len(self.vocab)
+        obs_c = HASH_DIM + n_classes + 1
+        batch = np.zeros((len(goals), obs_c, SEQ_LEN), np.float32)
+        for i, goal in enumerate(goals):
+            batch[i, :HASH_DIM, 0] = hash_features(goal, HASH_DIM)
+            batch[i, -1, 0] = 1.0
+        with self.torch.no_grad():
+            logits = self.model(self.torch.from_numpy(batch).to(self.device))
+            idx = logits.argmax(dim=1).tolist()
+        return [self.names[i] for i in idx]
+
+
+def _question_text(row: dict) -> str:
+    parts = []
+    for turn in row.get("question") or []:
+        messages = turn if isinstance(turn, list) else [turn]
+        for message in messages:
+            if isinstance(message, dict):
+                parts.append(str(message.get("content") or ""))
+    names = []
+    for function in row.get("function") or []:
+        if isinstance(function, dict) and function.get("name"):
+            names.append(str(function["name"]))
+    return " ".join(parts + names)[:2000]
+
+
+def _gold_calls(answer: dict) -> list[dict]:
+    calls = []
+    for item in answer.get("ground_truth") or []:
+        if isinstance(item, dict):
+            calls.append(item)
+    return calls
+
+
+def _ast_match(pred: str, gold: list[dict]) -> bool:
+    """BFCL AST: the call name matches and every argument is one of the allowed values.
+
+    This head emits a tool name and no argument values, so a call matches only
+    when the gold function takes no arguments.
+    """
+    for call in gold:
+        spec = call.get(pred)
+        if not isinstance(spec, dict):
+            continue
+        if len(spec) == 0:
+            return True
+        return False
+    return False
+
+
+def score_bfcl(policy: Policy) -> dict:
+    repo = "gorilla-llm/Berkeley-Function-Calling-Leaderboard"
+    categories = {}
+    predicted = Counter()
+    for name in BFCL_AST:
+        questions = _load_json_rows(_hf(repo, name))
+        answers = {row["id"]: row for row in _load_json_rows(_hf(repo, f"possible_answer/{name}"))}
+        goals = [_question_text(row) for row in questions]
+        preds = []
+        for start in range(0, len(goals), 256):
+            preds.extend(policy.predict(goals[start : start + 256]))
+        correct = 0
+        name_hit = 0
+        for row, pred in zip(questions, preds, strict=True):
+            predicted[pred] += 1
+            gold = _gold_calls(answers[row["id"]])
+            gold_names = set()
+            for call in gold:
+                gold_names.update(call.keys())
+            if pred in gold_names:
+                name_hit += 1
+            if _ast_match(pred, gold):
+                correct += 1
+        categories[name] = {
+            "n": len(questions),
+            "ast_accuracy": correct / len(questions) if questions else None,
+            "function_name_overlap": name_hit / len(questions) if questions else None,
+        }
+        print(f"bfcl {name} n={len(questions)} ast={categories[name]['ast_accuracy']}", flush=True)
+
+    irrel = _load_json_rows(_hf(repo, BFCL_IRREL))
+    goals = [_question_text(row) for row in irrel]
+    preds = []
+    for start in range(0, len(goals), 256):
+        preds.extend(policy.predict(goals[start : start + 256]))
+    abstain = sum(1 for pred in preds if pred == "respond")
+    for pred in preds:
+        predicted[pred] += 1
+    categories[BFCL_IRREL] = {
+        "n": len(irrel),
+        "irrelevance_accuracy": abstain / len(irrel) if irrel else None,
+        "rule": "respond counts as no function call; any other class counts as a call",
+    }
+    print(
+        f"bfcl irrelevance n={len(irrel)} acc={categories[BFCL_IRREL]['irrelevance_accuracy']}",
+        flush=True,
+    )
+    ast_n = sum(categories[name]["n"] for name in BFCL_AST)
+    ast_correct = sum(categories[name]["ast_accuracy"] * categories[name]["n"] for name in BFCL_AST)
+    return {
+        "checkpoint_step": policy.step,
+        "ast_accuracy": ast_correct / ast_n if ast_n else None,
+        "ast_n": ast_n,
+        "irrelevance_accuracy": categories[BFCL_IRREL]["irrelevance_accuracy"],
+        "irrelevance_n": len(irrel),
+        "categories": categories,
+        "predicted_tools": predicted.most_common(),
+    }
+
+
+def _nestful_goal(row: dict) -> str:
+    for key in ("input", "question", "query", "problem", "sample"):
+        if row.get(key):
+            return str(row[key])[:2000]
+    return json.dumps(row, ensure_ascii=False)[:2000]
+
+
+def _nestful_functions(row: dict) -> list[str]:
+    value = row.get("output")
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except json.JSONDecodeError:
+            return []
+    names = []
+    if isinstance(value, list):
+        for item in value:
+            if isinstance(item, dict) and item.get("name"):
+                names.append(str(item["name"]))
+    return names
+
+
+def score_nestful(policy: Policy) -> dict:
+    try:
+        import pyarrow.parquet as pq
+    except ImportError:
+        return {
+            "n": None,
+            "full_sequence_accuracy": None,
+            "blocker": "pyarrow is not installed, so the Nestful parquet cannot be read.",
+        }
+
+    path = _hf("ibm-research/nestful", "data/train-00000-of-00001.parquet")
+    table = pq.read_table(path)
+    rows = table.to_pylist()
+    print(f"nestful columns {table.column_names} n={len(rows)}", flush=True)
+    if rows:
+        print("nestful keys", list(rows[0].keys())[:20], flush=True)
+    goals = [_nestful_goal(row) for row in rows]
+    preds = []
+    for start in range(0, len(goals), 256):
+        preds.extend(policy.predict(goals[start : start + 256]))
+    full = 0
+    name_hit = 0
+    for row, pred in zip(rows, preds, strict=True):
+        gold = _nestful_functions(row)
+        # Full sequence accuracy: the emitted call sequence equals the gold sequence.
+        if gold == [pred]:
+            full += 1
+        if pred in gold:
+            name_hit += 1
+    n = len(rows)
+    result = {
+        "n": n,
+        "full_sequence_accuracy": full / n if n else None,
+        "function_name_in_gold": name_hit / n if n else None,
+        "note": "The head emits one Hermes tool name, not a nested call sequence with arguments.",
+        "sample_gold": _nestful_functions(rows[0])[:6] if rows else [],
+        "sample_pred": preds[0] if preds else None,
+    }
+    print(f"nestful full_seq={result['full_sequence_accuracy']}", flush=True)
+    return result
+
+
+def score_labeled(policy: Policy, examples: list, name: str) -> dict:
+    """Top-1 on a labeled trace split. This is curated val and local Hermes."""
+    from nca_text.data import build_trace_obs
+
+    obs, labels, kept = build_trace_obs(examples, policy.vocab)
+    n = int(labels.shape[0])
+    if n == 0:
+        return {"harness": name, "n": 0, "top1": None}
+    correct = 0
+    torch = policy.torch
+    obs_t = torch.from_numpy(obs)
+    y_t = torch.from_numpy(labels)
+    with torch.no_grad():
+        for start in range(0, n, 256):
+            pred = policy.model(obs_t[start : start + 256].to(policy.device)).argmax(dim=-1)
+            correct += int((pred.cpu() == y_t[start : start + 256]).sum().item())
+    top1 = correct / n
+    print(f"{name} n={n} top1={top1:.4f} kept={len(kept)}", flush=True)
+    return {"harness": name, "n": n, "top1": top1}
+
+
+def _venv_module(python: Path, module: str) -> str | None:
+    """Import module with a harness venv. Training Python cannot import tau2."""
+    if not python.is_file():
+        return None
+    env = os.environ.copy()
+    env.setdefault("TAU2_DATA_DIR", str(SSD / "src" / "tau2-bench" / "data"))
+    env.setdefault("APPWORLD_ROOT", str(SSD / "appworld"))
+    try:
+        proc = subprocess.run(
+            [str(python), "-c", f"import {module}; print({module}.__file__)"],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=180,
+            env=env,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    if proc.returncode != 0:
+        return None
+    lines = [line.strip() for line in proc.stdout.splitlines() if line.strip()]
+    return lines[-1] if lines else ""
+
+
+def score_tau2() -> dict:
+    where = _venv_module(TAU2_PY, "tau2")
+    if where is None:
+        return {
+            "score": None,
+            "blocker": "tau2 is not installed. The official score is a database end-state reward over a user-simulator episode, which this tool-name head cannot emit.",
+        }
+    return {
+        "score": None,
+        "python": str(TAU2_PY),
+        "module": where,
+        "blocker": "tau2 imported but no episode runner is wired.",
+    }
+
+
+def score_appworld() -> dict:
+    where = _venv_module(APPWORLD_PY, "appworld")
+    if where is None:
+        return {
+            "score": None,
+            "blocker": "appworld is not installed. Official tgc/sgc need the local app databases and a program that calls their APIs.",
+        }
+    return {
+        "score": None,
+        "python": str(APPWORLD_PY),
+        "module": where,
+        "blocker": "appworld imported but no episode runner is wired.",
+    }
+
+
+def main() -> None:
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--checkpoint", type=Path, default=CKPT)
+    args = parser.parse_args()
+    checkpoint = args.checkpoint
+    if not checkpoint.is_file():
+        raise SystemExit(f"missing checkpoint {checkpoint}")
+    (SSD / "tmp").mkdir(parents=True, exist_ok=True)
+    policy = Policy(checkpoint)
+    print(f"loaded {checkpoint} step {policy.step} labels {policy.names}", flush=True)
+    from nca_text.data import load_curated_split, load_local_test
+
+    curated, curated_note = load_curated_split("val")
+    local, local_note = load_local_test()
+    report = {
+        "checkpoint": str(checkpoint),
+        "step": policy.step,
+        "labels": policy.names,
+        "curated_val": {**score_labeled(policy, curated, "curated_val"), "note": curated_note},
+        "local_hermes": {**score_labeled(policy, local, "local_hermes"), "note": local_note},
+        "BFCL": score_bfcl(policy),
+        "NESTFUL": score_nestful(policy),
+        "tau2": score_tau2(),
+        "AppWorld": score_appworld(),
+    }
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    OUT.write_text(json.dumps(report, indent=2) + "\n")
+    print(f"wrote {OUT}", flush=True)
+
+
+if __name__ == "__main__":
+    main()

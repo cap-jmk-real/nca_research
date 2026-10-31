@@ -61,14 +61,18 @@ Loss was sqrt-inverse-frequency cross-entropy, so top-1 is not the training obje
 Artifacts go to the Results path in [data-root.md](data-root.md) (`/Volumes/Extreme SSD/nca_research/results`). The loader refuses a path whose parent is `/Volumes` itself. Training curves and benchmark scores: [tensorboard.md](tensorboard.md).
 
 ```bash
+source scripts/env.sh
+# or:
 export NCA_DATA_ROOT="/Volumes/Extreme SSD/nca_research/results"
 export PYTHONPYCACHEPREFIX="$NCA_DATA_ROOT/pycache"
-export TMPDIR="$NCA_DATA_ROOT/tmp"
+export TMPDIR="/Volumes/Extreme SSD/nca_research/tmp"
 export TORCH_HOME="$NCA_DATA_ROOT/torch-home"
 export TORCHINDUCTOR_CACHE_DIR="$NCA_DATA_ROOT/inductor-cache"
 export HF_HOME="$NCA_DATA_ROOT/hf-home"
 python3 -m nca_text.train
 ```
+
+First-time Mac setup: `./install.sh --deps` (see [mac-worker-prep.md](mac-worker-prep.md)).
 
 A truncated public cache is reused from `$NCA_DATA_ROOT/cache/hermes_kimi_head_truncated.json` (3.3 MB). The checkpoint is `$NCA_DATA_ROOT/checkpoints/text_nca.pt` (138 KB). Metrics: `$NCA_DATA_ROOT/text_nca_metrics.json`. If the rows API fails, the run falls back to `nca_text/fixtures/synthetic_traces.json` and says that real rows were not loaded. This measured run did load real public rows.
 

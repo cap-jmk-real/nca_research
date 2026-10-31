@@ -1,0 +1,138 @@
+{
+  "id": "EXP-20261005-002",
+  "title": "Message-passing ablations curated equal-budget (8000 steps)",
+  "status": "smoke",
+  "date": "2026-10-05",
+  "hypothesis_ids": [
+    "H2",
+    "H3",
+    "H4",
+    "H_halt",
+    "H_long_range"
+  ],
+  "claims_supported": [
+    "At 8k steps, cellular baseline beats flat on curated val",
+    "Long-range goal edge slightly beats baseline at 8k"
+  ],
+  "claims_not_supported": [
+    "8k-step carry and halt do not beat baseline on reset-val metric",
+    "8k results are not final architectural verdicts (need \u2265150k)"
+  ],
+  "hardware": {
+    "device": "mps"
+  },
+  "software": {},
+  "data": {
+    "train_note": "/Volumes/Extreme SSD/nca_research/datasets/curated/train.jsonl (57675 rows)",
+    "val_note": "/Volumes/Extreme SSD/nca_research/datasets/curated/val.jsonl (6995 rows)",
+    "train_rows": 57675,
+    "val_rows": 6995,
+    "n_classes": 13
+  },
+  "model": {
+    "variants": [
+      "baseline",
+      "halt",
+      "long_range",
+      "carry",
+      "flat"
+    ],
+    "hidden_c": 16,
+    "nca_steps": 4,
+    "seq_len": 5
+  },
+  "training": {
+    "total_steps": 8000,
+    "batch": 512,
+    "carry_sessions": 128,
+    "carry_window": 4,
+    "val_every": 500,
+    "seed": 0,
+    "lr": 0.001
+  },
+  "metrics": {
+    "variants": {
+      "baseline": {
+        "best_val_top1": 0.6377412437455325,
+        "best_step": 5500,
+        "local_top1": 0.28825622775800713,
+        "n_params": 26749,
+        "seconds": 229.8
+      },
+      "halt": {
+        "best_val_top1": 0.6328806290207291,
+        "best_step": 6500,
+        "local_top1": 0.3368920521945433,
+        "n_params": 26766,
+        "seconds": 253.9
+      },
+      "long_range": {
+        "best_val_top1": 0.6400285918513223,
+        "best_step": 6500,
+        "local_top1": 0.18149466192170818,
+        "n_params": 34238,
+        "seconds": 294.8
+      },
+      "carry": {
+        "best_val_top1": 0.620300214438885,
+        "best_step": 5000,
+        "local_top1": 0.3760379596678529,
+        "n_params": 26749,
+        "seconds": 376.1
+      },
+      "flat": {
+        "best_val_top1": 0.6295925661186562,
+        "best_step": 4000,
+        "local_top1": 0.4294187425860024,
+        "n_params": 4043,
+        "seconds": 24.7
+      }
+    },
+    "regeneration": {
+      "block": "cells_2_3",
+      "clean_top1_by_steps": {
+        "0": 0.0017155110836029053,
+        "1": 0.5256611704826355,
+        "2": 0.5784131288528442,
+        "3": 0.6150107383728027,
+        "4": 0.6377412676811218
+      },
+      "damaged_top1_by_steps": {
+        "0": 0.0017155110836029053,
+        "1": 0.4864903390407562,
+        "2": 0.5782701969146729,
+        "3": 0.5975697040557861,
+        "4": 0.5782701969146729
+      },
+      "recovery_delta": {
+        "0": 0.0,
+        "1": 0.4847748279571533,
+        "2": 0.57655468583107,
+        "3": 0.5958541929721832,
+        "4": 0.57655468583107
+      },
+      "baseline_checkpoint": "/Volumes/Extreme SSD/nca_research/results/hypothesis_tests/checkpoints/baseline_best.pt"
+    },
+    "val_always_terminal": 0.5429592566118656
+  },
+  "artifacts": {
+    "summary_json": "/Volumes/Extreme SSD/nca_research/results/hypothesis_tests/summary.json",
+    "out_dir": "/Volumes/Extreme SSD/nca_research/results/hypothesis_tests",
+    "repo_doc": "docs/hypothesis-tests.md",
+    "histories": {
+      "baseline": "/Volumes/Extreme SSD/nca_research/results/hypothesis_tests/baseline_history.json",
+      "halt": "/Volumes/Extreme SSD/nca_research/results/hypothesis_tests/halt_history.json",
+      "long_range": "/Volumes/Extreme SSD/nca_research/results/hypothesis_tests/long_range_history.json",
+      "carry": "/Volumes/Extreme SSD/nca_research/results/hypothesis_tests/carry_history.json",
+      "flat": "/Volumes/Extreme SSD/nca_research/results/hypothesis_tests/flat_history.json"
+    }
+  },
+  "repro": {
+    "command": "python -m nca_text.hypotheses --steps 8000",
+    "seed": 0,
+    "git_commit": "dbc0f6952746f4ea87fc425ffc3e320abd9e6efe",
+    "notes": "Mark smoke if steps < 50000; re-run at 150k for primary claims."
+  },
+  "related_experiments": [],
+  "si_notes": "Superseded for main-text architecture claims once EXP-* 150k ablations complete."
+}

@@ -1,0 +1,69 @@
+{
+  "id": "EXP-20261005-003",
+  "title": "Specialist dataset compile (python + typescript) from staged coding dumps",
+  "status": "preliminary",
+  "date": "2026-10-05",
+  "hypothesis_ids": [
+    "H31",
+    "H32"
+  ],
+  "claims_supported": [
+    "Language tagging recovers a large Python specialist corpus from SWE-smith/OpenHands"
+  ],
+  "claims_not_supported": [
+    "TypeScript yield from SWE-heavy dumps is tiny; need dedicated TS sources"
+  ],
+  "hardware": {
+    "device": "Apple M1"
+  },
+  "software": {
+    "script": "scripts/compile_specialist_datasets.py"
+  },
+  "data": {
+    "langs": {
+      "python": {
+        "rows": 16689,
+        "files": [
+          {
+            "file": "openhands-sft.jsonl",
+            "rows": 489
+          },
+          {
+            "file": "swe-smith-trajectories-tool.jsonl",
+            "rows": 16200
+          }
+        ]
+      },
+      "typescript": {
+        "rows": 2,
+        "files": [
+          {
+            "file": "openhands-sft.jsonl",
+            "rows": 2
+          }
+        ]
+      }
+    },
+    "out": "/Volumes/Extreme SSD/nca_research/datasets/specialists"
+  },
+  "model": {
+    "n/a": true
+  },
+  "training": {
+    "trained": false
+  },
+  "metrics": {
+    "python_rows": 16689,
+    "typescript_rows": 2
+  },
+  "artifacts": {
+    "ssd": "/Volumes/Extreme SSD/nca_research/datasets/specialists",
+    "compile_log": "/Volumes/Extreme SSD/nca_research/datasets/specialists/compile.log"
+  },
+  "repro": {
+    "command": "python scripts/compile_specialist_datasets.py --langs python typescript --max-rows-per-source 20000",
+    "seed": 0,
+    "git_commit": "2b733e17d878b91bda64fa3a1eb0825bd33b311d"
+  },
+  "si_notes": "Updated mid-compile; daemon still scanning SWE-smith. Commit cadence: regular push after milestones."
+}

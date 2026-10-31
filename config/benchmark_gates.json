@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "distillation_teacher_max_params_b": 9,
+  "allowed_teachers": [
+    "qwen3.5:9b",
+    "Qwen/Qwen3.5-9B-Instruct"
+  ],
+  "forbidden_distillation": [
+    "copy teacher hidden states into TextNCA",
+    "KL on teacher logits into the cellular rule"
+  ],
+  "allowed_distillation": [
+    "verifier-filtered trace imitation (FineEnvs-style SFT on labels)",
+    "teacher shortened tool results as observation text only",
+    "pseudo-labels on rows where NCA confidence is below threshold"
+  ],
+  "baselines": {
+    "local_qwen2_5_1_5b_instruct": {
+      "path": "/Volumes/Extreme SSD/nca_research/results/local_next_tool_qwen25_1_5b.json",
+      "metric": "top1",
+      "note": "Greedy 8-token decode, same 13 Hermes labels"
+    },
+    "local_always_terminal": {
+      "metric": "always_terminal",
+      "note": "Constant terminal predictor on ~/.hermes rows"
+    }
+  },
+  "gates": {
+    "curated_val_top1_nca": {
+      "min": 0.652,
+      "beats": ["flat"]
+    },
+    "local_hermes_top1_nca": {
+      "min": 0.495,
+      "beats": ["local_qwen2_5_1_5b_instruct", "local_always_terminal"]
+    },
+    "bfcl_ast_accuracy": {
+      "min": 0.15,
+      "beats": ["local_qwen2_5_1_5b_instruct_proxy"],
+      "note": "Proxy until BFCL is scored with the same 13-name head mapped to BFCL function names; raise gate after first honest BFCL+LLM run"
+    },
+    "bfcl_irrelevance_accuracy": {
+      "min": 0.5,
+      "beats": []
+    },
+    "nestful_full_sequence_accuracy": {
+      "min": 0.05,
+      "beats": [],
+      "note": "Head emits one name; full-seq is a stretch goal until multi-call head exists"
+    },
+    "tau2_airline_pass1": {
+      "min": 0.1,
+      "blocker_until": "episode runner wired"
+    },
+    "tau2_retail_pass1": {
+      "min": 0.1,
+      "blocker_until": "episode runner wired"
+    },
+    "appworld_dev_tgc": {
+      "min": 0.05,
+      "blocker_until": "appworld installed and program head exists"
+    }
+  },
+  "stop_when": "all gates with no blocker_until pass",
+  "max_auto_cycles_per_day": 3
+}

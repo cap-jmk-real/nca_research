@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "distillation_teacher_max_params_b": 9,
+  "default_teacher": "qwen3.5:9b",
+  "teacher_endpoint": "http://192.168.10.29:11434",
+  "roles": {
+    "orchestrator": {
+      "job": "Route task to a specialist; own high-level tool plan; may call TextNCA for next-tool priors",
+      "student_target": "small instruct ≤3B or TextNCA+router head",
+      "teacher": "qwen3.5:9b",
+      "distill": ["route labels", "plan sketches", "when to hand off"],
+      "eval_harnesses": ["tau2_airline", "tau2_retail", "multi_specialist_smoke"]
+    },
+    "python": {
+      "job": "Python code edit, generation, test repair",
+      "student_target": "≤3B code instruct (or LoRA on 3B)",
+      "teacher": "qwen3.5:9b",
+      "distill": ["SFT on python trajectories", "verifier-correct patches"],
+      "file_globs": ["*.py", "*.pyi"],
+      "eval_harnesses": ["LiveCodeBench", "SWE-bench_Lite_python_slice", "HumanEval_compat"]
+    },
+    "typescript": {
+      "job": "TypeScript/JavaScript edit, generation, typecheck repair",
+      "student_target": "≤3B code instruct (or LoRA on 3B)",
+      "teacher": "qwen3.5:9b",
+      "distill": ["SFT on ts/tsx/js trajectories", "tsc-gated successes"],
+      "file_globs": ["*.ts", "*.tsx", "*.js", "*.jsx", "*.mts", "*.cts"],
+      "eval_harnesses": ["SWE-bench_Lite_ts_slice", "tsc_repo_smoke"]
+    },
+    "shell": {
+      "job": "Bash/zsh command sequences, repo scripts, terminal repair",
+      "student_target": "≤3B instruct",
+      "teacher": "qwen3.5:9b",
+      "distill": ["terminal trajectories with exit 0", "Terminal-Bench style tasks when sandboxed"],
+      "file_globs": ["*.sh", "*.bash", "Dockerfile"],
+      "eval_harnesses": ["Terminal-Bench_subset", "InterCode_bash_compat"]
+    }
+  },
+  "composition": {
+    "router": "orchestrator chooses specialist_id ∈ {python, typescript, shell} then tool loop",
+    "nca_role": "optional next-tool prior over Hermes-13; never receives teacher hidden states",
+    "plug_order": ["orchestrator", "specialist", "tools", "verifier"]
+  },
+  "dataset_roots": {
+    "ssd_coding": "/Volumes/Extreme SSD/nca_research/datasets/coding",
+    "ssd_specialists": "/Volumes/Extreme SSD/nca_research/datasets/specialists",
+    "ssd_results": "/Volumes/Extreme SSD/nca_research/results/specialists"
+  },
+  "harness_priority": [
+    {
+      "id": "LiveCodeBench",
+      "lang": "python",
+      "license_note": "Eval code MIT; problem text from contest sites — follow LiveCodeBench rules",
+      "blocker": "install LiveCodeBench + release tag"
+    },
+    {
+      "id": "SWE-bench_Lite",
+      "lang": "mixed",
+      "license_note": "MIT eval; Docker required",
+      "blocker": "Docker + instance slice by language"
+    },
+    {
+      "id": "Terminal-Bench",
+      "lang": "shell",
+      "license_note": "Apache-2.0 Harbor/terminal-bench",
+      "blocker": "sandbox (local Docker or Daytona)"
+    },
+    {
+      "id": "tsc_repo_smoke",
+      "lang": "typescript",
+      "license_note": "internal smoke on held-out ts patches",
+      "blocker": "compile specialist ts dataset first"
+    }
+  ],
+  "build_order": ["python", "typescript", "shell", "orchestrator"]
+}

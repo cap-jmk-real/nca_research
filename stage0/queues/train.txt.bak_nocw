@@ -1,0 +1,50 @@
+# Stage 2 + B: reference NCA, flat, tiny GRU/transformer (3 seeds, 30k steps)
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 0 --steps 30000 --tag B_nca1d
+~/nca_venv/bin/python train_eval.py --arch flat --seed 0 --steps 30000 --tag B_flat
+~/nca_venv/bin/python train_eval.py --arch gru --seed 0 --steps 30000 --tag B_gru
+~/nca_venv/bin/python train_eval.py --arch tx --seed 0 --steps 30000 --tag B_tx
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 1 --steps 30000 --tag B_nca1d
+~/nca_venv/bin/python train_eval.py --arch flat --seed 1 --steps 30000 --tag B_flat
+~/nca_venv/bin/python train_eval.py --arch gru --seed 1 --steps 30000 --tag B_gru
+~/nca_venv/bin/python train_eval.py --arch tx --seed 1 --steps 30000 --tag B_tx
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 2 --steps 30000 --tag B_nca1d
+~/nca_venv/bin/python train_eval.py --arch flat --seed 2 --steps 30000 --tag B_flat
+~/nca_venv/bin/python train_eval.py --arch gru --seed 2 --steps 30000 --tag B_gru
+~/nca_venv/bin/python train_eval.py --arch tx --seed 2 --steps 30000 --tag B_tx
+# Track F H1/H3 (class weight off; WD 0.1)
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 0 --steps 30000 --no-class-weight --tag H1_nocw
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 0 --steps 30000 --wd 0.1 --tag H3_wd0.1
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 1 --steps 30000 --no-class-weight --tag H1_nocw
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 1 --steps 30000 --wd 0.1 --tag H3_wd0.1
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 2 --steps 30000 --no-class-weight --tag H1_nocw
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 2 --steps 30000 --wd 0.1 --tag H3_wd0.1
+# Track T: 2D grid NCA and graph/message-passing NCA
+~/nca_venv/bin/python train_eval.py --arch nca2d --seed 0 --steps 30000 --tag T_nca2d
+~/nca_venv/bin/python train_eval.py --arch graph --seed 0 --steps 30000 --tag T_graph
+~/nca_venv/bin/python train_eval.py --arch nca2d --seed 1 --steps 30000 --tag T_nca2d
+~/nca_venv/bin/python train_eval.py --arch graph --seed 1 --steps 30000 --tag T_graph
+~/nca_venv/bin/python train_eval.py --arch nca2d --seed 2 --steps 30000 --tag T_nca2d
+~/nca_venv/bin/python train_eval.py --arch graph --seed 2 --steps 30000 --tag T_graph
+# Track G1 pilot: 1k train rows x WD {0,0.01,0.1,1} x 3 seeds, 200k steps, const LR, stop rule
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 0 --steps 200000 --const-lr --wd 0 --train-frac 0.01734 --eval-every 2000 --patience 100000 --tag G1p_wd0
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 1 --steps 200000 --const-lr --wd 0 --train-frac 0.01734 --eval-every 2000 --patience 100000 --tag G1p_wd0
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 2 --steps 200000 --const-lr --wd 0 --train-frac 0.01734 --eval-every 2000 --patience 100000 --tag G1p_wd0
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 0 --steps 200000 --const-lr --wd 0.01 --train-frac 0.01734 --eval-every 2000 --patience 100000 --tag G1p_wd0.01
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 1 --steps 200000 --const-lr --wd 0.01 --train-frac 0.01734 --eval-every 2000 --patience 100000 --tag G1p_wd0.01
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 2 --steps 200000 --const-lr --wd 0.01 --train-frac 0.01734 --eval-every 2000 --patience 100000 --tag G1p_wd0.01
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 0 --steps 200000 --const-lr --wd 0.1 --train-frac 0.01734 --eval-every 2000 --patience 100000 --tag G1p_wd0.1
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 1 --steps 200000 --const-lr --wd 0.1 --train-frac 0.01734 --eval-every 2000 --patience 100000 --tag G1p_wd0.1
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 2 --steps 200000 --const-lr --wd 0.1 --train-frac 0.01734 --eval-every 2000 --patience 100000 --tag G1p_wd0.1
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 0 --steps 200000 --const-lr --wd 1.0 --train-frac 0.01734 --eval-every 2000 --patience 100000 --tag G1p_wd1.0
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 1 --steps 200000 --const-lr --wd 1.0 --train-frac 0.01734 --eval-every 2000 --patience 100000 --tag G1p_wd1.0
+~/nca_venv/bin/python train_eval.py --arch nca1d --seed 2 --steps 200000 --const-lr --wd 1.0 --train-frac 0.01734 --eval-every 2000 --patience 100000 --tag G1p_wd1.0
+# Track D: waits for 50k qwen3.5:9b teacher rows. D1 hard-ish (T=0.1, a=1), D2 KL T=2 a=0.5/1.0
+# HELD (teacher below floor): while [ ! -f $HOME/nca_data/stage0_results/teachers_20261026/teacher_qwen3.5_9b_curated_train.json ]; do sleep 600; done; ~/nca_venv/bin/python train_eval.py --arch nca1d --seed 0 --steps 30000 --distill $HOME/nca_data/stage0_results/teachers_20261026/preds_qwen3.5_9b_curated_train.jsonl --alpha 1.0 --temp 0.1 --tag D1_hard
+# HELD (teacher below floor): while [ ! -f $HOME/nca_data/stage0_results/teachers_20261026/teacher_qwen3.5_9b_curated_train.json ]; do sleep 600; done; ~/nca_venv/bin/python train_eval.py --arch nca1d --seed 0 --steps 30000 --distill $HOME/nca_data/stage0_results/teachers_20261026/preds_qwen3.5_9b_curated_train.jsonl --alpha 0.5 --temp 2 --tag D2_a0.5
+# HELD (teacher below floor): while [ ! -f $HOME/nca_data/stage0_results/teachers_20261026/teacher_qwen3.5_9b_curated_train.json ]; do sleep 600; done; ~/nca_venv/bin/python train_eval.py --arch nca1d --seed 0 --steps 30000 --distill $HOME/nca_data/stage0_results/teachers_20261026/preds_qwen3.5_9b_curated_train.jsonl --alpha 1.0 --temp 2 --tag D2_a1.0
+# HELD (teacher below floor): while [ ! -f $HOME/nca_data/stage0_results/teachers_20261026/teacher_qwen3.5_9b_curated_train.json ]; do sleep 600; done; ~/nca_venv/bin/python train_eval.py --arch nca1d --seed 1 --steps 30000 --distill $HOME/nca_data/stage0_results/teachers_20261026/preds_qwen3.5_9b_curated_train.jsonl --alpha 1.0 --temp 0.1 --tag D1_hard
+# HELD (teacher below floor): while [ ! -f $HOME/nca_data/stage0_results/teachers_20261026/teacher_qwen3.5_9b_curated_train.json ]; do sleep 600; done; ~/nca_venv/bin/python train_eval.py --arch nca1d --seed 1 --steps 30000 --distill $HOME/nca_data/stage0_results/teachers_20261026/preds_qwen3.5_9b_curated_train.jsonl --alpha 0.5 --temp 2 --tag D2_a0.5
+# HELD (teacher below floor): while [ ! -f $HOME/nca_data/stage0_results/teachers_20261026/teacher_qwen3.5_9b_curated_train.json ]; do sleep 600; done; ~/nca_venv/bin/python train_eval.py --arch nca1d --seed 1 --steps 30000 --distill $HOME/nca_data/stage0_results/teachers_20261026/preds_qwen3.5_9b_curated_train.jsonl --alpha 1.0 --temp 2 --tag D2_a1.0
+# HELD (teacher below floor): while [ ! -f $HOME/nca_data/stage0_results/teachers_20261026/teacher_qwen3.5_9b_curated_train.json ]; do sleep 600; done; ~/nca_venv/bin/python train_eval.py --arch nca1d --seed 2 --steps 30000 --distill $HOME/nca_data/stage0_results/teachers_20261026/preds_qwen3.5_9b_curated_train.jsonl --alpha 1.0 --temp 0.1 --tag D1_hard
+# HELD (teacher below floor): while [ ! -f $HOME/nca_data/stage0_results/teachers_20261026/teacher_qwen3.5_9b_curated_train.json ]; do sleep 600; done; ~/nca_venv/bin/python train_eval.py --arch nca1d --seed 2 --steps 30000 --distill $HOME/nca_data/stage0_results/teachers_20261026/preds_qwen3.5_9b_curated_train.jsonl --alpha 0.5 --temp 2 --tag D2_a0.5
+# HELD (teacher below floor): while [ ! -f $HOME/nca_data/stage0_results/teachers_20261026/teacher_qwen3.5_9b_curated_train.json ]; do sleep 600; done; ~/nca_venv/bin/python train_eval.py --arch nca1d --seed 2 --steps 30000 --distill $HOME/nca_data/stage0_results/teachers_20261026/preds_qwen3.5_9b_curated_train.jsonl --alpha 1.0 --temp 2 --tag D2_a1.0

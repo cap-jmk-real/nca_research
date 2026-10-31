@@ -1,0 +1,93 @@
+{
+  "id": "EXP-20261006-007",
+  "title": "Message-passing ablations curated equal-budget (150000 steps)",
+  "status": "primary",
+  "date": "2026-10-06",
+  "hypothesis_ids": [
+    "H2",
+    "H3",
+    "H4",
+    "H_halt",
+    "H_long_range",
+    "H6"
+  ],
+  "claims_supported": [],
+  "claims_not_supported": [],
+  "hardware": {
+    "device": "mps"
+  },
+  "software": {},
+  "data": {
+    "train_rows": 57675,
+    "val_rows": 6995,
+    "train_note": "/Volumes/Extreme SSD/nca_research/datasets/curated/train.jsonl (57675 rows)",
+    "val_note": "/Volumes/Extreme SSD/nca_research/datasets/curated/val.jsonl (6995 rows)"
+  },
+  "model": {
+    "variants": [
+      "halt",
+      "baseline"
+    ]
+  },
+  "training": {
+    "total_steps": 150000,
+    "batch": 512,
+    "seed": 0,
+    "long_training_floor": 150000
+  },
+  "metrics": {
+    "variants": {
+      "halt": {
+        "best_val_top1": 0.6267333809864188,
+        "best_step": 10000,
+        "local_top1": 0.2977461447212337,
+        "n_params": 26766,
+        "seconds": 6692.9,
+        "checkpoint": "/Volumes/Extreme SSD/nca_research/results/hypothesis_tests/checkpoints/halt_best.pt"
+      },
+      "baseline": {
+        "best_val_top1": 0.6260185847033596,
+        "best_step": 10000,
+        "local_top1": 0.2586002372479241,
+        "n_params": 26749,
+        "seconds": 8587.7,
+        "checkpoint": "/Volumes/Extreme SSD/nca_research/results/hypothesis_tests/checkpoints/baseline_best.pt"
+      }
+    },
+    "regeneration": {
+      "block": "cells_2_3",
+      "clean_top1_by_steps": {
+        "0": 0.0017155110836029053,
+        "1": 0.4637598395347595,
+        "2": 0.5498213171958923,
+        "3": 0.6027162075042725,
+        "4": 0.6260185837745667
+      },
+      "damaged_top1_by_steps": {
+        "0": 0.0017155110836029053,
+        "1": 0.40543246269226074,
+        "2": 0.5310936570167542,
+        "3": 0.5665475130081177,
+        "4": 0.5448177456855774
+      },
+      "recovery_delta": {
+        "0": 0.0,
+        "1": 0.40371695160865784,
+        "2": 0.5293781459331512,
+        "3": 0.5648320019245148,
+        "4": 0.5431022346019745
+      },
+      "baseline_checkpoint": "/Volumes/Extreme SSD/nca_research/results/hypothesis_tests/checkpoints/baseline_best.pt"
+    }
+  },
+  "artifacts": {
+    "summary_json": "/Volumes/Extreme SSD/nca_research/results/hypothesis_tests/summary.json",
+    "out_dir": "/Volumes/Extreme SSD/nca_research/results/hypothesis_tests"
+  },
+  "repro": {
+    "command": "python -m nca_text.hypotheses --steps 150000",
+    "seed": 0,
+    "git_commit": "c79cbdaaa138a7844413db03cfcfa56a960e7d87"
+  },
+  "si_notes": "Auto-registered from hypotheses summary."
+}
