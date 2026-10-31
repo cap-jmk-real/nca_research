@@ -219,14 +219,14 @@ def generate_fig3_pareto_efficiency():
 
 def generate_fig4_ablation_bars():
     """Figure 4: Ablation Breakdown (Curated Validation vs. Local Hermes Accuracy)."""
-    fig, ax = plt.subplots(figsize=(3.4, 2.4))
+    fig, ax = plt.subplots(figsize=(3.4, 2.55))
     
     variants = [
-        "Graph NCA\n(Carry)",
-        "Long-Range\n($k{=}2$)",
-        "Adaptive\nHalt",
-        "1D Regular\nLattice",
-        "Flat\nBaseline"
+        "Graph NCA (Carry)",
+        r"Long-Range ($k{=}2$)",
+        "Adaptive Halt",
+        "1D Regular Lattice",
+        "Flat Baseline"
     ]
     
     val_scores = [62.77, 63.55, 62.67, 62.60, 62.49]
@@ -238,21 +238,25 @@ def generate_fig4_ablation_bars():
     y = np.arange(len(variants))
     height = 0.35
     
-    rects1 = ax.barh(y - height/2, val_scores, height, xerr=val_err, label="Curated Val Top-1", color=COLORS['blue'], alpha=0.88, capsize=2.5, edgecolor='#333333', lw=0.6)
-    rects2 = ax.barh(y + height/2, local_scores, height, xerr=local_err, label="Local Hermes Top-1", color=COLORS['orange'], alpha=0.88, capsize=2.5, edgecolor='#333333', lw=0.6)
+    rects1 = ax.barh(y - height/2, val_scores, height, xerr=val_err, label="Curated Val Top-1", color=COLORS['blue'], alpha=0.9, capsize=2.5, edgecolor='#333333', lw=0.6)
+    rects2 = ax.barh(y + height/2, local_scores, height, xerr=local_err, label="Local Hermes Top-1", color=COLORS['orange'], alpha=0.9, capsize=2.5, edgecolor='#333333', lw=0.6)
     
     ax.set_xlabel("Top-1 Accuracy (%)")
     ax.set_yticks(y)
     ax.set_yticklabels(variants, fontsize=7.5)
     ax.invert_yaxis()  # top-down
-    ax.set_xlim(0, 75)
+    ax.set_xlim(0, 72)
     ax.grid(True, axis='x')
     ax.spines[['top', 'right']].set_visible(False)
-    ax.legend(frameon=True, framealpha=0.92, loc='lower right', fontsize=7.2)
+    
+    # Place legend above plot to completely avoid any overlap with bars
+    ax.legend(loc='lower center', bbox_to_anchor=(0.5, 1.02), ncol=2, frameon=False, fontsize=7.5)
     
     fig.tight_layout()
     fig.savefig(os.path.join(OUT_DIR, "fig4_ablation_bars.pdf"))
     fig.savefig(os.path.join(OUT_DIR, "fig4_ablation_bars.png"))
+    plt.close(fig)
+    print("Saved fig4_ablation_bars with zero-overlap top legend")
     plt.close(fig)
     print("Saved fig4_ablation_bars")
 

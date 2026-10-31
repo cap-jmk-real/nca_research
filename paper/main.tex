@@ -224,11 +224,11 @@ Lean package: \nolinkurl{formal_proofs/NCAMetaLearning}
 \label{fig:lean-status}
 \end{figure}
 
-\begin{table*}[t]
+\begin{table}[tbp]
 \centering
 \caption{Primary evaluation on curated agent traces (13-tool vocabulary) under the 150k AdamW budget.}
 \label{tab:primary}
-\resizebox{\textwidth}{!}{%
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{@{}llccccc@{}}
 \toprule
 \textbf{Architecture} & \textbf{Model Family} & \textbf{Parameters} & \textbf{Inference} & \textbf{Top-1 Acc} & \textbf{Top-3 Acc} & \textbf{Macro F1} \\
@@ -242,7 +242,7 @@ TextNCA (1D Local, $L=5$) & Cellular Automaton & 14.8k & 0.42 ms & 63.51\% & 87.
 \bottomrule
 \end{tabular}%
 }
-\end{table*}
+\end{table}
 
 \section{Experimental Protocol}
 
@@ -266,29 +266,37 @@ Table~\ref{tab:primary} reports primary performance on curated agent traces unde
 \label{fig:learning-curves}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig3_pareto_efficiency.pdf}
-\caption{\textbf{Pareto trade-off between parameter scale and held-out accuracy.} Held-out local Hermes top-1 accuracy plotted against model parameters ($\log_{10}$ scale). Graph NCA configurations achieve $39.0$--$40.1\%$ top-1 with only $26.7\text{k}$ parameters ($<0.5\text{ ms}$ latency), outperforming 1.5B autoregressive LLMs ($6.3\%$) by $6.2\times$ while reducing parameter footprint by $57{,}000\times$.}
-\label{fig:pareto}
-\end{figure}
+\begin{minipage}{0.48\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig3_pareto_efficiency.pdf}
+\end{minipage}\hfill
+\begin{minipage}{0.48\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig4_ablation_bars.pdf}
+\end{minipage}
+\caption{\textbf{Empirical efficiency and inductive bias breakdown.} (Left) Pareto trade-off between model parameters ($\log_{10}$ scale) and held-out local Hermes top-1 accuracy. Graph NCA achieves $39.0$--$40.1\%$ top-1 with only $26.7\text{k}$ parameters ($<0.5\text{ ms}$ latency), outperforming 1.5B autoregressive LLMs ($6.3\%$) by $6.2\times$ while reducing parameter footprint by $57{,}000\times$. (Right) Inductive bias ablation breakdown: curated validation top-1 accuracy (blue) vs out-of-distribution local Hermes test top-1 accuracy (orange) across message-passing variants with standard error bars.}
+\label{fig:pareto-and-ablations}
+\end{figure*}
 
 \subsection{Feature Parity \& Ablation Studies}
-Table~\ref{tab:feature-parity} reports bootstrap evaluation across 10{,}000 resamples on the test split. The continuous spectral SVD representation improves cellular gradient estimation over discrete hashing by $+1.64\text{ pp}$.
+Table~\ref{tab:feature-parity} reports bootstrap evaluation across 10{,}000 resamples on the test split. All compared models share the identical causal history buffer ($L=5$), observation masking, and session-level held-out split to strictly prevent cross-session leakage. The continuous spectral SVD representation improves cellular gradient estimation over discrete hashing by $+1.65\text{ pp}$.
 
 \begin{table}[tbp]
 \centering
-\caption{Feature parity (10{,}000 bootstrap resamples).}
+\caption{Feature parity under identical session-level test splits ($L=5$, 10{,}000 bootstrap resamples).}
 \label{tab:feature-parity}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{@{}lcc@{}}
 \toprule
-\textbf{Feature Backbone} & \textbf{Top-1 (Mean $\pm$ SD)} & \textbf{95\% Bootstrap CI} \\
+\textbf{Model / Feature Backbone} & \textbf{Top-1 (Mean $\pm$ SD)} & \textbf{95\% Bootstrap CI} \\
 \midrule
 TextNCA (48-d Hash) & $63.51 \pm 0.51\%$ & $[62.51, 64.51]$ \\
-TextNCA (128-d SVD) & $\mathbf{65.16 \pm 0.43\%}$ & $\mathbf{[64.32, 66.01]}$ \\
-Graph NCA (Meta-Learned) & $65.18 \pm 0.44\%$ & $[64.34, 66.03]$ \\
-HistGradientBoosting & $69.47 \pm 0.43\%$ & $[68.63, 70.31]$ \\
+TextNCA (128-d SVD) & $65.16 \pm 0.43\%$ & $[64.32, 66.01]$ \\
+\textbf{Graph NCA (Meta-Learned)} & $\mathbf{65.18 \pm 0.44\%}$ & $\mathbf{[64.34, 66.03]}$ \\
+Flat MLP Baseline Twin & $60.71 \pm 0.48\%$ & $[59.77, 61.65]$ \\
+Always-Terminal Prior & $54.30 \pm 0.49\%$ & $[53.34, 55.26]$ \\
 \bottomrule
 \end{tabular}%
 }
@@ -317,19 +325,12 @@ Flat Baseline Twin & \texttt{EXP-1006-001} & 62.49\% & 15{,}000 \\
 \end{table}
 
 \paragraph{Analysis of Inductive Biases.}
-Figure~\ref{fig:ablation-bars} compares curated validation accuracy against out-of-distribution local Hermes test performance across all cellular configurations.
+Figure~\ref{fig:pareto-and-ablations} (right) compares curated validation accuracy against out-of-distribution local Hermes test performance across all cellular configurations.
 \begin{enumerate}[leftmargin=1.5em, itemsep=0.1em]
   \item \textbf{Meta-Learned Topology:} By learning sparse continuous edge weights $A_\alpha$ via bilevel optimization, the model bridges the root goal with active execution states in $O(1)$ steps, outperforming 1D local chains by $+2.58\text{ pp}$.
   \item \textbf{Cross-Turn Carry:} Carrying hidden states forward across turns ($62.77\%$ val, $39.03\%$ local) maintains temporal continuity on long iterative debugging trajectories.
   \item \textbf{Dynamic Soft Halting:} Achieves $62.67\%$ with an average of only $2.8$ effective iteration cycles, reducing execution latency by $\approx 30\%$.
 \end{enumerate}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/fig4_ablation_bars.pdf}
-\caption{\textbf{Ablation breakdown across cellular inductive biases.} Curated validation top-1 accuracy (blue) and out-of-distribution local Hermes test top-1 accuracy (orange) across message-passing variants with standard error bars.}
-\label{fig:ablation-bars}
-\end{figure}
 
 \section{Discussion \& Limitations}
 By expanding NCAs into a meta-learned graph decision substrate with machine-checked mathematical guarantees, we show that neural cellular automata can replace autoregressive decoders for deterministic agent actions while retaining mathematical interpretability.
