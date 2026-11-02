@@ -432,12 +432,12 @@ The architecture exhibits two boundaries: open-ended code diff synthesis require
 I have introduced Graph Neural Cellular Automata (GNCA) with architecture meta-learning, extending cellular automata beyond 1D chains to execute hierarchical tool dispatch with certified structural invariants. Training past 150k steps induces delayed generalization (grokking), reaching $\mathbf{68.07\%}$ test accuracy (95\% CI: $[66.49, 69.60]\%$) and approaching tuned tabular ensembles within $1.4\text{ pp}$ (Random Forest $67.88\%$, HistGradientBoosting $69.47\%$). In a Dual-System architecture, GNCA makes routing decisions in $21.43\text{ ms}$ on a local CPU end to end (sub-millisecond for the bare forward pass). In pilot diagnostic deployments ($N=10$ $\tau^2$-bench mock tasks, $N=30$ BFCL probes, $N=1$ SWE episode), Dual GNCA reports $80.0\%$ Pass$^1$ ($8/10$) and $90.0\%$ BFCL triage ($27/30$) while cutting tokens by $\mathbf{44.0\%}$ ($92{,}272$ saved on logged mock tasks).
 
 \paragraph{Code, Data, and Model Availability.}
-{\fontsize{6.2pt}{7.0pt}\selectfont Models and the dataset are on Hugging Face (links below). The training code, the experiment records in \texttt{paper/si/} and the Lean 4 proofs are in the public repository below. The version described here is commit \texttt{4c063a2}. The repository has no license file yet.
+{\fontsize{6.2pt}{7.0pt}\selectfont Models and the dataset are on Hugging Face (links below). The training code, the experiment records in \texttt{paper/si/} and the Lean 4 proofs are in the public repository below. The version described here is commit \texttt{5e3a3b2}. The repository has no license file yet.
 \textbf{Proofs:} \nolinkurl{formal_proofs/NCAMetaLearning};
 \textbf{Model:} \href{https://huggingface.co/cap-jmk-real/textnca-next-tool}{\nolinkurl{cap-jmk-real/textnca-next-tool}};
 \textbf{Baseline:} \href{https://huggingface.co/cap-jmk-real/baseline-next-tool}{\nolinkurl{cap-jmk-real/baseline-next-tool}};
 \textbf{Dataset:} \href{https://huggingface.co/datasets/cap-jmk-real/hermes-next-tool-mix}{\nolinkurl{cap-jmk-real/hermes-next-tool-mix}};
-\textbf{Code:} \href{https://github.com/cap-jmk-real/nca_research}{\nolinkurl{github.com/cap-jmk-real/nca_research}} (commit \texttt{4c063a2}).}
+\textbf{Code:} \href{https://github.com/cap-jmk-real/nca_research}{\nolinkurl{github.com/cap-jmk-real/nca_research}} (commit \texttt{5e3a3b2}).}
 
 \begin{thebibliography}{10}
 \fontsize{5.7pt}{6.4pt}\selectfont
@@ -587,7 +587,7 @@ end NCAMetaLearning
 To reproduce and verify the complete formal proof suite:
 \begin{enumerate}[leftmargin=1.5em, itemsep=0.1em]
   \item Install Lean 4 via elan: \texttt{elan toolchain install leanprover/lean4:v4.35.0}.
-  \item Clone \url{https://github.com/cap-jmk-real/nca_research} and check out commit \texttt{4c063a251d14}. From the repository root, change to the proof directory: \texttt{cd formal\_proofs/}.
+  \item Clone \url{https://github.com/cap-jmk-real/nca_research} and check out commit \texttt{5e3a3b23eda2}. From the repository root, change to the proof directory: \texttt{cd formal\_proofs/}.
   \item Build the formal library: \texttt{lake build}.
   \item Run the compiled verification binary: \texttt{lake exe ncametalearning}.
   \item Confirm all 14 kernel jobs complete with zero axioms.
