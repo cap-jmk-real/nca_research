@@ -296,6 +296,51 @@
         "H6"
       ],
       "path": "paper/si/experiments/EXP-20261015-002.json"
+    },
+    {
+      "id": "EXP-20261102-001",
+      "title": "Full-history Graph NCA vs tabular baselines (SVD128 parity, seeds 0-2)",
+      "status": "primary",
+      "date": "2026-11-02",
+      "hypothesis_ids": [
+        "H6",
+        "full-history-parity"
+      ],
+      "path": "paper/si/experiments/EXP-20261102-001.json"
+    },
+    {
+      "id": "EXP-20261102-002",
+      "title": "Deep Tree GNCA 200k grokking run (K=8, label smoothing)",
+      "status": "primary",
+      "date": "2026-11-02",
+      "hypothesis_ids": [
+        "H6",
+        "grokking"
+      ],
+      "path": "paper/si/experiments/EXP-20261102-002.json"
+    },
+    {
+      "id": "EXP-20261102-003",
+      "title": "Dual-system pilot diagnostics (tau2-bench, BFCL, token audit)",
+      "status": "preliminary",
+      "date": "2026-11-02",
+      "hypothesis_ids": [
+        "H25",
+        "H13",
+        "dual-system"
+      ],
+      "path": "paper/si/experiments/EXP-20261102-003.json"
+    },
+    {
+      "id": "EXP-20261102-004",
+      "title": "Transformer 6L-4H and constrained Qwen2.5-1.5B routing baselines",
+      "status": "preliminary",
+      "date": "2026-11-02",
+      "hypothesis_ids": [
+        "benchmark-gates",
+        "B_tx"
+      ],
+      "path": "paper/si/experiments/EXP-20261102-004.json"
     }
   ]
 }

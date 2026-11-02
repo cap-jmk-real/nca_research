@@ -1,0 +1,52 @@
+{
+  "id": "EXP-20261102-003",
+  "title": "Dual-system pilot diagnostics (tau2-bench, BFCL, token audit)",
+  "status": "preliminary",
+  "date": "2026-11-02",
+  "hypothesis_ids": [
+    "H25",
+    "H13",
+    "dual-system"
+  ],
+  "claims_supported": [
+    "Exploratory pilot metrics for Dual GNCA harness (small N); see Table live-benchmarks GNCA column"
+  ],
+  "claims_not_supported": [
+    "Open SOTA Azure API scores and latencies in Table live-benchmarks — preliminary author logs only; JSON export blocked while training engine offline"
+  ],
+  "hardware": {
+    "system1": "local CPU GNCA forward + harness overhead",
+    "system2": "FrogNano-4B actuator",
+    "open_sota": "Azure AI hosted Llama-4 / DeepSeek — scores not re-exported to paper/si yet"
+  },
+  "software": {},
+  "data": {
+    "tau2_mock_tasks": 10,
+    "tau2_turns": 89,
+    "bfcl_irrelevance_probes": 30,
+    "swe_episodes": 1
+  },
+  "model": {
+    "router": "Graph NCA dual-system"
+  },
+  "training": {
+    "trained": false,
+    "note": "Evaluation-only pilot"
+  },
+  "metrics": {
+    "registration_status": "pending_engine_reexport",
+    "gnca_reported": {
+      "tau2_pass1_percent": 80.0,
+      "bfcl_irrelevance_percent": 90.0,
+      "routing_latency_ms_mean": 21.43,
+      "token_reduction_percent": 44.0
+    },
+    "open_sota_azure": "pending_si_json"
+  },
+  "artifacts": {},
+  "repro": {
+    "command": "Blocked until engine sync restores pilot score JSON under results/",
+    "git_commit": "cddb8e50a98d270c740552d23251543afc3147bc3"
+  },
+  "si_notes": "Do not treat Open SOTA cells as independently verified until this record links a score file."
+}

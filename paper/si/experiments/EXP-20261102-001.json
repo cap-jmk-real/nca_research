@@ -1,0 +1,71 @@
+{
+  "id": "EXP-20261102-001",
+  "title": "Full-history Graph NCA vs tabular baselines (SVD128 parity, seeds 0-2)",
+  "status": "primary",
+  "date": "2026-11-02",
+  "hypothesis_ids": [
+    "H6",
+    "full-history-parity"
+  ],
+  "claims_supported": [
+    "Graph NCA meta/star/tree/1d test top-1 under session holdout with bootstrap CIs (Table 2 / Table primary rows)",
+    "HistGradientBoosting and Random Forest tabular ceilings on identical splits"
+  ],
+  "claims_not_supported": [
+    "Transformer 6L-4H row in Table 1 — not present in this JSON; SI registration pending (engine offline)"
+  ],
+  "hardware": {
+    "device": "cuda",
+    "note": "Recorded via stage0/run_full_history_benchmarks.py on engine-class GPU host"
+  },
+  "software": {
+    "script": "stage0/run_full_history_benchmarks.py",
+    "artifact_json": "stage0/stage0_results/full_history_benchmarks.json"
+  },
+  "data": {
+    "n_train": 57675,
+    "n_val": 3465,
+    "n_test": 3530,
+    "split": "curated session holdout",
+    "tool_classes": 13
+  },
+  "model": {
+    "topologies": [
+      "GraphNCA_tree",
+      "GraphNCA_meta",
+      "GraphNCA_star",
+      "GraphNCA_1d"
+    ],
+    "obs_dim": 146,
+    "params_approx": 59200
+  },
+  "training": {
+    "total_steps": 10000,
+    "batch": 512,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "note": "Paper Table 1 headline test accuracies aggregate seed-wise bootstrap means from this artifact; 150k-step floor applies to architecture ablations in paper/si/experiments/EXP-20261006-*"
+  },
+  "metrics": {
+    "source": "stage0/stage0_results/full_history_benchmarks.json",
+    "headline_test_boot_mean_percent": {
+      "GraphNCA_meta": 65.33,
+      "GraphNCA_star": 66.19,
+      "GraphNCA_tree": 65.27,
+      "GraphNCA_1d": 64.64,
+      "HistGradientBoosting": 69.47,
+      "RandomForest": 67.88
+    }
+  },
+  "artifacts": {
+    "json": "stage0/stage0_results/full_history_benchmarks.json"
+  },
+  "repro": {
+    "command": "python stage0/run_full_history_benchmarks.py --steps 10000 --seeds 0,1,2 --out stage0_results/full_history_benchmarks.json",
+    "git_commit": "cddb8e50a98d270c740552d23251543afc3147bc3"
+  },
+  "si_notes": "Public copy of engine benchmark summary checked into the repo for paper reproducibility."
+}

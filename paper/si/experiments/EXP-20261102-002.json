@@ -1,0 +1,53 @@
+{
+  "id": "EXP-20261102-002",
+  "title": "Deep Tree GNCA 200k grokking run (K=8, label smoothing)",
+  "status": "primary",
+  "date": "2026-11-02",
+  "hypothesis_ids": [
+    "H6",
+    "grokking"
+  ],
+  "claims_supported": [
+    "68.07% test top-1 with 95% bootstrap CI after extended 200k AdamW budget",
+    "Figure 2 learning curve for Deep Tree NCA"
+  ],
+  "hardware": {
+    "device": "cuda",
+    "note": "stage0/run_ultra_grokking_nca.py"
+  },
+  "software": {
+    "artifact_json": "stage0/stage0_results/ultra_grokking_results.json"
+  },
+  "data": {
+    "n_test": 3530,
+    "split": "curated session holdout"
+  },
+  "model": {
+    "topology": "tree",
+    "K": 8,
+    "label_smoothing": 0.05,
+    "params": 59246
+  },
+  "training": {
+    "total_steps": 200000,
+    "batch": 512,
+    "seed": 0,
+    "weight_decay": 0.05
+  },
+  "metrics": {
+    "best_val_top1_percent": 69.47,
+    "best_test_top1_percent": 68.07,
+    "boot_ci95_percent": [
+      66.49,
+      69.6
+    ],
+    "latency_cpu_p50_ms": 0.661
+  },
+  "artifacts": {
+    "json": "stage0/stage0_results/ultra_grokking_results.json"
+  },
+  "repro": {
+    "command": "python stage0/run_ultra_grokking_nca.py",
+    "git_commit": "cddb8e50a98d270c740552d23251543afc3147bc3"
+  }
+}
