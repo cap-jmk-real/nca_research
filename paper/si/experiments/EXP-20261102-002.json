@@ -48,6 +48,6 @@
   },
   "repro": {
     "command": "python stage0/run_ultra_grokking_nca.py",
-    "git_commit": "pending"
+    "git_commit": "4c063a251d14183eaaca4a10da7cf64461efe0ba"
   }
 }

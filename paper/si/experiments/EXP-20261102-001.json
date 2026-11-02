@@ -65,7 +65,7 @@
   },
   "repro": {
     "command": "python stage0/run_full_history_benchmarks.py --steps 10000 --seeds 0,1,2 --out stage0_results/full_history_benchmarks.json",
-    "git_commit": "pending"
+    "git_commit": "4c063a251d14183eaaca4a10da7cf64461efe0ba"
   },
   "si_notes": "Public copy of engine benchmark summary checked into the repo for paper reproducibility."
 }

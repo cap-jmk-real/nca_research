@@ -7,7 +7,7 @@ Last updated: 2026-11-02 (review pass toward ≥8.5/10).
 | Item | Location |
 | --- | --- |
 | Repository | https://github.com/cap-jmk-real/nca_research |
-| Manuscript pin | _set on merge — see `paper/main.tex` availability paragraph_ |
+| Manuscript pin | `4c063a2` — https://github.com/cap-jmk-real/nca_research/tree/4c063a2 |
 | Primary benchmark JSON | `stage0/stage0_results/full_history_benchmarks.json` (`EXP-20261102-001`) |
 | Grokking JSON | `stage0/stage0_results/ultra_grokking_results.json` (`EXP-20261102-002`) |
 | SI experiment registry | `paper/si/experiments/` + `paper/si/experiments_index.json` |
