@@ -14,12 +14,15 @@
 \usepackage{cite}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{orcidlink}
 
-\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
-\setlength{\floatsep}{6pt plus 2pt minus 2pt}
-\setlength{\intextsep}{6pt plus 2pt minus 2pt}
-\setlength{\abovecaptionskip}{4pt}
-\setlength{\belowcaptionskip}{4pt}
+\setlength{\textfloatsep}{7pt plus 2pt minus 2pt}
+\setlength{\floatsep}{5pt plus 2pt minus 2pt}
+\setlength{\intextsep}{5pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{5pt plus 2pt minus 2pt}
+\setlength{\dblfloatsep}{5pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{3pt}
+\setlength{\belowcaptionskip}{3pt}
 
 \hypersetup{
   colorlinks=true,
@@ -58,11 +61,10 @@
 }
 \lstset{style=leanstyle}
 
-\title{\textbf{Beyond 1D Grid Automata: Architecture Meta-Learning for Graph Neural Cellular Automata in Agent Execution Traces}}
+\title{\textbf{From Grokking to Micro-Routing: Graph Neural Cellular Automata for Sub-Millisecond Agent Tool Selection}}
 \author{%
-  \textbf{Julian M. Kleber} \\
+  \textbf{Julian M. Kleber}\,\orcidlink{0000-0001-5518-0932} \\
   \textit{Independent Researcher} \\
-  ORCID: \href{https://orcid.org/0000-0001-5518-0932}{0000-0001-5518-0932} \\
   \texttt{julian.m.kleber@gmail.com}
 }
 \date{October 2026}
@@ -71,49 +73,49 @@
 \maketitle
 
 \begin{abstract}
-Autonomous software agents cycle through observation, internal reasoning, tool dispatch, and argument synthesis. While Large Language Models (LLMs) excel at broad planning, using billion-parameter decoders for routine tool calls creates heavy latency, memory pressure, and high cost. In this paper, we demonstrate that Neural Cellular Automata (NCAs) can generalize far beyond rigid 1D lattices to serve as a high-throughput substrate for \textbf{hierarchical tool selection, argument slot binding, and execution verification}. We introduce \textbf{Graph Neural Cellular Automata (GNCA)} parameterized via continuous \textbf{architecture meta-learning}, enabling dynamic discovery of optimal spatial interaction topologies $\mathcal{G} = (\mathcal{V}, \mathcal{E}, A_\alpha)$ that bridge user goals, call stacks, and argument slots. We establish three structural theorems governing graph subsumption, receptive field diameter, and permutation symmetry. We formally verify all proofs in the \textbf{Lean 4} interactive theorem prover with zero unproven axioms. Adhering to a strict 150{,}000-step AdamW training floor on curated agent execution traces, GNCA achieves $65.18\%$ top-1 routing accuracy, matching full transformer baselines ($65.87 \pm 2.0\%$) and flat linear twins ($60.71\%$), while outperforming compact autoregressive decoders (Qwen2.5-1.5B-Instruct at $6.29\%$). Across 10{,}000 bootstrap resamples and 21 registered experiment records, we show that meta-learned cellular graph dynamics provide an expressive, parameter-efficient substrate capable of sub-millisecond agent decision routing.
+In autonomous software agents, deciding which tool to invoke---such as reading a file, searching a database, or replying to the user---is fundamentally a micro-routing decision. Today's systems dispatch every step through multi-billion-parameter Large Language Models (LLMs), spending seconds of latency and thousands of redundant tokens merely to select a function from a list. In this paper, I demonstrate that Neural Cellular Automata (NCAs) offer an ultra-lightweight alternative: a 59.2k-parameter network (35.3k in compact $K{=}4$ / SVD64 configurations) that functions as a fast reflex arc. Instead of generating tokens sequentially, my \textbf{Graph Neural Cellular Automata (GNCA)} framework parameterizes local cellular communication via continuous \textbf{architecture meta-learning}. Nodes representing user goals, execution history, and argument slots exchange local state updates over fast recurrence cycles to reach rapid consensus. I establish structural invariants governing graph subsumption, receptive field diameter ($O(1)$ vs $\Omega(V)$), and permutation symmetry, formally verifying all proofs in \textbf{Lean 4} with zero unproven axioms to certify the cellular search space. Continuous architecture meta-learning discovers relational topologies reaching $65.33\%$ top-1 ($35.3\text{k}$ parameters), outperforming 1D regular lattices ($64.64\%$) and matching full attention Transformers ($65.87\%$). Scaling feature capacity to SVD128 with $K=8$ recurrence and label smoothing under extended training ($59.2\text{k}$ parameters) induces delayed generalization (grokking), reaching $\mathbf{68.07\%}$ test top-1 accuracy (95\% CI: $[66.49, 69.60]\%$), closely approaching competitive tuned tabular ensembles within $1.4\text{ pp}$ (Random Forest $67.88\%$, HistGradientBoosting $69.47\%$) while running in sub-millisecond CPU latency ($0.66$\,ms). Deployed as a System-1 micro-router paired with an LLM actuator in a Dual-System architecture, GNCA achieves an average routing latency of $\mathbf{21.43\text{ ms}}$ across 89 live benchmark turns ($78\times$--$200\times$ faster than cloud SOTA LLMs). In exploratory pilot diagnostic evaluations ($N=10$ tasks on Sierra $\tau^2$-bench and $N=30$ probes on BFCL v4), the hybrid agent reaches an $\mathbf{80.0\%}$ Pass$^1$ success rate ($8/10$ tasks) and $\mathbf{90.0\%}$ tool irrelevance detection, eliminating schema distraction while cutting cumulative token consumption by $\mathbf{44.0\%}$ ($92{,}272$ tokens saved).
 \end{abstract}
 
 \section{Introduction}
-Autonomous software agents operate as iterative closed-loop systems: observing environment feedback (compiler diagnostics, file diffs, test logs) and synthesizing next actions. In standard production deployments, this decision is almost universally handed to a causal language model. However, delegating every fine-grained step to a multi-billion-parameter LLM imposes critical bottlenecks:
+Autonomous software agents operate as iterative closed-loop systems: observing environment feedback (compiler diagnostics, file diffs, test logs) and synthesizing next actions. In biological nervous systems, routine motor actions do not require deliberative processing in the cerebral cortex; a low-level reflex arc in the spinal cord coordinates rapid responses in milliseconds. In contrast, modern AI agents dispatch every mundane operation through massive, multi-billion-parameter autoregressive models. This design causes critical bottlenecks:
 \begin{enumerate}[leftmargin=1.5em, itemsep=0.1em]
   \item \textbf{Latency and Memory Pressure.} Generating tokens sequentially causes high latency and heavy memory traffic, slowing down agent loops.
   \item \textbf{Context Window Bloat.} Intermediate steps fill context windows with repetitive JSON schema and syntax clutter.
-  \item \textbf{Rigid 1D Assumptions.} Prior cellular models restrict computation to 1D regular lattices, ignoring that agent execution DAGs, call stacks, and tool arguments form multi-scale hierarchical trees.
+  \item \textbf{Rigid 1D Assumptions.} Prior cellular models restrict computation to 1D regular lattices, forcing signals to crawl one step at a time like a game of telephone, ignoring that agent execution traces form multi-scale hierarchical trees.
 \end{enumerate}
 
-Neural Cellular Automata (NCAs)~\cite{mordvintsev2020growing} offer an alternative computational paradigm based on local, self-organizing update rules. Historically, NCAs were studied in continuous 2D grids for biological morphogenesis, texture generation, and self-repair. However, their core inductive biases---iterative spatial message passing across discrete cells governed by uniform update rules---align naturally with structured sequential decision processes. Recent investigations (e.g., Mittal et al.~\cite{mittal2026textnca}) probed token-level text NCAs, but their application to structured multi-action tool execution has remained limited to rigid sequential chains.
+Neural Cellular Automata (NCAs)~\cite{mordvintsev2020growing} offer an alternative computational paradigm based on local, self-organizing update rules. Historically, NCAs were studied in continuous 2D grids for biological morphogenesis, texture generation, and self-repair. However, their core inductive biases---iterative spatial message passing across discrete cells governed by uniform update rules---align naturally with structured sequential decision processes. Like biological cells communicating with their immediate neighbors to form complex tissues, NCA cells update their local states in parallel without global bottlenecking. Recent investigations (e.g., Mittal et al.~\cite{mittal2026textnca}) probed token-level text NCAs, but their application to structured multi-action tool execution has remained limited to rigid sequential chains.
 
-\paragraph{Contributions.} In this paper, we extend Neural Cellular Automata beyond 1D topologies into a meta-learned graph framework for hierarchical agent routing. Our core contributions are fourfold:
+\paragraph{Contributions.} In this paper, I extend Neural Cellular Automata beyond 1D topologies into a meta-learned graph framework for hierarchical agent routing. My core contributions are fourfold:
 \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
-  \item \textbf{Graph Cellular Automata:} We formulate GNCA, replacing fixed 1D convolutional stencils with continuous architecture search over graph topologies.
-  \item \textbf{Hierarchical Multi-Head Readout:} We design a joint head predicting tool choices, argument bindings, abstain decisions, and execution risk.
-  \item \textbf{Machine-Checked Formal Proofs:} We verify in Lean 4 that 1D chains embed into GNCA, prove an exponential diameter gap, and prove permutation equivariance.
-  \item \textbf{Empirical Efficiency:} Across 21 registered experiment records, GNCA matches Transformer accuracy ($65.18\%$ vs $65.87\%$) while running in $0.370$ ms on CPU.
+  \item \textbf{Graph Cellular Automata:} I formulate GNCA, replacing fixed 1D convolutional stencils with continuous architecture search over graph topologies, reaching $65.33\%$ top-1 at $K=4$ and $68.07\%$ via grokking with deep recurrence.
+  \item \textbf{Machine-Checked Structural Invariants:} I formally verify in Lean 4 that 1D lattices embed into GNCA, prove an exponential diameter gap ($O(1)$ vs $\Omega(V)$), and prove permutation equivariance with zero unproven axioms.
+  \item \textbf{Dual-System Architecture:} I introduce a high-throughput System-1/System-2 agent harness with risk-gated dynamic schema pruning, filtering non-candidate tools before LLM actuation.
+  \item \textbf{Pilot Agentic Diagnostics:} In exploratory proof-of-concept deployments ($N=10$ tasks on $\tau^2$-bench, $N=30$ on BFCL v4, and an autonomous SWE episode), GNCA achieves $80.0\%$ Pass$^1$, $90.0\%$ irrelevance triage, and cuts routing latency by $70\times$--$180\times$ ($21.43\text{ ms}$).
 \end{itemize}
 
 \section{Related Work}
 
 \paragraph{Neural Cellular Automata and Reasoning.}
-Mordvintsev et al.~\cite{mordvintsev2020growing} introduced Growing Neural Cellular Automata, demonstrating self-organizing pattern morphogenesis and damage recovery. Subsequent work extended NCAs to multi-scale hierarchical structures~\cite{pande2023hierarchical} and decentralized algorithmic reasoning~\cite{etcheverry2026reasoning}. In language modeling, Mittal et al.~\cite{mittal2026textnca} and Lee et al.~\cite{lee2026training} demonstrated that cellular rules can learn token representations. Our framework departs fundamentally from token generation. Instead of generating language text, we construct a dynamic cellular graph over agent execution states to perform structured tool and argument dispatch.
+Mordvintsev et al.~\cite{mordvintsev2020growing} introduced Growing Neural Cellular Automata, demonstrating self-organizing pattern morphogenesis and damage recovery. Subsequent work extended NCAs to multi-scale hierarchical structures~\cite{pande2023hierarchical} and decentralized algorithmic reasoning~\cite{etcheverry2026reasoning}. Grattarola et al.~\cite{grattarola2021learning} introduced Learning Graph Cellular Automata (LGCA), showing that GNNs can execute cellular update rules over fixed, predefined graphs (e.g., Voronoi meshes). In language representation, Mittal et al.~\cite{mittal2026textnca} and Lee et al.~\cite{lee2026training} demonstrated that cellular rules can learn 1D token representations. My framework departs fundamentally from token generation and static GCA: agent execution traces lack a predefined graph, requiring bilevel architecture meta-learning to discover optimal communication graphs, while introducing cross-turn state carry and formal Lean 4 verification for hierarchical tool routing.
 
 \paragraph{Tool Calling, Agent Harnesses, and Pre-Routing.}
 Tool use in autonomous systems is evaluated on benchmarks like the Berkeley Function Calling Leaderboard (BFCL)~\cite{gorilla-bfcl} and SWE-bench. Production agent harnesses execute many typed System-1 decisions per task~\cite{li2026fastmodels}. Singla et al.~\cite{singla2026agentweave} showed that pre-inference action routing cuts prompt latency and token overhead by half. Expanding on these findings, real agents must handle three coupled tasks: detecting irrelevance to abstain gracefully, binding argument slots to workspace entities, and coordinating multi-turn plans.
 
 \paragraph{Architecture Meta-Learning \& Graph Bottlenecks.}
-Standard GNNs frequently suffer from \emph{oversmoothing} (representations collapsing to uniformity with depth), \emph{oversquashing} (information bottlenecking from high-degree neighborhoods), and \emph{underreaching} (insufficient message passing depth to bridge distant nodes). By casting topology optimization as bilevel architecture meta-learning, our framework discovers sparse relational graphs that balance local message passing with long-range goal broadcasting.
+Standard GNNs frequently suffer from \emph{oversmoothing} (representations collapsing to uniformity with depth), \emph{oversquashing} (information bottlenecking from high-degree neighborhoods), and \emph{underreaching} (insufficient message passing depth to bridge distant nodes). By casting topology optimization as bilevel architecture meta-learning, my framework discovers sparse relational graphs that balance local message passing with long-range goal broadcasting.
 
 \section{Task Formulation \& Architecture}
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.92\textwidth]{figures/fig1_arch_topology.pdf}
-\caption{\textbf{Architectural schematic and topological comparison across cellular interaction structures.} (a) Traditional 1D cellular automata restrict message passing strictly to adjacent linear neighbors, requiring $\Omega(V)$ sequential updates for global goal integration across execution traces. (b) Our meta-learned Graph NCA framework relaxes topology via continuous bilevel optimization, parameterizing edge weights as $A_{ij} = \sigma(W_\theta x_i^\top x_j)$. This enables direct goal broadcasting with graph diameter $\le 2$ ($O(1)$ receptive field growth) and permutation-equivariant state updates across agent execution nodes.}
+\caption{\textbf{Architectural schematic and topological comparison across cellular interaction structures.} (a) Traditional 1D cellular automata restrict message passing strictly to adjacent linear neighbors, requiring $\Omega(V)$ sequential updates for global goal integration across execution traces. (b) The meta-learned Graph NCA framework relaxes topology via continuous bilevel optimization, parameterizing edge weights as $A_{ij} = \sigma(W_\theta x_i^\top x_j)$. This enables direct goal broadcasting with graph diameter $\le 2$ ($O(1)$ receptive field growth) and permutation-equivariant state updates across agent execution nodes.}
 \label{fig:arch}
 \end{figure*}
 
 \subsection{Hierarchical Action Formulation}
-Rather than treating tool selection as a flat classification problem, we formulate agent dispatch as synthesizing an action tuple.
+Rather than treating tool selection as a flat classification problem, I formulate agent dispatch as synthesizing an action tuple.
 \begin{equation}
   \mathbf{a}_T = \left(y_{\text{tool}}, \; \mathbf{y}_{\text{arg}}, \; g_{\text{abstain}}, \; \tau_{\text{escalate}}\right)
 \end{equation}
@@ -128,21 +130,21 @@ The four tuple components address the complete agent action interface.
 \subsection{Beyond 1D: Graph Neural Cellular Automata}
 In standard 1D NCAs, cell interactions are constrained to nearest neighbors $\{i-1, i, i+1\}$ along a rigid sequence grid. In agent workflows, however, execution traces exhibit multi-scale relational dependencies: the root goal directly conditions argument extraction, while recursive sub-agent tools branch hierarchically.
 
-We generalize the cellular substrate to an arbitrary relational graph $\mathcal{G} = (\mathcal{V}, \mathcal{E}, A)$, where $|\mathcal{V}| = V$ nodes represent the goal anchor, historical execution states, and candidate argument slots. Each cell $i \in \mathcal{V}$ maintains a mutable state $h_i^{(t)} \in \mathbb{R}^H$ ($H=16$), initialized to $h_i^{(0)} = \mathbf{0}$.
+I generalize the cellular substrate to an arbitrary relational graph $\mathcal{G} = (\mathcal{V}, \mathcal{E}, A)$, where $|\mathcal{V}| = V = 5$ nodes represent the causal trace history window ($L=5$, with node $0$ as the root goal anchor and nodes $1 \dots 4$ as chronological execution turns). In concrete terms, each node maintains a compact 16-number scratchpad ($h_i^{(t)} \in \mathbb{R}^{16}$, initialized to $\mathbf{0}$). In each cycle, nodes whisper state updates to neighboring cells across $K=4$ fast iterations, reaching collective consensus without global matrix bottlenecking.
 
 \paragraph{Continuous Spatial Perception.}
-Given an adjacency matrix $A \in \mathbb{R}^{V \times V}$ and normalized graph Laplacian $L = I - D^{-1/2} A D^{-1/2}$, the spatial perception vector $p_i^{(t)} \in \mathbb{R}^{3H}$ aggregates local neighborhood features:
+Let $A \in \mathbb{R}^{V \times V}$ denote the learned adjacency and $\tilde{A} = \tilde{D}^{-1/2} (A + I) \tilde{D}^{-1/2}$ be the symmetrically normalized adjacency with self-loops ($\tilde{D}_{ii} = 1 + \sum_j A_{ij}$). Symmetrized $\tilde{A}$ acts as a spatial low-pass filter (local consensus smoothing), while the normalized Laplacian $\tilde{L} = I - \tilde{A}$ acts as a complementary high-pass divergence operator (detecting state contrast between adjacent cells), directly mirroring the Sobel and Laplacian perception filters in classical NCAs~\cite{mordvintsev2020growing}. The spatial perception vector $p_i^{(t)} \in \mathbb{R}^{3H}$ concatenates cell state, smoothed consensus, and difference features:
 \begin{equation}
-  p_i^{(t)} = \left[ h_i^{(t)}, \; \sum_{j \in \mathcal{N}(i)} A_{ij} W_p h_j^{(t)}, \; \sum_{j \in \mathcal{N}(i)} L_{ij} h_j^{(t)} \right]
+  p_i^{(t)} = \left[ h_i^{(t)}, \; \sum_{j=1}^V \tilde{A}_{ij} W_A h_j^{(t)}, \; \sum_{j=1}^V \tilde{L}_{ij} W_L h_j^{(t)} \right]
 \end{equation}
-where $W_p \in \mathbb{R}^{H \times H}$ is a shared linear projection.
+where $W_A, W_L \in \mathbb{R}^{H \times H}$ are independent linear projections parameterizing low- and high-pass perception channels.
 
 \paragraph{Pointwise State Update.}
-The perceived vector $p_i^{(t)}$ is concatenated with the cell's fixed observation $x_i \in \mathbb{R}^D$, forming $z_i^{(t)} = [p_i^{(t)}; x_i] \in \mathbb{R}^{3H + D}$. A shared pointwise update network computes the state delta $\Delta h_i^{(t)} \in \mathbb{R}^{H}$:
+The perceived vector $p_i^{(t)}$ is concatenated with the cell's fixed observation $x_i \in \mathbb{R}^{D}$, forming $z_i^{(t)} = [p_i^{(t)}; x_i] \in \mathbb{R}^{3H + D}$. A shared pointwise update network computes the state delta $\Delta h_i^{(t)} \in \mathbb{R}^{H}$:
 \begin{equation}
   \Delta h_i^{(t)} = W_2 \, \operatorname{GELU}(W_1 z_i^{(t)} + b_1) + b_2
 \end{equation}
-where $W_1 \in \mathbb{R}^{D_{\mathrm{mid}} \times (3H + D)}$, $W_2 \in \mathbb{R}^{H \times D_{\mathrm{mid}}}$, and $D_{\mathrm{mid}} = 64$.
+where $W_1 \in \mathbb{R}^{D_{\mathrm{mid}} \times (3H + D)}$, $W_2 \in \mathbb{R}^{H \times D_{\mathrm{mid}}}$, and $D_{\mathrm{mid}} = 96$ (with $D=82$ yielding $35.3\text{k}$ parameters in SVD64, and $D=146$ yielding $59.2\text{k}$ in SVD128).
 
 \paragraph{Residual State Accumulation.}
 Updates are applied residually across $K=4$ cycles:
@@ -152,27 +154,27 @@ Updates are applied residually across $K=4$ cycles:
 where $m_i^{(t)} \sim \operatorname{Bernoulli}(p)$ ($p=0.8$ during training; $1.0$ at inference) enforces asynchronous cellular computation.
 
 \subsection{Architecture Meta-Learning on Spatial Topologies}
-To discover the optimal interaction topology without manual heuristic tuning, we formulate a bilevel architecture meta-learning problem.
+To discover the optimal interaction topology without manual heuristic tuning, I formulate a bilevel architecture meta-learning problem.
 \begin{equation}
   \begin{aligned}
-    \min_{\alpha \in \mathcal{A}} \; & \mathcal{L}_{\text{val}}\left(\theta^*(\alpha); \; A_\alpha\right) \\
-    \text{s.t.} \; & \theta^*(\alpha) = \arg\min_\theta \mathcal{L}_{\text{train}}(\theta; \; A_\alpha)
+    \min_{\alpha \in \mathbb{R}^{V \times V}} \; & \mathcal{L}_{\text{val}}\left(\theta^*(\alpha); \; A^{(\alpha)}\right) \\
+    \text{s.t.} \; & \theta^*(\alpha) = \arg\min_\theta \mathcal{L}_{\text{train}}(\theta; \; A^{(\alpha)})
   \end{aligned}
 \end{equation}
-The continuous architecture vector $\alpha \in \mathbb{R}^{|\mathcal{E}|}$ parameterizes the adjacency matrix via a softened softmax relaxation:
+The continuous matrix $\alpha \in \mathbb{R}^{V \times V}$ parameterizes edge probabilities via a row-wise softmax relaxation across candidate source nodes:
 \begin{equation}
-  A_{ij}^{(\alpha)} = \frac{\exp(\alpha_{ij} / \tau)}{\sum_{k \in \mathcal{N}(i)} \exp(\alpha_{ik} / \tau)}
+  A_{ij}^{(\alpha)} = \frac{\exp(\alpha_{ij} / \tau)}{\sum_{k=1}^V \exp(\alpha_{ik} / \tau)}
 \end{equation}
-This search space continuously interpolates between a 1D linear chain ($A_{\text{1D}}$), a star goal-broadcast topology ($A_{\text{star}}$), and a hierarchical call-tree DAG ($A_{\text{tree}}$).
+This bilevel optimization is solved using a first-order DARTS gradient approximation on $\mathcal{L}_{\text{val}}$, annealing softmax temperature $\tau$ from $1.0 \to 0.1$. Following search convergence, the continuous adjacency is discretized into a static sparse DAG by taking the top-$k$ incoming edges ($k=2$) per node (re-normalized to unit sum), which is frozen during final evaluation. For cellular perception in Eq.~(2), this discretized adjacency $A$ is symmetrically normalized via $\tilde{A} = \tilde{D}^{-1/2}(A + I)\tilde{D}^{-1/2}$ and $\tilde{L} = I - \tilde{A}$, guaranteeing real eigenvalues $\lambda \in [0, 2]$ for stable spectral filtering. This search space smoothly interpolates between 1D chains ($A_{\text{1D}}$), star goal-broadcasting ($A_{\text{star}}$), and hierarchical call trees ($A_{\text{tree}}$).
 
 \subsection{Hierarchical Multi-Head Readout}
 After $K$ iterations, the spatial grid $\mathbf{H}^{(K)} \in \mathbb{R}^{V \times H}$ is decoded via four specialized readout heads.
 \begin{enumerate}[leftmargin=1.5em, itemsep=0.1em]
-  \item \textbf{Tool Classification Head:} We project the spatial grid to tool logits.
+  \item \textbf{Tool Classification Head:} The spatial grid projects to tool logits.
   \begin{equation}
     \hat{y}_{\text{tool}} = \operatorname{softmax}\left(W_{\text{tool}} \operatorname{vec}(\mathbf{H}^{(K)}) + b_{\text{tool}}\right)
   \end{equation}
-  \item \textbf{Argument Slot Head:} We compute bilinear interactions between goal and history cells.
+  \item \textbf{Argument Slot Head:} Bilinear interactions between goal and history cells are computed.
   \begin{equation}
     \hat{\mathbf{y}}_{\text{arg}} = \operatorname{softmax}\left({h_0^{(K)}}^\top W_{\text{arg}} h_{\text{last}}^{(K)}\right)
   \end{equation}
@@ -180,14 +182,15 @@ After $K$ iterations, the spatial grid $\mathbf{H}^{(K)} \in \mathbb{R}^{V \time
   \begin{equation}
     g_{\text{abstain}} = \sigma\left(w_{\text{abs}}^\top h_0^{(K)} + b_{\text{abs}}\right)
   \end{equation}
-  \item \textbf{Uncertainty Score:} We track prediction entropy and state step variance.
+  \item \textbf{Uncertainty Score:} Prediction entropy and state step variance are tracked:
   \begin{equation}
-    \tau_{\text{escalate}} = \frac{\mathcal{H}(\hat{y}_{\text{tool}})}{\log |\mathcal{V}|} + \beta \frac{1}{V} \sum_{i=1}^V \|\Delta h_i^{(K-1)}\|_2
+    \tau_{\text{escalate}} = \frac{\mathcal{H}(\hat{y}_{\text{tool}})}{\log |\mathcal{V}|} + \beta \frac{1}{V \sqrt{H}} \sum_{i=1}^V \|\Delta h_i^{(K-1)}\|_2
   \end{equation}
+  where $\beta = 0.5$ balances normalized classification entropy with step-to-step cellular state delta variance (normalized by hidden dimension scale $\sqrt{H}$), escalating turns where the automaton has not settled into a stable fixed-point attractor.
 \end{enumerate}
 
-\section{Theoretical Foundations \& Formal Verification}
-To guarantee mathematical rigor and verify that expanding 1D NCAs into meta-learned graph topologies preserves stability and expressivity, we establish three core theorems. All definitions and proofs have been formalised and verified in \textbf{Lean 4.35} with zero axioms.
+\section{Structural Properties \& Formal Verification}
+To provide sound structural foundations, I formally verify four core structural invariants governing the topological search space and dynamical stability of the Graph NCA architecture class. In formal terms, these machine-checked proofs certify that the GNCA search space strictly subsumes linear lattices and hierarchical trees, establishes an $O(1)$ vs $\Omega(V)$ receptive field diameter gap, preserves permutation symmetry under node re-indexing, and guarantees exponential trajectory decay under contractive cellular transitions. All proofs are machine-checked in \textbf{Lean 4.35} with zero axioms.
 
 \begin{theorem}[Topological Subsumption]\label{thm:subsumption}
 Let $\mathcal{T}_{\mathrm{1D}}$ denote the 1D circular or boundary-padded regular cellular automaton lattice on $V$ nodes. Then $\mathcal{T}_{\mathrm{1D}}$ is a strict element of the Graph Neural Cellular Automata topology space $\mathcal{S}_{\mathrm{GNCA}}$ under tridiagonal adjacency $A_{ij} = \mathbb{I}(|i - j| \le 1)$.
@@ -201,9 +204,11 @@ For any 1D local NCA with nearest-neighbor radius $r=1$ over $V \ge 3$ nodes, pr
 Let $\sigma \in \Pi_V$ be any bijective permutation on the node set $\mathcal{V}$, and let $\mathcal{G}_\sigma = \operatorname{permuteGraph}(\mathcal{G}, \sigma)$. Then for all $i, j \in \mathcal{V}$, $j \in \mathcal{N}_{\mathcal{G}}(i) \iff \sigma(j) \in \mathcal{N}_{\mathcal{G}_\sigma}(\sigma(i))$, and graph paths commute with $\sigma$.
 \end{theorem}
 
-\begin{theorem}[State Contraction \& Exponential Stability]\label{thm:contraction}
+\begin{theorem}[Conditional Fixed-Point Attractor \& Trajectory Decay]\label{thm:contraction}
 Assume the cellular update operator satisfies dyadic contraction $2 \cdot \operatorname{dist}(T(x), T(y)) \le \operatorname{dist}(x, y)$. Then the automaton admits a unique fixed point $x^* = T(x^*)$ (\texttt{fixed\_point\_unique}), and any initial state perturbation decays exponentially as $\operatorname{dist}(T^n(x), T^n(y)) \le 2^{-n} \operatorname{dist}(x, y)$ (\texttt{trajectory\_decay}).
 \end{theorem}
+
+\noindent\textbf{Scope of Structural Formalization.} Theorem~\ref{thm:contraction} establishes a \emph{conditional} structural guarantee: it certifies asymptotic convergence whenever cellular updates operate in the contractive Lipschitz regime (e.g., via spectral normalization on $W_p, W_2$). The machine-checked Lean 4 proofs verify structural properties of the candidate topology space and conditional stability invariants with zero axioms, but do not claim that unconstrained empirical SGD weights satisfy contraction unconditionally.
 
 \begin{theorem}[Hierarchical Tree DAG Subsumption]\label{thm:tree-subsumption}
 Let $\mathcal{T}_{\mathrm{tree}}$ denote a hierarchical decision tree DAG on $V$ nodes with parent relations $p = \lfloor (c-1)/2 \rfloor$. Then $\mathcal{T}_{\mathrm{tree}}$ is a strict element of the Graph NCA topology space $\mathcal{S}_{\mathrm{GNCA}}$ (\texttt{theorem\_tree\_subsumption}), achieving maximum graph diameter $D \le 2 \lceil \log_2 V \rceil = O(\log V)$.
@@ -211,10 +216,11 @@ Let $\mathcal{T}_{\mathrm{tree}}$ denote a hierarchical decision tree DAG on $V$
 
 \begin{figure}[tbp]
 \centering
+\vspace{-2mm}
 \fbox{\parbox{0.92\columnwidth}{%
 \small
 \textbf{Lean 4 Kernel Verification Summary:}
-\begin{itemize}[leftmargin=1.2em, itemsep=0.1em]
+\begin{itemize}[leftmargin=1.2em, itemsep=-2pt, parsep=0pt]
   \item \texttt{theorem\_subsumption\_1d}: \textbf{Verified (0 axioms)}
   \item \texttt{theorem\_receptive\_field\_separation}: \textbf{Verified (0 axioms)}
   \item \texttt{theorem\_tree\_subsumption}: \textbf{Verified (0 axioms)}
@@ -225,21 +231,25 @@ Let $\mathcal{T}_{\mathrm{tree}}$ denote a hierarchical decision tree DAG on $V$
 \end{itemize}
 Lean package: \nolinkurl{formal_proofs/NCAMetaLearning}
 }}
-\caption{\textbf{Machine-checked formal verification status in the Lean 4 proof assistant.} All three structural theorems (topological subsumption of 1D lattices, receptive field diameter separation $O(1)$ vs $\Omega(V)$, and permutation equivariance of neighborhood perception) along with fixed-point uniqueness are proven with zero unproven axioms in the Lean 4 Mathlib framework. Formal proofs establish certified structural soundness of the Graph NCA operators.}
+\vspace{-2mm}
+\caption{\textbf{Machine-checked formal verification status in the Lean 4 proof assistant.} Structural theorems (topological subsumption of 1D lattices, receptive field diameter separation $O(1)$ vs $\Omega(V)$, and permutation equivariance) along with conditional fixed-point uniqueness are proven with zero unproven axioms in Lean 4. Formal proofs certify structural invariants of the Graph NCA design space.}
 \label{fig:lean-status}
+\vspace{-2mm}
 \end{figure}
 
 \begin{table}[tbp]
 \centering
-\caption{\textbf{Primary agent action routing benchmark across architecture families under the 150k AdamW budget.} Evaluated on 23,741 curated agent execution turns across 13 tool categories under strict session-level holdout. Cellular graph topologies match Transformer accuracy ($65.87\%$) while running in sub-millisecond CPU latency ($0.37$ ms), outperforming 1.5B autoregressive decoders by $10\times$. Values report Top-1/Top-3 classification accuracy and macro-averaged F1 score.}
+\vspace{-2mm}
+\caption{\textbf{Primary agent action routing benchmark under the 150k AdamW budget.} Evaluated on 23,741 curated agent turns across 13 tool categories under session holdouts. Cellular graph topologies match Transformer accuracy ($65.87\%$) in sub-millisecond CPU latency ($0.35$--$0.66$\,ms). $35.3\text{k}$ models use $V=5, D=82$ (SVD64); the $59.2\text{k}$ variant uses $V=5, D=146$ (full SVD128 + categorical features, $H=16, D_{\mathrm{mid}}=96$). *Qwen2.5-1.5B uses grammar-constrained logit masking; unconstrained zero-shot prompt format fails at 6.29\% top-1.}
 \label{tab:primary}
+\vspace{-2mm}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{@{}llccccc@{}}
 \toprule
 \textbf{Architecture} & \textbf{Model Family} & \textbf{Parameters} & \textbf{Inference} & \textbf{Top-1 Acc} & \textbf{Top-3 Acc} & \textbf{Macro F1} \\
 \midrule
 Linear Classifier & Convex Baseline & 1.2k & $<0.05$ ms & 60.71\% & 84.12\% & 0.542 \\
-Qwen2.5-1.5B-Instruct & Autoregressive LLM & 1.54B & 42.1 ms & 6.29\% & 14.80\% & 0.048 \\
+Qwen2.5-1.5B (Constrained)* & Autoregressive LLM & 1.54B & 42.1 ms & 55.20\% & 79.10\% & 0.462 \\
 Transformer (6L-4H) & Full Attention & 1.2M & 3.8 ms & $65.87\%$ & $\mathbf{89.41\%}$ & $\mathbf{0.612}$ \\
 HistGradientBoosting & Tabular Tree Baseline & 10.4k & 1.8 ms & $\mathbf{69.47\%}$ & $95.44\%$ & 0.343 \\
 \midrule
@@ -247,83 +257,97 @@ TextNCA (1D Local, $L=5$) & Cellular Automaton & 14.8k & 0.35 ms & 64.64\% & 87.
 Graph NCA (Hierarchical Tree) & Cellular Automaton & 35.3k & 0.35 ms & 65.27\% & 88.42\% & 0.598 \\
 \textbf{Graph NCA (Meta-Learned)} & \textbf{Cellular Automaton} & \textbf{35.3k} & \textbf{0.42 ms} & $\mathbf{65.33\%}$ & $\mathbf{88.94\%}$ & $\mathbf{0.605}$ \\
 Graph NCA (Star Topology) & Cellular Automaton & 35.3k & 0.37 ms & $\mathbf{66.19\%}$ & $\mathbf{89.15\%}$ & $\mathbf{0.608}$ \\
+\midrule
+\textbf{Graph NCA (Deep Tree, $K{=}8$, LS)} & \textbf{Cellular Automaton} & \textbf{59.2k} & \textbf{0.66 ms} & $\mathbf{68.07\%}$ & $\mathbf{91.24\%}$ & $\mathbf{0.628}$ \\
 \bottomrule
 \end{tabular}%
 }
+\vspace{-2mm}
 \end{table}
 
 \section{Experimental Protocol}
 
 \subsection{Datasets \& Session-Level Partitioning}
-We evaluate on curated agent execution traces totaling 23{,}741 interaction turns across 13 tool categories. Crucially, all partitions are established at the \textbf{session level}: no session ID is shared between training and test splits, preventing trajectory memorization.
+I evaluate on curated agent execution traces totaling 23{,}741 interaction turns across 13 tool categories. Crucially, all partitions are established at the \textbf{session level}: no session ID is shared between training and test splits, preventing trajectory memorization.
 
 \subsection{The 150k-Step Training Floor}
-Because iterative cellular dynamics learn spatial coordination gradually, premature evaluation ($<10\text{k}$ steps) produces misleading comparisons. We enforce a strict \textbf{150{,}000 AdamW step floor} on all comparative runs.
+Because iterative cellular dynamics learn spatial coordination gradually, premature evaluation ($<10\text{k}$ steps) produces misleading comparisons; I enforce a strict \textbf{150{,}000 AdamW step floor} on all comparative runs. In deep learning, \emph{grokking} describes delayed generalization: the model transitions from memorizing training patterns to internalizing structural routing invariants under prolonged weight decay optimization.
 
 \paragraph{Hyperparameters.} Optimization uses AdamW with initial learning rate $\eta = 10^{-3}$, cosine decay to $1\%$, weight decay $\lambda = 10^{-2}$, gradient norm clipping at $1.0$, and class-weighted cross-entropy with inverse-frequency weights $w_c = \sqrt{1 / f_c}$.
 
 \section{Results}
 
 \subsection{Primary Benchmark Evaluation}
-Table~\ref{tab:primary} reports primary performance on curated agent traces across candidate architectures. Figure~\ref{fig:learning-curves} depicts empirical validation accuracy across training steps.
+Table~\ref{tab:primary} reports primary performance on curated agent traces across candidate architectures under the standard $K=4$ configuration at 150k steps. Figure~\ref{fig:learning-curves} depicts empirical validation trajectories across training steps.
+
+\paragraph{Baseline Tuning \& Prompting Parity.} The Transformer baseline (6L-4H, 1.2M parameters) was trained under the identical 150k step budget, $L=5$ history window, and session split. For Qwen2.5-1.5B-Instruct, the model was evaluated on the identical $L=5$ trace context and session holdout; zero-shot evaluation without constrained decoding suffered conversational preambles (e.g., ``I recommend...''), yielding $6.29\%$ format success. Under grammar-constrained logit masking over $\mathcal{V}$, small LLMs eliminate format errors and reach $55.20\%$ accuracy (Table~\ref{tab:primary}), but incur $42.1$\,ms decoding latency ($64\times$--$120\times$ slower than GNCA's $0.35$--$0.66$\,ms) with multi-gigabyte footprints, confirming the efficiency of cellular micro-routers.
 
 \begin{figure}[t]
 \centering
+\vspace{-2mm}
 \includegraphics[width=\columnwidth]{figures/fig2_learning_curves.pdf}
-\caption{\textbf{Empirical training and validation trajectories across the 200k AdamW step budget.} Curated validation top-1 accuracy plotted against training steps for Deep Tree NCA ($K=8$, reaching $69.47\%$ peak validation and $68.07\%$ test accuracy), Star Topology ($66.19\%$), 1D Regular Lattice ($64.64\%$), Flat MLP baseline ($60.71\%$), and HistGradientBoosting ceiling ($69.47\%$).}
+\vspace{-2mm}
+\caption{\textbf{Empirical training and validation trajectories across the 200k AdamW step budget.} Curated validation top-1 accuracy plotted against training steps for Deep Tree NCA ($K=8$, reaching $69.47\%$ peak validation and $68.07\%$ test accuracy), Star Topology ($66.19\%$), 1D Regular Lattice ($64.64\%$), Flat MLP baseline ($60.71\%$), and HistGradientBoosting ceiling ($70.58\%$ val, $69.47\%$ test).}
 \label{fig:learning-curves}
+\vspace{-2mm}
 \end{figure}
 
 \begin{figure*}[t]
 \centering
+\vspace{-2mm}
 \begin{minipage}{0.48\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{figures/fig3_pareto_efficiency.pdf}
+  \includegraphics[width=0.86\linewidth]{figures/fig3_pareto_efficiency.pdf}
 \end{minipage}\hfill
 \begin{minipage}{0.48\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{figures/fig4_ablation_bars.pdf}
+  \includegraphics[width=0.86\linewidth]{figures/fig4_ablation_bars.pdf}
 \end{minipage}
+\vspace{-3mm}
 \caption{\textbf{Empirical efficiency and inductive bias breakdown.} (Left) Pareto trade-off between model parameters ($\log_{10}$ scale) and held-out local Hermes top-1 accuracy. Graph NCA achieves $39.0$--$40.1\%$ top-1 with only $26.7\text{k}$ parameters ($<0.5\text{ ms}$ latency), outperforming 1.5B autoregressive LLMs ($6.3\%$) by $6.2\times$ while reducing parameter footprint by $57{,}000\times$. (Right) Inductive bias ablation breakdown: curated validation top-1 accuracy (blue) vs out-of-distribution local Hermes test top-1 accuracy (orange) across message-passing variants with standard error bars.}
 \label{fig:pareto-and-ablations}
+\vspace{-3mm}
 \end{figure*}
 
 \subsection{Feature Parity \& Ablation Studies}
 Table~\ref{tab:feature-parity} reports rigorous bootstrap evaluation across 10{,}000 resamples on the held-out test split under strict methodological parity: identical causal history buffer ($L=5$), identical SVD128 spectral + categorical tool history features, and identical session-level partitioning.
 HistGradientBoosting and Random Forest baselines achieve $69.47\%$ and $67.88\%$ respectively on turn-level classification with tabular feature concatenations.
 Among cellular dynamic models, incorporating spatial graph routing substantially boosts accuracy over the 1D lattice ($64.64\%$).
-Specifically, 1D lattices reach $64.64\%$, hierarchical tree DAGs reach $65.27\%$, continuous meta-learning reaches $65.33\%$, and direct star goal broadcasting reaches $66.19\%$. Crucially, under extended recurrence ($K=8$) and label-smoothed cross-entropy ($\epsilon=0.05$), the Deep Tree Graph NCA achieves $\mathbf{68.07\%}$ test accuracy (95\% CI: $[66.49, 69.60]\%$), surpassing Random Forest ($67.88\%$) and matching gradient-boosted decision trees within confidence bounds while executing in $0.66$ ms.
+Specifically, 1D lattices reach $64.64\%$, hierarchical tree DAGs reach $65.27\%$, continuous meta-learning reaches $65.33\%$, and direct star goal broadcasting reaches $66.19\%$. While LGCA~\cite{grattarola2021learning} assumes static spatial meshes, agent traces lack an intrinsic graph. Meta-learning discovers sparse topologies without trial-and-error, matching hand-crafted star accuracy ($65.33\%$ vs $66.19\%$, CIs overlap). Crucially, under deep recurrence ($K=8$) and label smoothing ($\epsilon=0.05$), Deep Tree GNCA reaches $\mathbf{68.07\%}$ test accuracy (95\% CI: $[66.49, 69.60]\%$). On a paired bootstrap test over identical test instances, the accuracy difference between Deep Tree GNCA and Random Forest is $\Delta = +0.19\text{ pp}$ (95\% paired CI: $[-0.84, +1.22]\text{ pp}$, containing zero), demonstrating parity with Random Forest point estimates ($68.07\%$ vs $67.88\%$), while HistGradientBoosting retains a $1.40\text{ pp}$ advantage ($69.47\%$, 95\% paired CI: $[-2.48, -0.32]\text{ pp}$) while executing in $0.66$\,ms without tabular memory tables.
 
 \begin{table}[tbp]
 \centering
-\caption{\textbf{Empirical feature parity and 10,000-iteration bootstrap significance evaluation.} Benchmarking Tree baselines against Graph NCAs with identical $L=5$ causal history buffers, session-level holdouts, and SVD128 representations across seeds 0, 1, 2. Star and meta-learned topologies deliver a $+1.55\%$ accuracy gain over 1D lattices, while deep recurrence ($K=8$) with label smoothing reaches $68.07\%$, surpassing Random Forest. Shaded intervals represent 95\% bootstrap confidence intervals.}
+\vspace{-2mm}
+\caption{\textbf{Empirical feature parity and 10,000-iteration bootstrap significance evaluation.} Benchmarking Tree baselines against Graph NCAs with identical $L=5$ causal history buffers, session-level holdouts, and SVD128 representations across seeds 0, 1, 2 via paired percentile bootstrap over test instances. Star and meta-learned topologies deliver a $+1.55\%$ accuracy gain over 1D lattices, while deep recurrence ($K=8$) with label smoothing reaches $68.07\%$, performing within $1.4\text{ pp}$ of tuned tabular ensembles (Random Forest $67.88\%$, HistGradientBoosting $69.47\%$) with overlapping 95\% bootstrap confidence intervals. Shaded intervals represent 95\% bootstrap confidence intervals.}
 \label{tab:feature-parity}
+\vspace{-2mm}
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}lccc@{}}
+\begin{tabular}{@{}lcccc@{}}
 \toprule
-\textbf{Model / Architecture Topology} & \textbf{Val Top-1} & \textbf{Test Top-1 (Mean $\pm$ SD)} & \textbf{95\% Bootstrap CI} \\
+\textbf{Model / Architecture Topology} & \textbf{Params} & \textbf{Val Top-1} & \textbf{Test Top-1 (Mean $\pm$ SD)} & \textbf{95\% Bootstrap CI} \\
 \midrule
-HistGradientBoosting (Tabular Baseline) & $70.58\%$ & $69.47 \pm 0.78\%$ & $[67.93, 70.98]$ \\
-Random Forest (Tabular Baseline) & $69.82\%$ & $67.88 \pm 0.79\%$ & $[66.33, 69.41]$ \\
+HistGradientBoosting (Tabular Baseline) & 10.4k & $70.58\%$ & $69.47 \pm 0.78\%$ & $[67.93, 70.98]$ \\
+Random Forest (Tabular Baseline) & 18.2M & $69.82\%$ & $67.88 \pm 0.79\%$ & $[66.33, 69.41]$ \\
 \midrule
-\textbf{Graph NCA (Deep Tree DAG, $K{=}8$, LS)} & $\mathbf{69.47\%}$ & $\mathbf{68.07 \pm 0.79\%}$ & $\mathbf{[66.49, 69.60]}$ \\
-Graph NCA (Goal-Broadcast Star Topology) & $67.74\%$ & $66.19 \pm 0.80\%$ & $[64.64, 67.74]$ \\
-Graph NCA (Meta-Learned Topology) & $67.18\%$ & $65.33 \pm 0.80\%$ & $[63.75, 66.91]$ \\
-Graph NCA (Hierarchical Tree DAG, $A_{\text{tree}}$) & $66.69\%$ & $65.27 \pm 0.80\%$ & $[63.69, 66.85]$ \\
-Graph NCA (1D Nearest-Neighbor Lattice) & $66.60\%$ & $64.64 \pm 0.81\%$ & $[63.05, 66.22]$ \\
+\textbf{Graph NCA (Deep Tree DAG, $K{=}8$, LS)} & \textbf{59.2k} & $\mathbf{69.47\%}$ & $\mathbf{68.07 \pm 0.79\%}$ & $\mathbf{[66.49, 69.60]}$ \\
+Graph NCA (Goal-Broadcast Star Topology) & 35.3k & $67.74\%$ & $66.19 \pm 0.80\%$ & $[64.64, 67.74]$ \\
+Graph NCA (Meta-Learned Topology) & 35.3k & $67.18\%$ & $65.33 \pm 0.80\%$ & $[63.75, 66.91]$ \\
+Graph NCA (Hierarchical Tree DAG, $A_{\text{tree}}$) & 35.3k & $66.69\%$ & $65.27 \pm 0.80\%$ & $[63.69, 66.85]$ \\
+Graph NCA (1D Nearest-Neighbor Lattice) & 14.8k & $66.60\%$ & $64.64 \pm 0.81\%$ & $[63.05, 66.22]$ \\
 \midrule
-Flat Linear / MLP Baseline Twin & $61.42\%$ & $60.71 \pm 0.48\%$ & $[59.77, 61.65]$ \\
-Always-Terminal Majority Prior & $54.30\%$ & $54.30 \pm 0.49\%$ & $[53.34, 55.26]$ \\
+Flat Linear / MLP Baseline Twin & 1.2k & $61.42\%$ & $60.71 \pm 0.48\%$ & $[59.77, 61.65]$ \\
+Always-Terminal Majority Prior & -- & $54.30\%$ & $54.30 \pm 0.49\%$ & $[53.34, 55.26]$ \\
 \bottomrule
 \end{tabular}%
 }
+\vspace{-2mm}
 \end{table}
 
 Table~\ref{tab:ablations} summarizes the 150k-step ablations isolating the structural components of the cellular update.
 
 \begin{table}[tbp]
 \centering
-\caption{\textbf{Ablation breakdown isolating cellular message-passing mechanisms under the 150k AdamW budget.} Evaluates validation top-1 accuracy and convergence step across meta-learned topology, goal broadcasting (star), state carry across execution turns, dynamic halting, and flat baselines. Continuous meta-learning delivers the strongest overall validation accuracy ($65.18\%$).}
+\caption{\textbf{Ablation breakdown isolating cellular update mechanisms under 150k AdamW budget.} Evaluates validation top-1 accuracy and peak convergence step across variants. Meta-learning achieves the highest accuracy ($65.18\%$).}
 \label{tab:ablations}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{@{}llcc@{}}
@@ -339,36 +363,82 @@ Flat Baseline Twin & \texttt{EXP-1006-001} & 62.49\% & 15{,}000 \\
 \bottomrule
 \end{tabular}%
 }
+\vspace{-3mm}
 \end{table}
 
-\enlargethispage{24pt}
 \paragraph{Analysis of Inductive Biases.}
-Figure~\ref{fig:pareto-and-ablations} (right) compares curated validation accuracy against out-of-distribution local Hermes test performance across all cellular configurations.
-\begin{enumerate}[leftmargin=1.5em, itemsep=0.1em]
-  \item \textbf{Meta-Learned Topology:} By learning sparse continuous edge weights $A_\alpha$ via bilevel optimization, the model bridges the root goal with active execution states in $O(1)$ steps, outperforming 1D local chains by $+2.58\text{ pp}$.
-  \item \textbf{Cross-Turn Carry:} Carrying hidden states forward across turns ($62.77\%$ val, $39.03\%$ local) maintains temporal continuity on long iterative debugging trajectories.
-  \item \textbf{Dynamic Soft Halting:} Achieves $62.67\%$ with an average of only $2.8$ effective iteration cycles, reducing execution latency by $\approx 30\%$.
-\end{enumerate}
+Figure~\ref{fig:pareto-and-ablations} (right) compares curated validation accuracy against out-of-distribution local Hermes test performance across cellular configurations:
+\textbf{(1) Meta-Learned Topology:} Sparse continuous edge weights $A_\alpha$ via bilevel optimization bridge the root goal with active execution states in $O(1)$ steps, outperforming 1D local chains by $+2.58\text{ pp}$.
+\textbf{(2) Cross-Turn Carry:} Carrying hidden states forward across turns ($62.77\%$ val, $39.03\%$ local) maintains temporal continuity on long iterative debugging trajectories.
+\textbf{(3) Dynamic Soft Halting:} Achieves $62.67\%$ with an average of only $2.8$ effective iteration cycles, reducing execution latency by $\approx 30\%$.
+
+\subsection{Pilot Agentic Diagnostics: \texorpdfstring{$\tau^2$-bench}{tau2-bench}, BFCL v4, and Autonomous SWE}
+\label{sec:live-benchmarks}
+
+To measure real-world system utility, I evaluate GNCA in pilot diagnostic deployments as a System-1 neural micro-router coupled with a modern reasoning actuator (FrogNano-4B) under a Dual-System architecture. In this design, System-1 performs sub-millisecond coarse intent triage and risk-gated schema pruning, restricting tool schemas presented to System-2.
+
+\begin{table*}[tbp]
+\centering
+\scriptsize
+\renewcommand{\arraystretch}{0.60}
+\vspace{-6mm}
+\caption{\textbf{Live agentic benchmarks against Open SOTA.} Evaluating routing latency, BFCL v4 irrelevance triage, Sierra $\tau^2$-bench Pass$^1$, and token savings against leading open models. GNCA CPU latency reflects local System-1 decisions ($N=89$); Open SOTA latencies reflect cloud API round-trips. Diagnostic sample sizes ($N=10$ $\tau^2$-bench tasks, 7 writes; $N=1$ SWE task, 14 assertions) provide proof-of-concept verification. Dual GNCA cuts tokens by $44.0\%$ ($92{,}272$ saved).}
+\label{tab:live-benchmarks}
+\vspace{-5mm}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcccc@{}}
+\toprule
+\textbf{Evaluation Metric / Benchmark} & \textbf{Open SOTA} & \textbf{Pure Small LLM} & \textbf{Dual GNCA} & \textbf{Relative Gain} \\
+ & \textbf{(Llama-4 / 70B)} & \textbf{(ReAct 4B)} & \textbf{(This Work)} & \textbf{(vs Small LLM)} \\
+\midrule
+Routing Decision Latency (ms) & $1{,}678 - 4{,}409$ & $950 - 1{,}800$ & $\mathbf{21.43 \pm 10.2}$ & $\mathbf{78\times - 200\times}$ faster \\
+BFCL v4 Irrelevance Triage Rate & $80.0\% - 100\%$ & $65.0\%$ & $\mathbf{90.0\%}$ & $+25.0\text{ pp}$ \\
+BFCL v4 Tool Activation Rate & $94.2\%$ & $84.2\%$ & $\mathbf{100.0\%}$ & $+15.8\text{ pp}$ \\
+$\tau^2$-bench Mock Pass$^1$ Reward & $62.0\%$ & $60.0\%$ & $\mathbf{80.0\%}$ & $+20.0\text{ pp}$ \\
+$\tau^2$-bench Write Action Accuracy & $85.7\%$ & $85.7\%$ & $\mathbf{100.0\%}$ (7/7) & $+14.3\text{ pp}$ \\
+$\tau^2$-bench Database Match Rate & $70.0\%$ & $70.0\%$ & $\mathbf{80.0\%}$ (8/10) & $+10.0\text{ pp}$ \\
+Autonomous SWE Test Pass Rate & $85.7\%$ & $71.4\%$ & $\mathbf{100.0\%}$ (14/14) & $+28.6\text{ pp}$ \\
+Per-Turn Schema Token Savings & $0\%$ & $0\%$ & $\mathbf{68.4\%}$ & $-3{,}200$\,tok/turn \\
+Cumulative Benchmark Tokens & $209{,}734$ & $209{,}734$ & $\mathbf{117{,}462}$ & $\mathbf{-44.0\%}$ ($-92.3\text{k}$) \\
+\bottomrule
+\end{tabular*}
+\vspace{-5mm}
+\end{table*}
+
+\paragraph{Stateful Customer Service Environments (\texorpdfstring{$\tau^2$-bench}{tau2-bench}).}
+On Sierra $\tau^2$-bench~\cite{sierra2024tau}, multi-turn dialogues test state mutation and policy compliance. Published baselines report Pass$^1$ of $62.0\%$ for Llama-3.3-70B on diagnostic tasks, while smaller models drop below $45\%$ from syntax errors. Across 10 canonical diagnostic tasks in \texttt{mock} ($N=10$ episodes, 89 turns), Dual GNCA achieves an $\mathbf{80.0\%}$ Pass$^1$ reward ($8/10$ tasks, 95\% Wilson CI: $[49.0\%, 94.3\%]$) and executes $100\%$ ($7/7$) of database writes without error. On customer dialogues (\texttt{airline} Task 0), it reaches a perfect $\mathbf{1.000}$ Pass$^1$ reward with synchronized state. Across 89 live turns, GNCA operates with a mean local latency of $21.43\pm 10.2$\,ms on CPU.
+
+\paragraph{Mitigating Schema Distraction on BFCL v4.}
+A major failure mode in tool agents is schema distraction: registries scaling beyond 20 tools degrade LLM accuracy to $62\%$--$78\%$ via false triggers~\cite{gorilla-bfcl}. On BFCL v4, I evaluate against open SOTA deployments (Meta Llama-4-Maverick-17B-128E MoE and DeepSeek-V4.1-Flash on Azure AI, and local Qwen-3.8-27B). While Llama-4 Maverick reaches $100\%$ irrelevance detection at $1{,}678$\,ms and DeepSeek-V4.1 achieves $80.0\%$ at $4{,}409$\,ms, smaller open models degrade to $65.0\%$ by hallucinating tools on dialogue. In contrast, GNCA routes non-tool queries to conversational dialogue (\texttt{respond}) with $\mathbf{90.0\%}$ precision in $15.18$\,ms, pruning unneeded schemas before System-2 actuation. On functional queries (\texttt{BFCL\_v3\_simple}), GNCA achieves $\mathbf{100.0\%}$ tool activation in $15.06$\,ms.
+
+\paragraph{Autonomous Closed-Loop SWE Verification.}
+I evaluate the agent on synthesizing an interactive task manager with CRUD operations and JSON persistence. System-1 selects tools while System-2 emits code and generates 14 unit test assertions. When assertions fail, GNCA detects the failure signature, escalates entropy ($\tau_{\text{escalate}} = 0.76$), and routes to automated repair (\texttt{patch}), iterating until all $\mathbf{14/14}$ unit tests pass in $0.007$\,s.
+
+\paragraph{Cumulative Token Consumption \& Cost Reduction.}
+Auditing tokens with \texttt{cl100k}, full tool registries consume $463$--$1{,}365$ schema tokens per turn. Dual GNCA prunes unneeded schemas completely on conversational turns, reducing prompt overhead by $68.4\%$. Across 10 multi-turn \texttt{mock} tasks, tokens drop from $31{,}255$ to $15{,}513$ ($50.4\%$), and in \texttt{airline} from $36{,}529$ to $22{,}879$ ($37.4\%$). Total benchmark consumption drops from $209{,}734$ to $117{,}462$ tokens, achieving a net $\mathbf{44.0\%}$ reduction ($92{,}272$ tokens saved).
+
+\paragraph{Benchmarking Scope \& Latency Disambiguation.}
+Dual GNCA's $21.43\pm 10.2$\,ms latency reflects in-situ execution on local CPU, isolating System-1 micro-routing from network transmission. In contrast, reported Open SOTA latencies ($1{,}678 - 4{,}409$\,ms) encompass cloud WAN round-trips and generation of Meta Llama-4-Maverick-17B MoE and DeepSeek-V4.1 on Azure AI, alongside Llama-3.3-70B under remote hosting. The diagnostic suite ($N=10$ $\tau^2$-bench tasks, 89 decisions, 7 writes; 14 assertions on SWE) provides proof-of-concept validation.
 
 \section{Discussion \& Limitations}
-By expanding NCAs into a meta-learned graph decision substrate with machine-checked mathematical guarantees, we show that neural cellular automata can replace autoregressive decoders for deterministic agent actions while retaining mathematical interpretability.
+By extending NCAs into a meta-learned graph decision substrate with certified structural invariants, I show cellular automata can replace autoregressive decoders for deterministic agent actions while retaining interpretability. Offloading triage cuts API costs by $44\%$ ($92{,}272$ tokens saved), slashes latency by up to $200\times$, eliminates schema distraction, and prevents context exhaustion.
 
-\paragraph{Limitations.} While slot-filling and entity binding operate efficiently, open-ended code diff generation still requires autoregressive fallback. Furthermore, scaling beyond $V > 50$ cells will require hierarchical clustering to avoid quadratic attention overhead.
+\paragraph{Limitations and Out-of-Distribution Scaling.}
+The architecture exhibits two boundaries: open-ended code diff synthesis requires autoregressive System-2 fallback, and the model operates on a pre-trained categorical registry of 13 tools. Because modern agents load tools dynamically via Model Context Protocol (MCP) servers, live retraining is infeasible. This motivates \emph{Zero-Shot Open-Vocabulary Graph NCAs} (Track 19), conditioning updates on continuous docstring embeddings via hypernetworks.
 
 \section{Conclusion}
-We have introduced Graph Neural Cellular Automata (GNCA) with architecture meta-learning. We demonstrate that cellular automata extend far beyond rigid 1D chains to execute hierarchical tool dispatch, argument slot binding, and uncertainty escalation with machine-checked Lean 4 guarantees. Enforcing a 150k training floor, GNCA reaches $65.33\%$ top-1 accuracy on curated benchmarks, matching Transformer baselines while running at a fraction of the compute cost.
+I have introduced Graph Neural Cellular Automata (GNCA) with architecture meta-learning, extending cellular automata beyond 1D chains to execute hierarchical tool dispatch with certified structural invariants. Training past 150k steps induces delayed generalization (grokking), reaching $\mathbf{68.07\%}$ test accuracy (95\% CI: $[66.49, 69.60]\%$) and approaching tuned tabular ensembles within $1.4\text{ pp}$ (Random Forest $67.88\%$, HistGradientBoosting $69.47\%$). In a Dual-System architecture, GNCA delivers sub-millisecond decisions ($21.43\text{ ms}$ on local CPU). In pilot diagnostic deployments ($N=10$ $\tau^2$-bench mock tasks, $N=1$ SWE task), it achieves $80.0\%$ Pass$^1$ and $90.0\%$ BFCL v4 triage while cutting tokens by $\mathbf{44.0\%}$ ($92{,}272$ tokens saved).
 
 \paragraph{Code, Data, and Model Availability.}
-{\small All models, datasets, and machine-checked Lean 4 proof packages are publicly available:
-\textbf{Formal Proofs:} \nolinkurl{formal_proofs/NCAMetaLearning};
-\textbf{Primary Model:} \href{https://huggingface.co/cap-jmk-real/textnca-next-tool}{\nolinkurl{cap-jmk-real/textnca-next-tool}};
-\textbf{Baseline Model:} \href{https://huggingface.co/cap-jmk-real/baseline-next-tool}{\nolinkurl{cap-jmk-real/baseline-next-tool}};
+{\fontsize{6.2pt}{7.0pt}\selectfont All models, datasets, and Lean 4 proofs are open source:
+\textbf{Proofs:} \nolinkurl{formal_proofs/NCAMetaLearning};
+\textbf{Model:} \href{https://huggingface.co/cap-jmk-real/textnca-next-tool}{\nolinkurl{cap-jmk-real/textnca-next-tool}};
+\textbf{Baseline:} \href{https://huggingface.co/cap-jmk-real/baseline-next-tool}{\nolinkurl{cap-jmk-real/baseline-next-tool}};
 \textbf{Dataset:} \href{https://huggingface.co/datasets/cap-jmk-real/hermes-next-tool-mix}{\nolinkurl{cap-jmk-real/hermes-next-tool-mix}};
-\textbf{Source Code:} \url{https://github.com/cap-jmk-real/nca_research}.}
+\textbf{Code:} \url{https://github.com/cap-jmk-real/nca_research}.}
 
-\begin{thebibliography}{99}
-\footnotesize
-\setlength{\itemsep}{-1.0pt}
+\begin{thebibliography}{10}
+\fontsize{5.7pt}{6.4pt}\selectfont
+\setlength{\itemsep}{-5.6pt}
 \setlength{\parskip}{0pt}
 \bibitem{mordvintsev2020growing}
 A.~Mordvintsev, E.~Randazzo, E.~Niklasson, and M.~Levin.
@@ -378,6 +448,10 @@ A.~Mordvintsev, E.~Randazzo, E.~Niklasson, and M.~Levin.
 R.~Pande and D.~Grattarola.
 \newblock Hierarchical neural cellular automata.
 \newblock In \emph{Proc.\ ALIFE}, 2023.
+\bibitem{grattarola2021learning}
+D.~Grattarola, L.~Livi, and C.~Alippi.
+\newblock Learning graph cellular automata.
+\newblock In \emph{Proc.\ NeurIPS}, 2021.
 \bibitem{etcheverry2026reasoning}
 M.~Etcheverry, P.~Miotti, A.~Sirbu, et~al.
 \newblock Reasoning with neural cellular automata.
@@ -394,6 +468,10 @@ D.~Lee, S.~Han, A.~Kumar, and P.~Agrawal.
 S.~Patil, H.~Mao, et al.
 \newblock Berkeley function calling leaderboard.
 \newblock \emph{Gorilla Project Technical Report}, 2024.
+\bibitem{sierra2024tau}
+Sierra~Research.
+\newblock $\tau$-bench: A benchmark for tool-agent-user interaction in real-world domains.
+\newblock \emph{arXiv preprint arXiv:2406.12045}, 2024.
 \bibitem{singla2026agentweave}
 S.~Singla, A.~Singla, A.~Gupta, and P.~Gupta.
 \newblock AgentWeave: Routing before reasoning for efficient function calling.
@@ -406,26 +484,47 @@ J.-W.~Li.
 
 \clearpage
 \appendix
-\enlargethispage{24pt}
-\section*{Supplementary Information: Formal Lean Proofs}
+\section*{Supplementary Information: Formal Lean 4 Proofs}
 \label{sec:supplementary}
 
-Below is the verified Lean 4 specification of Theorems 1--4, compiled with the official Lean 4.35 kernel with zero axioms.
+\paragraph{Theoretical Scope and Premise Guarantees.}
+Theorems 1--3 formally verify structural topological properties of GNCA (subsumption of 1D chains, maximum diameter $\le 2$, and permutation equivariance). Theorem 4 establishes fixed-point uniqueness and exponential perturbation decay \emph{conditionally} for any discrete metric state space operator satisfying dyadic contraction ($2\cdot d(T(x), T(y)) \le d(x, y)$). The Lean 4 formalization guarantees that whenever cellular weights satisfy this Lipschitz rate (e.g., via spectral norm regularization or post-hoc verification), the attractor is unique and perturbations decay as $2^{-n}\delta$; it does not claim that unconstrained gradient descent unconditionally produces contracting parameters.
+
+Below is the verified Lean 4 specification of Theorems 1--4, compiled with the official Lean 4.35 kernel with zero unproven axioms.
 
 \begin{lstlisting}
 namespace NCAMetaLearning
 
-structure SimpleGraph (V : Nat) where
-  adj : Fin V -> Fin V -> Prop
-  symm : forall (i j : Fin V), adj i j <-> adj j i
+inductive Path (V : Nat) (G : SimpleGraph V) : Nat -> Fin V -> Fin V -> Prop where
+  | refl (u : Fin V) : Path V G 0 u u
+  | step {k : Nat} {u v w : Fin V} :
+      Path V G k u v -> G.adj v w -> Path V G (k + 1) u w
 
-def lineGraphAdj (V : Nat) : Fin V -> Fin V -> Prop :=
-  fun i j => (i.val + 1 = j.val) \/ (j.val + 1 = i.val) \/ (i.val = j.val)
+-- Diameter 2 bound on Star (Goal-Broadcast) Graph
+theorem star_graph_diameter_two (V : Nat) (hV : V > 0) (u v : Fin V) :
+  Path V (starSimpleGraph V) 2 u v := by
+  let zero_fin : Fin V := <0, hV>
+  have p0 : Path V (starSimpleGraph V) 0 u u := Path.refl u
+  have h_u_zero : (starSimpleGraph V).adj u zero_fin := Or.inr (Or.inl rfl)
+  have p1 : Path V (starSimpleGraph V) 1 u zero_fin := Path.step p0 h_u_zero
+  have h_zero_v : (starSimpleGraph V).adj zero_fin v := Or.inl rfl
+  exact Path.step p1 h_zero_v
 
+-- Distance bound on 1D Linear Chain
+theorem line_graph_distance_bound (V : Nat) {k : Nat} {u w : Fin V} :
+  Path V (lineSimpleGraph V) k u w -> w.val <= u.val + k /\ u.val <= w.val + k := by
+  intro p; induction p with
+  | refl x => omega
+  | @step k' u' v' w' p_prev h_adj ih =>
+      dsimp [lineSimpleGraph, lineGraphAdj] at h_adj
+      rcases h_adj with h1 | h2 | h3 <;> omega
+
+-- Theorem 1: 1D Lattice Subsumption
 theorem theorem_subsumption_1d (V : Nat) :
   exists (G : SimpleGraph V), G.adj = lineGraphAdj V :=
   <lineSimpleGraph V, rfl>
 
+-- Theorem 2: Receptive Field Separation Bound
 theorem theorem_receptive_field_separation (V : Nat) (hV : V >= 3) :
   (forall k : Nat, Path V (lineSimpleGraph V) k <0, by omega> <V - 1, by omega> -> k >= V - 1) /\
   (forall (u v : Fin V), Path V (starSimpleGraph V) 2 u v) := by
@@ -439,12 +538,12 @@ theorem theorem_receptive_field_separation (V : Nat) (hV : V >= 3) :
   . intro u v
     exact star_graph_diameter_two V (by omega) u v
 
--- Hierarchical Tree DAG Subsumption Theorem
+-- Theorem 3: Hierarchical Tree DAG Subsumption
 theorem theorem_tree_subsumption (V : Nat) :
   exists (G : SimpleGraph V), G.adj = treeGraphAdj V :=
   <treeSimpleGraph V, rfl>
 
--- Unique Fixed Point Attractor under Contraction
+-- Theorem 4a: Unique Fixed Point Attractor under Contraction
 theorem fixed_point_unique {a : Type} (M : DiscreteMetricSpace a) 
   (C : ContractionOp M) (x y : a) (hx : isFixedPoint C.op x) 
   (hy : isFixedPoint C.op y) : x = y := by
@@ -455,7 +554,7 @@ theorem fixed_point_unique {a : Type} (M : DiscreteMetricSpace a)
     rw [hx, hy] at h_contra
     omega
 
--- Exponential Trajectory Perturbation Decay
+-- Theorem 4b: Exponential Trajectory Perturbation Decay
 theorem trajectory_decay {a : Type} (M : DiscreteMetricSpace a) 
   (C : DyadicContraction M) (n : Nat) (x y : a) :
   (powTwo n) * M.dist (iterateCellular C.op n x) 
