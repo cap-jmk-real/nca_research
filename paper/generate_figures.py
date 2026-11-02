@@ -4,6 +4,7 @@ generate_figures.py — Publication-grade figures for Graph NCA Research paper.
 Adheres strictly to the scientific-plotting skill and publisher compliance standards.
 """
 
+import json
 import os
 import numpy as np
 import matplotlib as mpl
@@ -11,6 +12,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch, Circle, ConnectionPatch
 
 # Ensure target directory exists
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 OUT_DIR = os.path.join(os.path.dirname(__file__), "figures")
 os.makedirs(OUT_DIR, exist_ok=True)
 
@@ -170,41 +172,38 @@ def generate_fig2_learning_curves():
     print("Saved fig2_learning_curves")
 
 def generate_fig3_pareto_efficiency():
-    """Figure 3: Pareto Frontier (Accuracy vs. Parameter Count & Inference Latency)."""
+    """Figure 3: Pareto frontier for primary 150k curated validation top-1 (Table 1)."""
     fig, ax = plt.subplots(figsize=(3.4, 2.4))
-    
-    # Models evaluated: name, params, acc (held-out local Hermes top-1), is_ours, latency_ms
-    models = [
-        {"name": "Graph NCA\n(Carry)", "params": 26749, "acc": 0.3903, "color": COLORS['blue'], "marker": '*', "size": 140},
-        {"name": "Graph NCA\n(Mix13)", "params": 26749, "acc": 0.4009, "color": COLORS['vermilion'], "marker": '*', "size": 150},
-        {"name": "1D Baseline", "params": 26749, "acc": 0.2586, "color": COLORS['sky'], "marker": 'o', "size": 60},
-        {"name": "Long-Range", "params": 34238, "acc": 0.2301, "color": COLORS['green'], "marker": 's', "size": 60},
-        {"name": "Adaptive Halt", "params": 26766, "acc": 0.2977, "color": COLORS['purple'], "marker": '^', "size": 60},
-        {"name": "Flat MLP", "params": 4043, "acc": 0.4484, "color": COLORS['orange'], "marker": 'D', "size": 60},
-        {"name": "Qwen2.5-1.5B", "params": 1540000000, "acc": 0.0629, "color": COLORS['gray'], "marker": 'X', "size": 90},
-    ]
-    
-    for m in models:
-        ax.scatter(m["params"], m["acc"], color=m["color"], marker=m["marker"], s=m["size"], zorder=5, edgecolors='#222222', lw=0.6)
-        
-    # Annotations
-    ax.annotate("Graph NCA\n(Carry: 39.0%)", (26749, 0.3903), textcoords="offset points", xytext=(-25, -22), fontsize=7.2, weight='bold', color=COLORS['blue'])
-    ax.annotate("Mix13 Best\n(40.1%)", (26749, 0.4009), textcoords="offset points", xytext=(8, -4), fontsize=7.2, weight='bold', color=COLORS['vermilion'])
-    ax.annotate("Flat MLP\n(44.8%)", (4043, 0.4484), textcoords="offset points", xytext=(8, -8), fontsize=7.2, color=COLORS['orange'])
-    ax.annotate("1D Baseline\n(25.9%)", (26749, 0.2586), textcoords="offset points", xytext=(8, -4), fontsize=7.2, color=COLORS['sky'])
-    ax.annotate("Qwen2.5-1.5B\n(6.3% - Out of Dist.)", (1540000000, 0.0629), textcoords="offset points", xytext=(-85, 8), fontsize=7.2, color=COLORS['gray'])
 
-    # Always-terminal ceiling dashed line
-    ax.axhline(0.4947, color='#999999', ls='-.', lw=1.1, label="Always-Terminal Heuristic (49.5%)")
+    # Curated validation top-1 and trainable parameter counts from Table 1 (150k AdamW).
+    models = [
+        {"name": "Linear", "params": 1200, "acc": 0.6071, "color": COLORS['orange'], "marker": 'D', "size": 55},
+        {"name": "Qwen2.5-1.5B*", "params": 1_540_000_000, "acc": 0.5520, "color": COLORS['gray'], "marker": 'X', "size": 85},
+        {"name": "Transformer", "params": 1_200_000, "acc": 0.6587, "color": COLORS['purple'], "marker": 's', "size": 65},
+        {"name": "HistGradBoost", "params": 10_400, "acc": 0.6947, "color": COLORS['green'], "marker": '^', "size": 70},
+        {"name": "TextNCA 1D", "params": 14_800, "acc": 0.6464, "color": COLORS['sky'], "marker": 'o', "size": 60},
+        {"name": "GNCA Meta", "params": 35_300, "acc": 0.6533, "color": COLORS['blue'], "marker": '*', "size": 130},
+        {"name": "GNCA Star", "params": 35_300, "acc": 0.6619, "color": COLORS['vermilion'], "marker": '*', "size": 120},
+        {"name": "GNCA Deep K=8", "params": 59_200, "acc": 0.6807, "color": COLORS['black'], "marker": '*', "size": 140},
+    ]
+
+    for m in models:
+        ax.scatter(
+            m["params"], m["acc"], color=m["color"], marker=m["marker"],
+            s=m["size"], zorder=5, edgecolors='#222222', lw=0.6,
+        )
+
+    ax.annotate("Deep Tree\n68.07%", (59_200, 0.6807), textcoords="offset points", xytext=(6, -10), fontsize=6.8, weight='bold')
+    ax.annotate("Transformer\n65.87%", (1_200_000, 0.6587), textcoords="offset points", xytext=(-42, 6), fontsize=6.8)
+    ax.annotate("Qwen*\n55.20%", (1_540_000_000, 0.5520), textcoords="offset points", xytext=(-78, -8), fontsize=6.8, color=COLORS['gray'])
 
     ax.set_xscale('log')
-    ax.set_xlim(1e3, 1e10)
-    ax.set_ylim(0.0, 0.55)
-    ax.set_xlabel(r"Model Parameter Count ($\log_{10}$)")
-    ax.set_ylabel("Held-Out Local Hermes Top-1")
+    ax.set_xlim(8e2, 2e9)
+    ax.set_ylim(0.54, 0.72)
+    ax.set_xlabel(r"Trainable parameters ($k{=}10^3$, $M{=}10^6$, $B{=}10^9$; log scale)")
+    ax.set_ylabel("Curated validation top-1 (150k steps)")
     ax.grid(True)
     ax.spines[['top', 'right']].set_visible(False)
-    ax.legend(frameon=True, framealpha=0.92, loc='lower left', fontsize=7.2)
 
     fig.tight_layout()
     fig.savefig(os.path.join(OUT_DIR, "fig3_pareto_efficiency.pdf"))
@@ -250,8 +249,6 @@ def generate_fig4_ablation_bars():
     fig.tight_layout()
     fig.savefig(os.path.join(OUT_DIR, "fig4_ablation_bars.pdf"))
     fig.savefig(os.path.join(OUT_DIR, "fig4_ablation_bars.png"))
-    plt.close(fig)
-    print("Saved fig4_ablation_bars with zero-overlap top legend")
     plt.close(fig)
     print("Saved fig4_ablation_bars")
 
