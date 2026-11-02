@@ -440,12 +440,12 @@ The architecture exhibits two boundaries: open-ended code diff synthesis require
 I have introduced Graph Neural Cellular Automata (GNCA) with architecture meta-learning, extending cellular automata beyond 1D chains to execute hierarchical tool dispatch with certified structural invariants. Training past 150k steps induces delayed generalization (grokking), reaching $\mathbf{68.07\%}$ test accuracy (95\% bootstrap CI: $[66.49, 69.60]\%$) and approaching tuned tabular ensembles within $1.4\text{ pp}$ (Random Forest $67.88\%$, HistGradientBoosting $69.47\%$). In a Dual-System architecture, GNCA makes routing decisions in $21.43\text{ ms}$ on an Apple M1 CPU end to end (sub-millisecond for the bare forward pass). In exploratory pilot deployments ($N=10$ $\tau^2$-bench mock tasks, $N=30$ BFCL v4 probes, $N=1$ SWE task), it achieves $80.0\%$ Pass$^1$ ($8/10$) and $90.0\%$ BFCL v4 irrelevance triage ($27/30$) while reducing cumulative tokens by $\mathbf{44.0\%}$ ($209{,}734 \to 117{,}462$; $92{,}272$ saved).
 
 \paragraph{Code, Data, and Model Availability.}
-{\fontsize{6.2pt}{7.0pt}\selectfont Models and the dataset are on Hugging Face (links below). Training code, experiment records in \texttt{paper/si/}, and Lean~4 proofs are in the public GitHub repository (URL retained for reviewer access; verify HTTP 200 at submission). The manuscript describes commit \texttt{1ceac61}. \textbf{License:} the repository currently has \textbf{no \texttt{LICENSE} file}; redistribution terms are unspecified until a license is added (see \texttt{paper/JULIAN\_TODO.md}). Dataset cards should state a license before public release.
+{\fontsize{6.2pt}{7.0pt}\selectfont Models and the dataset are on Hugging Face (links below). Training code, experiment records in \texttt{paper/si/}, and Lean~4 proofs are in the public GitHub repository (URL retained for reviewer access; verify HTTP 200 at submission). The manuscript describes commit \texttt{1477df8}. \textbf{License:} the repository currently has \textbf{no \texttt{LICENSE} file}; redistribution terms are unspecified until a license is added (see \texttt{paper/JULIAN\_TODO.md}). Dataset cards should state a license before public release.
 \textbf{Proofs:} \nolinkurl{formal_proofs/NCAMetaLearning} (Lean toolchain \texttt{leanprover/lean4:v4.35.0}, \texttt{formal\_proofs/lean-toolchain});
 \textbf{Model:} \href{https://huggingface.co/cap-jmk-real/textnca-next-tool}{\nolinkurl{cap-jmk-real/textnca-next-tool}};
 \textbf{Baseline:} \href{https://huggingface.co/cap-jmk-real/baseline-next-tool}{\nolinkurl{cap-jmk-real/baseline-next-tool}};
 \textbf{Dataset:} \href{https://huggingface.co/datasets/cap-jmk-real/hermes-next-tool-mix}{\nolinkurl{cap-jmk-real/hermes-next-tool-mix}};
-\textbf{Code:} \href{https://github.com/cap-jmk-real/nca_research}{\nolinkurl{github.com/cap-jmk-real/nca_research}} (commit \texttt{1ceac61}).}
+\textbf{Code:} \href{https://github.com/cap-jmk-real/nca_research}{\nolinkurl{github.com/cap-jmk-real/nca_research}} (commit \texttt{1477df8}).}
 
 \begin{thebibliography}{10}
 \fontsize{5.7pt}{6.4pt}\selectfont
@@ -595,7 +595,7 @@ end NCAMetaLearning
 To reproduce and verify the complete formal proof suite:
 \begin{enumerate}[leftmargin=1.5em, itemsep=0.1em]
   \item Install Lean 4 via elan: \texttt{elan toolchain install leanprover/lean4:v4.35.0}.
-  \item Clone \url{https://github.com/cap-jmk-real/nca_research} and check out commit \texttt{1ceac61faaac}. From the repository root, change to the proof directory: \texttt{cd formal\_proofs/}.
+  \item Clone \url{https://github.com/cap-jmk-real/nca_research} and check out commit \texttt{1477df8958b9}. From the repository root, change to the proof directory: \texttt{cd formal\_proofs/}.
   \item Build the formal library: \texttt{lake build}.
   \item Run the compiled verification binary: \texttt{lake exe ncametalearning}.
   \item Confirm all 14 kernel jobs complete with zero axioms.
