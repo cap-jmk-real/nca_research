@@ -18,9 +18,11 @@ per slot; promote only if ≥98% of fp16 top-1 or Pareto-better on size/latency.
 
 ## Code
 
-- Git commit: _pending_
-- Branch used for release cut: _pending_
+- Public URL (verify HTTP 200 before submission): https://github.com/cap-jmk-real/nca_research
+- Manuscript pin: `6ea15ac51d14`
+- **License:** none in repo yet — see `paper/JULIAN_TODO.md`
 - SI experiment ids for claimed numbers: see `paper/si/experiments/`
+- Open items needing new runs/exports: `paper/JULIAN_TODO.md`
 
 ## Reproduce
 
