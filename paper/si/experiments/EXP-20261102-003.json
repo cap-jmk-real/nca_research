@@ -56,7 +56,7 @@
   "artifacts": {},
   "repro": {
     "command": "Pilot harness not checked in; aggregates registered here for manuscript traceability",
-    "git_commit": "1477df8958b94895867a81b69f47b428e9564897"
+    "git_commit": "9cbe9be636a4d214ac49e24c0adb58ae06b1f0d2"
   },
   "si_notes": "Treat GNCA aggregates as author-reported preliminary. Do not infer k/30 from the 90.0% rate."
 }

@@ -7,7 +7,7 @@
 | Item | Location |
 | --- | --- |
 | Repository | https://github.com/cap-jmk-real/nca_research |
-| Manuscript pin | `1477df8` — https://github.com/cap-jmk-real/nca_research/tree/1477df8 |
+| Manuscript pin | `9cbe9be` — https://github.com/cap-jmk-real/nca_research/tree/9cbe9be |
 | Primary benchmark JSON | `stage0/stage0_results/full_history_benchmarks.json` (`EXP-20261102-001`) |
 | Grokking JSON | `stage0/stage0_results/ultra_grokking_results.json` (`EXP-20261102-002`) |
 | SI registry | `paper/si/experiments/` + `paper/si/experiments_index.json` |
