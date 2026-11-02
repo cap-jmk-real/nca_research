@@ -15,25 +15,25 @@
 
 **License:** none in repo yet — see `paper/JULIAN_TODO.md`.
 
-## Hugging Face (top-4 slots — revisions pending)
+## Hugging Face (top-4 slots — revisions not pinned)
 
 | Slot | Role | Repository | Revision |
 | --- | --- | --- | --- |
-| A | Best TextNCA next-tool | `cap-jmk-real/textnca-next-tool` | _pending_ |
-| B | Best baseline comparator | `cap-jmk-real/baseline-next-tool` | _pending_ |
-| C | Best specialist student | `cap-jmk-real/specialist-python` | _pending_ |
-| D | Best scrubbed dataset | `cap-jmk-real/hermes-next-tool-mix` | _pending_ |
+| A | Best TextNCA next-tool | `cap-jmk-real/textnca-next-tool` | _unpinned_ |
+| B | Best baseline comparator | `cap-jmk-real/baseline-next-tool` | _unpinned_ |
+| C | Best specialist student | `cap-jmk-real/specialist-python` | _unpinned_ |
+| D | Best scrubbed dataset | `cap-jmk-real/hermes-next-tool-mix` | _unpinned_ |
 
 Policy: [docs/huggingface-distribution.md](../docs/huggingface-distribution.md).  
 Selector: `scripts/select_top4_artifacts.py`.
 
-## Pending engine exports (not submission blockers)
+## Offline / exploratory SI records (author-reported aggregates)
 
-| Claim | SI record | Status |
+| Claim | SI record | Notes |
 | --- | --- | --- |
-| Transformer 6L-4H + constrained Qwen Table 1 rows | `EXP-20261102-004` | Score JSON missing (engine offline) |
-| Azure / Open SOTA pilot latencies & BFCL compares | `EXP-20261102-003` | Preliminary log only; JSON re-export pending |
-| H1b no-class-weight seeds | _(none)_ | Queued on engine |
+| Transformer 6L-4H + constrained Qwen Table 1 rows | `EXP-20261102-004` | Author-reported offline; no score JSON in repo |
+| Dual-system pilot (GNCA column, token audit) | `EXP-20261102-003` | Preliminary; per-probe BFCL ledger not in repo |
+| H1b no-class-weight seeds | _(none)_ | Not registered in `paper/si/` |
 
 ## Reproduce
 

@@ -12,7 +12,7 @@
     "HistGradientBoosting and Random Forest tabular ceilings on identical splits"
   ],
   "claims_not_supported": [
-    "Transformer 6L-4H row in Table 1 — not present in this JSON; SI registration pending (engine offline)"
+    "Transformer 6L-4H row in Table 1 — see EXP-20261102-004 (author-reported offline; no score JSON in repo)"
   ],
   "hardware": {
     "device": "cuda",

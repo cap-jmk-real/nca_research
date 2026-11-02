@@ -10,7 +10,7 @@ Paper edits in this branch only change text/figures where existing repo artifact
 
 ## Pilot diagnostics (raw counts & statistics)
 
-4. **BFCL v4 irrelevance** — Export the $N=30$ probe ledger to `paper/si/` with per-probe labels; report $k/30$ next to $90.0\%$ and Wilson 95\% CI in `main.tex`.
+4. **BFCL v4 irrelevance ledger** — Check in per-probe labels ($k/N$ for $N=30$) as a separate artifact; do **not** infer $k$ from the $90.0\%$ aggregate in \texttt{EXP-20261102-003}. Add Wilson 95\% CI once $k/N$ exists.
 5. **BFCL tool activation** — Record denominator and $k/N$ for both v4 table cells and the `BFCL_v3_simple` functional subset; add Wilson CI if $N \le 100$.
 6. **False triggers / context overflow** — Instrument baseline vs Dual GNCA for wrong-tool selections and context-limit/truncation events, or remove distraction/exhaustion language entirely.
 7. **Pilot reproduction package** — Check in scripts + frozen configs for $\tau^2$-bench mock ($N=10$), BFCL probes, and SWE episode; pin actuator checkpoint (FrogNano-4B) revision.

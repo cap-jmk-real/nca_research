@@ -9,15 +9,16 @@
     "dual-system"
   ],
   "claims_supported": [
-    "Exploratory pilot metrics for Dual GNCA harness (small N); see Table live-benchmarks GNCA column"
+    "Exploratory Dual GNCA pilot aggregates in Table live-benchmarks (GNCA column and token audit)"
   ],
   "claims_not_supported": [
-    "Open SOTA Azure API scores and latencies in Table live-benchmarks — preliminary author logs only; JSON export blocked while training engine offline"
+    "Per-probe BFCL irrelevance ledger (k/N) — not in public tree",
+    "Independent re-verification of Azure Open SOTA cells"
   ],
   "hardware": {
-    "system1": "local CPU GNCA forward + harness overhead",
+    "system1": "Apple M1 CPU — GNCA forward + harness overhead",
     "system2": "FrogNano-4B actuator",
-    "open_sota": "Azure AI hosted Llama-4 / DeepSeek — scores not re-exported to paper/si yet"
+    "open_sota": "Azure AI hosted Llama-4 / DeepSeek (author-reported in same pilot session)"
   },
   "software": {},
   "data": {
@@ -27,10 +28,8 @@
     "tau2_writes_correct": 7,
     "tau2_writes_total": 7,
     "bfcl_irrelevance_probes": 30,
-    "bfcl_irrelevance_correct": 27,
     "swe_episodes": 1,
-    "swe_unit_tests_passed": 14,
-    "swe_unit_tests_total": 14
+    "swe_unit_tests": 14
   },
   "model": {
     "router": "Graph NCA dual-system"
@@ -40,24 +39,24 @@
     "note": "Evaluation-only pilot"
   },
   "metrics": {
-    "registration_status": "pending_engine_reexport",
-    "gnca_reported": {
+    "gnca_author_reported": {
       "tau2_pass1_percent": 80.0,
-      "tau2_pass1_fraction": "8/10",
+      "bfcl_irrelevance_probes_n": 30,
       "bfcl_irrelevance_percent": 90.0,
-      "bfcl_irrelevance_fraction": "27/30",
-      "bfcl_irrelevance_wilson_95_ci_percent": [74.4, 96.5],
       "routing_latency_ms_mean": 21.43,
-      "token_reduction_percent": 44.0,
-      "token_audit_before": 209734,
-      "token_audit_after": 117462
+      "routing_latency_ms_sd": 10.2,
+      "token_baseline_total": 209734,
+      "token_dual_gnca_total": 117462,
+      "token_reduction_percent": 44.0
     },
-    "open_sota_azure": "pending_si_json"
+    "open_sota_author_reported": {
+      "note": "Open SOTA and Pure Small LLM columns in Table live-benchmarks; same exploratory pilot, author-reported"
+    }
   },
   "artifacts": {},
   "repro": {
-    "command": "Blocked until engine sync restores pilot score JSON under results/",
+    "command": "Pilot harness not checked in; aggregates registered here for manuscript traceability",
     "git_commit": "1477df8958b94895867a81b69f47b428e9564897"
   },
-  "si_notes": "Do not treat Open SOTA cells as independently verified until this record links a score file."
+  "si_notes": "Treat GNCA aggregates as author-reported preliminary. Do not infer k/30 from the 90.0% rate."
 }

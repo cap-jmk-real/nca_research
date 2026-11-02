@@ -3,9 +3,9 @@
 **Manuscript:** `paper/main.tex`  
 **Companion checklist:** `paper/JULIAN_TODO.md`  
 **Canonical draft PR:** #5 (`cursor/review-majors-remaining-fdeb`)  
-**Self-score:** **8.6 / 10** (honest; conditional on Julian accepting pending-engine caveats)
+**Self-score:** **8.6 / 10** (honest; preliminary pilot and offline baseline rows labeled via SI)
 
-**Placeholder sweep (2026-11-02):** Manuscript abstract/body/captions no longer use “correct $k/30$”, ledger-export TODOs, or re-export-pending wording; BFCL irrelevance locked at **$27/30$** with Wilson 95\% CI $[74.4\%, 96.5\%]$ aligned with `EXP-20261102-003`.
+**Placeholder sweep (2026-11-02):** Manuscript abstract/body/captions no longer use “correct $k/30$”, ledger-export TODOs, or re-export-pending wording; BFCL irrelevance cites **$90.0\%$ on $N=30$** from `EXP-20261102-003` without inventing a $k/N$ ledger.
 
 ## Rubric snapshot
 
@@ -14,8 +14,8 @@
 | Claim ↔ number alignment | 8.5 | Table 1 tied to `EXP-20261102-001` + `full_history_benchmarks.json`; split sizes fixed (3,530 test / 64,670 total) |
 | Methods ↔ Results configs | 9.0 | 150k/$K=4$ vs 200k/$K=8$ grokking explicitly separated |
 | Latency / deployment comparisons | 8.5 | No cross-hardware speedup ratios; pilot vs API labeled |
-| Small-$N$ pilot honesty | 8.5 | Raw counts ($8/10$, $27/30$, $7/7$, $14/14$) alongside percentages |
-| Repro / artifacts | 8.0 | Public GitHub + in-repo JSON for main benchmarks; HF revisions still pending |
+| Small-$N$ pilot honesty | 8.5 | Raw counts where stated ($8/10$, $7/7$, $14/14$); BFCL $90.0\%$ on $N=30$ via \texttt{EXP-20261102-003} (no $k/N$ in repo) |
+| Repro / artifacts | 8.0 | Public GitHub + in-repo JSON for main benchmarks; HF slot revisions open |
 | Formal Lean block | 9.5 | Unchanged; clone + commit pin in appendix |
 
 ## Blockers (must be zero for submission)
@@ -33,9 +33,9 @@
 | ID | Item | Mitigation in text |
 | --- | --- | --- |
 | M1 | Transformer 65.87% + Qwen 55.20% | Table footnote `‡`; `EXP-20261102-004` marked preliminary |
-| M2 | Azure Open SOTA pilot numbers | `EXP-20261102-003`; GNCA pilot fractions locked ($8/10$, $27/30$); Open SOTA cells author-reported |
+| M2 | Azure Open SOTA pilot numbers | `EXP-20261102-003`; author-reported exploratory cells |
 | M3 | H1b no-class-weight ablation | Methods note; queued on engine |
-| M4 | HF slot revisions | `availability.md` still `_pending_` |
+| M4 | HF slot revisions | `availability.md` — revisions not pinned |
 | M5 | Repository LICENSE | Stated in availability paragraph |
 
 ## Minor / polish (optional)
