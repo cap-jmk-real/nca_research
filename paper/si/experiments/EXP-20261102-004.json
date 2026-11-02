@@ -38,6 +38,6 @@
   "artifacts": {},
   "repro": {
     "command": "Pending engine export (stage0 parity / score scripts)",
-    "git_commit": "cddb8e50a98d270c740552d23251543afc3147bc3"
+    "git_commit": "1ceac61faaac21a32be2463d6b09eb987eef7807"
   }
 }

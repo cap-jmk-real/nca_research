@@ -46,7 +46,7 @@
   "artifacts": {},
   "repro": {
     "command": "Blocked until engine sync restores pilot score JSON under results/",
-    "git_commit": "cddb8e50a98d270c740552d23251543afc3147bc3"
+    "git_commit": "1ceac61faaac21a32be2463d6b09eb987eef7807"
   },
   "si_notes": "Do not treat Open SOTA cells as independently verified until this record links a score file."
 }
