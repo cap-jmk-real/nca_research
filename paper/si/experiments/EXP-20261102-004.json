@@ -1,0 +1,43 @@
+{
+  "id": "EXP-20261102-004",
+  "title": "Transformer 6L-4H and constrained Qwen2.5-1.5B routing baselines",
+  "status": "preliminary",
+  "date": "2026-11-02",
+  "hypothesis_ids": [
+    "benchmark-gates",
+    "B_tx"
+  ],
+  "claims_supported": [
+    "Qwen2.5-1.5B unconstrained local Hermes top-1 6.29% (EXP-20261004-001)"
+  ],
+  "claims_not_supported": [
+    "Table 1 Transformer 65.87% and grammar-constrained Qwen 55.20% — pending re-export from engine parity runs"
+  ],
+  "hardware": {
+    "note": "Engine offline; no public checkpoint or score JSON in repo for 6L-4H transformer row"
+  },
+  "software": {},
+  "data": {
+    "split": "curated session holdout (intended parity with Graph NCA Table 1)"
+  },
+  "model": {
+    "transformer": "6 layers, 4 heads, ~1.2M params (pending)",
+    "qwen": "Qwen2.5-1.5B-Instruct with optional grammar masking (pending)"
+  },
+  "training": {
+    "total_steps": 150000,
+    "note": "Intended identical 150k floor; artifact missing from public tree"
+  },
+  "metrics": {
+    "registration_status": "pending",
+    "manuscript_placeholder_percent": {
+      "transformer_top1": 65.87,
+      "qwen_constrained_top1": 55.2
+    }
+  },
+  "artifacts": {},
+  "repro": {
+    "command": "Pending engine export (stage0 parity / score scripts)",
+    "git_commit": "pending"
+  }
+}

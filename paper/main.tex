@@ -73,7 +73,7 @@
 \maketitle
 
 \begin{abstract}
-In autonomous software agents, deciding which tool to invoke---such as reading a file, searching a database, or replying to the user---is fundamentally a micro-routing decision. Today's systems dispatch every step through multi-billion-parameter Large Language Models (LLMs), spending seconds of latency and thousands of redundant tokens merely to select a function from a list. In this paper, I demonstrate that Neural Cellular Automata (NCAs) offer an ultra-lightweight alternative: a 59.2k-parameter network (35.3k in compact $K{=}4$ / SVD64 configurations) that functions as a fast reflex arc. Instead of generating tokens sequentially, my \textbf{Graph Neural Cellular Automata (GNCA)} framework parameterizes local cellular communication via continuous \textbf{architecture meta-learning}. Nodes representing user goals, execution history, and argument slots exchange local state updates over fast recurrence cycles to reach rapid consensus. I establish structural invariants governing graph subsumption, receptive field diameter ($O(1)$ vs $\Omega(V)$), and permutation symmetry, formally verifying all proofs in \textbf{Lean 4} with zero unproven axioms to certify the cellular search space. Continuous architecture meta-learning discovers relational topologies reaching $65.33\%$ top-1 ($35.3\text{k}$ parameters), outperforming 1D regular lattices ($64.64\%$) and coming within $0.54$\,pp of a full-attention Transformer baseline ($65.87\%$, 1.2M parameters). Scaling feature capacity to SVD128 with $K=8$ recurrence and label smoothing under extended training ($59.2\text{k}$ parameters) induces delayed generalization (grokking), reaching $\mathbf{68.07\%}$ test top-1 accuracy (95\% CI: $[66.49, 69.60]\%$), closely approaching competitive tuned tabular ensembles within $1.4\text{ pp}$ (Random Forest $67.88\%$, HistGradientBoosting $69.47\%$) while running in sub-millisecond CPU latency ($0.66$\,ms). Deployed as a System-1 micro-router paired with an LLM actuator in a Dual-System architecture, GNCA achieves an average routing latency of $\mathbf{21.43\text{ ms}}$ across 89 live benchmark turns on a local CPU. For reference, cloud-hosted LLM APIs took $950$--$4{,}409$\,ms per routing call end to end; this gap includes network round-trips and is a deployment comparison, not a same-hardware model comparison. In exploratory pilot diagnostic evaluations ($N=10$ tasks on Sierra $\tau^2$-bench and $N=30$ probes on BFCL v4), the hybrid agent reaches an $\mathbf{80.0\%}$ Pass$^1$ success rate ($8/10$ tasks) and $\mathbf{90.0\%}$ tool irrelevance detection, eliminating schema distraction while cutting cumulative token consumption by $\mathbf{44.0\%}$ ($92{,}272$ tokens saved).
+In autonomous software agents, deciding which tool to invoke---such as reading a file, searching a database, or replying to the user---is fundamentally a micro-routing decision. Today's systems dispatch every step through multi-billion-parameter Large Language Models (LLMs), spending seconds of latency and thousands of redundant tokens merely to select a function from a list. In this paper, I report that Neural Cellular Automata (NCAs) can serve as an ultra-lightweight alternative: a 59.2k-parameter network (35.3k in compact $K{=}4$ / SVD64 configurations) that functions as a fast reflex arc. Instead of generating tokens sequentially, my \textbf{Graph Neural Cellular Automata (GNCA)} framework parameterizes local cellular communication via continuous \textbf{architecture meta-learning}. Nodes representing user goals, execution history, and argument slots exchange local state updates over fast recurrence cycles to reach rapid consensus. I establish structural invariants governing graph subsumption, receptive field diameter ($O(1)$ vs $\Omega(V)$), and permutation symmetry, formally verifying all proofs in \textbf{Lean 4} with zero unproven axioms to certify the cellular search space. Continuous architecture meta-learning discovers relational topologies reaching $65.33\%$ test top-1 on the session holdout ($\approx 59.2$k parameters, SVD128 parity), outperforming 1D regular lattices ($64.64\%$) and within $0.54$\,pp of a full-attention Transformer baseline ($65.87\%$, pending SI export). Scaling feature capacity with $K=8$ recurrence and label smoothing under an extended $200$k-step budget induces delayed generalization (grokking), reaching $\mathbf{68.07\%}$ test top-1 accuracy (95\% CI: $[66.49, 69.60]\%$), closely approaching competitive tuned tabular ensembles within $1.4\text{ pp}$ (Random Forest $67.88\%$, HistGradientBoosting $69.47\%$) while running in sub-millisecond CPU latency ($0.66$\,ms). Deployed as a System-1 micro-router paired with an LLM actuator in a Dual-System architecture, GNCA achieves an average routing latency of $\mathbf{21.43\text{ ms}}$ across 89 live benchmark turns on a local CPU. For reference, cloud-hosted LLM APIs took $950$--$4{,}409$\,ms per routing call end to end; this gap includes network round-trips and is a deployment comparison, not a same-hardware model comparison. In exploratory pilot diagnostic evaluations ($N=10$ tasks on Sierra $\tau^2$-bench and $N=30$ probes on BFCL v4), the hybrid agent reports $\mathbf{80.0\%}$ Pass$^1$ ($8/10$ tasks) and $\mathbf{90.0\%}$ tool irrelevance triage ($27/30$), reducing prompt schema tokens in pilot runs by $\mathbf{44.0\%}$ ($92{,}272$ tokens saved on $N{=}10$ mock tasks).
 \end{abstract}
 
 \section{Introduction}
@@ -91,7 +91,7 @@ Neural Cellular Automata (NCAs)~\cite{mordvintsev2020growing} offer an alternati
   \item \textbf{Graph Cellular Automata:} I formulate GNCA, replacing fixed 1D convolutional stencils with continuous architecture search over graph topologies, reaching $65.33\%$ top-1 at $K=4$ and $68.07\%$ via grokking with deep recurrence.
   \item \textbf{Machine-Checked Structural Invariants:} I formally verify in Lean 4 that 1D lattices embed into GNCA, prove an exponential diameter gap ($O(1)$ vs $\Omega(V)$), and prove permutation equivariance with zero unproven axioms.
   \item \textbf{Dual-System Architecture:} I introduce a high-throughput System-1/System-2 agent harness with risk-gated dynamic schema pruning, filtering non-candidate tools before LLM actuation.
-  \item \textbf{Pilot Agentic Diagnostics:} In exploratory proof-of-concept deployments ($N=10$ tasks on $\tau^2$-bench, $N=30$ on BFCL v4, and an autonomous SWE episode), GNCA achieves $80.0\%$ Pass$^1$, $90.0\%$ irrelevance triage, and routes in $21.43\text{ ms}$ on a local CPU (cloud LLM API calls, measured end to end including network: $950$--$4{,}409$\,ms).
+  \item \textbf{Pilot Agentic Diagnostics:} In exploratory proof-of-concept deployments ($N=10$ tasks on $\tau^2$-bench, $N=30$ on BFCL v4, and an autonomous SWE episode), Dual GNCA reports $80.0\%$ Pass$^1$ ($8/10$), $90.0\%$ irrelevance triage ($27/30$), and $21.43\text{ ms}$ mean local routing latency; cloud LLM API latencies in the pilot log span $950$--$4{,}409$\,ms end to end (network included, not same hardware).
 \end{itemize}
 
 \section{Related Work}
@@ -240,7 +240,7 @@ Lean package: \nolinkurl{formal_proofs/NCAMetaLearning}
 \begin{table}[tbp]
 \centering
 \vspace{-2mm}
-\caption{\textbf{Primary agent action routing benchmark under the 150k AdamW budget.} Evaluated on 23,741 curated agent turns across 13 tool categories under session holdouts. The best meta-learned cellular topology ($65.33\%$) comes within $0.54$\,pp of the Transformer baseline ($65.87\%$) at sub-millisecond CPU latency ($0.35$--$0.66$\,ms). $35.3\text{k}$ models use $V=5, D=82$ (SVD64); the $59.2\text{k}$ variant uses $V=5, D=146$ (full SVD128 + categorical features, $H=16, D_{\mathrm{mid}}=96$). *Qwen2.5-1.5B uses grammar-constrained logit masking; unconstrained zero-shot prompt format fails at 6.29\% top-1.}
+\caption{\textbf{Primary agent action routing benchmark under the 150k AdamW budget ($K=4$).} Test top-1 on $3{,}530$ session-held-out turns (13 tools); Graph NCAs use SVD128 parity ($\approx 59.2$k parameters, \texttt{EXP-20261102-001}). Meta-learned topology ($65.33\%$) is within $0.54$\,pp of the Transformer placeholder ($65.87\%$$^\ddagger$) at sub-millisecond CPU latency ($0.35$--$0.66$\,ms). *Qwen2.5-1.5B: unconstrained local eval $6.29\%$; constrained $55.20\%$$^\ddagger$ pending SI. $^\ddagger$Engine export pending (\texttt{EXP-20261102-004}).}
 \label{tab:primary}
 \vspace{-2mm}
 \resizebox{\columnwidth}{!}{%
@@ -249,14 +249,14 @@ Lean package: \nolinkurl{formal_proofs/NCAMetaLearning}
 \textbf{Architecture} & \textbf{Model Family} & \textbf{Parameters} & \textbf{Inference} & \textbf{Top-1 Acc} & \textbf{Top-3 Acc} & \textbf{Macro F1} \\
 \midrule
 Linear Classifier & Convex Baseline & 1.2k & $<0.05$ ms & 60.71\% & 84.12\% & 0.542 \\
-Qwen2.5-1.5B (Constrained)* & Autoregressive LLM & 1.54B & 42.1 ms & 55.20\% & 79.10\% & 0.462 \\
-Transformer (6L-4H) & Full Attention & 1.2M & 3.8 ms & $65.87\%$ & $\mathbf{89.41\%}$ & $\mathbf{0.612}$ \\
+Qwen2.5-1.5B (Constrained)*$^\ddagger$ & Autoregressive LLM & 1.54B & 42.1 ms & 55.20\% & 79.10\% & 0.462 \\
+Transformer (6L-4H)$^\ddagger$ & Full Attention & 1.2M & 3.8 ms & $65.87\%$ & $\mathbf{89.41\%}$ & $\mathbf{0.612}$ \\
 HistGradientBoosting & Tabular Tree Baseline & 10.4k & 1.8 ms & $\mathbf{69.47\%}$ & $95.44\%$ & 0.343 \\
 \midrule
-TextNCA (1D Local, $L=5$) & Cellular Automaton & 14.8k & 0.35 ms & 64.64\% & 87.20\% & 0.584 \\
-Graph NCA (Hierarchical Tree) & Cellular Automaton & 35.3k & 0.35 ms & 65.27\% & 88.42\% & 0.598 \\
-\textbf{Graph NCA (Meta-Learned)} & \textbf{Cellular Automaton} & \textbf{35.3k} & \textbf{0.42 ms} & $\mathbf{65.33\%}$ & $\mathbf{88.94\%}$ & $\mathbf{0.605}$ \\
-Graph NCA (Star Topology) & Cellular Automaton & 35.3k & 0.37 ms & $\mathbf{66.19\%}$ & $\mathbf{89.15\%}$ & $\mathbf{0.608}$ \\
+TextNCA (1D Local, $L=5$) & Cellular Automaton & 59.2k & 0.35 ms & 64.64\% & 87.20\% & 0.584 \\
+Graph NCA (Hierarchical Tree) & Cellular Automaton & 59.2k & 0.35 ms & 65.27\% & 88.42\% & 0.598 \\
+\textbf{Graph NCA (Meta-Learned)} & \textbf{Cellular Automaton} & \textbf{59.2k} & \textbf{0.42 ms} & $\mathbf{65.33\%}$ & $\mathbf{88.94\%}$ & $\mathbf{0.605}$ \\
+Graph NCA (Star Topology) & Cellular Automaton & 59.2k & 0.37 ms & $\mathbf{66.19\%}$ & $\mathbf{89.15\%}$ & $\mathbf{0.608}$ \\
 \midrule
 \textbf{Graph NCA (Deep Tree, $K{=}8$, LS)} & \textbf{Cellular Automaton} & \textbf{59.2k} & \textbf{0.66 ms} & $\mathbf{68.07\%}$ & $\mathbf{91.24\%}$ & $\mathbf{0.628}$ \\
 \bottomrule
@@ -268,19 +268,23 @@ Graph NCA (Star Topology) & Cellular Automaton & 35.3k & 0.37 ms & $\mathbf{66.1
 \section{Experimental Protocol}
 
 \subsection{Datasets \& Session-Level Partitioning}
-I evaluate on curated agent execution traces totaling 23{,}741 interaction turns across 13 tool categories. Crucially, all partitions are established at the \textbf{session level}: no session ID is shared between training and test splits, preventing trajectory memorization.
+I evaluate on curated agent execution traces totaling $64{,}670$ interaction turns across train/val/test splits ($3{,}530$ session-held-out test turns for headline top-1) and 13 tool categories. Crucially, all partitions are established at the \textbf{session level}: no session ID is shared between training and test splits, preventing trajectory memorization.
 
 \subsection{The 150k-Step Training Floor}
 Because iterative cellular dynamics learn spatial coordination gradually, premature evaluation ($<10\text{k}$ steps) produces misleading comparisons; I enforce a strict \textbf{150{,}000 AdamW step floor} on all comparative runs. In deep learning, \emph{grokking} describes delayed generalization: the model transitions from memorizing training patterns to internalizing structural routing invariants under prolonged weight decay optimization.
 
-\paragraph{Hyperparameters.} Optimization uses AdamW with initial learning rate $\eta = 10^{-3}$, cosine decay to $1\%$, weight decay $\lambda = 10^{-2}$, gradient norm clipping at $1.0$, and class-weighted cross-entropy with inverse-frequency weights $w_c = \sqrt{1 / f_c}$.
+\paragraph{Hyperparameters.} Optimization uses AdamW with initial learning rate $\eta = 10^{-3}$, cosine decay to $1\%$, weight decay $\lambda = 10^{-2}$, gradient norm clipping at $1.0$, and class-weighted cross-entropy with inverse-frequency weights $w_c = \sqrt{1 / f_c}$. Equal-budget ablations without class reweighting (Track H1b) are queued on the training engine but not yet registered in \texttt{paper/si/}; headline comparisons use the weighted loss only.
+
+\paragraph{Training budgets.} Architecture comparisons in Table~\ref{tab:primary} and Table~\ref{tab:feature-parity} use the $150{,}000$-step AdamW floor with $K=4$ unless noted. The grokking result ($68.07\%$ test) and Figure~\ref{fig:learning-curves} use an \emph{extended} $200{,}000$-step budget with $K=8$ and label smoothing ($\epsilon=0.05$); do not mix those rows with the standard $150$k/$K=4$ configuration without relabeling.
+
+\paragraph{Abstain gate calibration.} The abstain head is trained jointly with the tool classifier; pilot schema-pruning thresholds are set from validation precision targets on held-out turns rather than post-hoc isotonic calibration on the full validation split.
 
 \section{Results}
 
 \subsection{Primary Benchmark Evaluation}
-The training runs recorded in \texttt{paper/si/experiments/} used the PyTorch MPS backend on Apple Silicon; where the record names the machine, it is an Apple M1 with 8 cores and 16\,GiB of memory. Some records also list wall-clock time. Table~\ref{tab:primary} reports primary performance on curated agent traces across candidate architectures under the standard $K=4$ configuration at 150k steps. Figure~\ref{fig:learning-curves} depicts empirical validation trajectories across training steps.
+The training runs recorded in \texttt{paper/si/experiments/} and \texttt{stage0/stage0\_results/full\_history\_benchmarks.json} (\texttt{EXP-20261102-001}) used PyTorch on Apple Silicon (MPS) or CUDA where noted; Apple M1 records list 8 cores and 16\,GiB RAM. Table~\ref{tab:primary} reports test top-1 on the $3{,}530$-turn session holdout (bootstrap means over seeds $0$--$2$) for Graph NCAs trained under SVD128 parity ($\approx 59.2$k parameters, $K=4$, 150k-step floor). Figure~\ref{fig:learning-curves} uses the separate 200k/$K=8$ grokking run (\texttt{EXP-20261102-002}).
 
-\paragraph{Baseline Tuning \& Prompting Parity.} The Transformer baseline (6L-4H, 1.2M parameters) was trained under the identical 150k step budget, $L=5$ history window, and session split. For Qwen2.5-1.5B-Instruct, the model was evaluated on the identical $L=5$ trace context and session holdout; zero-shot evaluation without constrained decoding suffered conversational preambles (e.g., ``I recommend...''), yielding $6.29\%$ format success. Under grammar-constrained logit masking over $\mathcal{V}$, small LLMs eliminate format errors and reach $55.20\%$ accuracy (Table~\ref{tab:primary}), but incur $42.1$\,ms decoding latency ($64\times$--$120\times$ slower than GNCA's $0.35$--$0.66$\,ms) with multi-gigabyte footprints, confirming the efficiency of cellular micro-routers.
+\paragraph{Baseline Tuning \& Prompting Parity.} The Transformer baseline (6L-4H, 1.2M parameters) was intended to match the 150k step budget, $L=5$ history window, and session split; its public score JSON is still pending (\texttt{EXP-20261102-004}, engine offline), so the $65.87\%$ row is a placeholder until re-export. For Qwen2.5-1.5B-Instruct, unconstrained zero-shot evaluation on local Hermes rows yields $6.29\%$ top-1 (\texttt{EXP-20261004-001}); grammar-constrained decoding at $55.20\%$ is likewise pending SI registration. Where measured on comparable hosts, Qwen decoding latency is $42.1$\,ms versus GNCA forward passes of $0.35$--$0.66$\,ms on CPU/MPS---a coarse same-task comparison, not a controlled hardware benchmark.
 
 \begin{figure}[t]
 \centering
@@ -347,19 +351,18 @@ Table~\ref{tab:ablations} summarizes the 150k-step ablations isolating the struc
 
 \begin{table}[tbp]
 \centering
-\caption{\textbf{Ablation breakdown isolating cellular update mechanisms under 150k AdamW budget.} Evaluates validation top-1 accuracy and peak convergence step across variants. Meta-learning achieves the highest accuracy ($65.18\%$).}
+\caption{\textbf{Ablation breakdown isolating cellular update mechanisms under 150k AdamW budget ($\approx 26.7$k-parameter runners).} Validation top-1 on curated val (\texttt{EXP-20261006-001} and siblings). Long-range goal broadcast reaches $63.55\%$; meta-learned graph topologies are evaluated separately at SVD128 scale in Table~\ref{tab:primary}.}
 \label{tab:ablations}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{@{}llcc@{}}
 \toprule
 \textbf{Ablation Variant} & \textbf{Primary EXP} & \textbf{Val Top-1} & \textbf{Peak Step} \\
 \midrule
-\textbf{Meta-Learned Graph Topology} & \texttt{EXP-1006-001} & \textbf{65.18\%} & 10{,}000 \\
-Goal Broadcast (Star) & \texttt{EXP-1006-001} & 63.55\% & 10{,}000 \\
-Carry (Cross-Turn State) & \texttt{EXP-1006-003} & 62.77\% & 5{,}000 \\
-Halt (Dynamic Early Stop) & \texttt{EXP-1006-005} & 62.67\% & 10{,}000 \\
-Baseline (1D Local Only) & \texttt{EXP-1006-001} & 62.60\% & 10{,}000 \\
-Flat Baseline Twin & \texttt{EXP-1006-001} & 62.49\% & 15{,}000 \\
+Goal Broadcast (Star / long\_range) & \texttt{EXP-20261006-001} & \textbf{63.55\%} & 10{,}000 \\
+Carry (Cross-Turn State) & \texttt{EXP-20261006-003} & 62.77\% & 5{,}000 \\
+Halt (Dynamic Early Stop) & \texttt{EXP-20261006-005} & 62.67\% & 10{,}000 \\
+Baseline (1D Local Only) & \texttt{EXP-20261006-001} & 62.60\% & 10{,}000 \\
+Flat Baseline Twin & \texttt{EXP-20261006-001} & 62.49\% & 15{,}000 \\
 \bottomrule
 \end{tabular}%
 }
@@ -382,7 +385,7 @@ To measure real-world system utility, I evaluate GNCA in pilot diagnostic deploy
 \scriptsize
 \renewcommand{\arraystretch}{0.60}
 \vspace{-6mm}
-\caption{\textbf{Live agentic benchmarks against Open SOTA.} Evaluating routing latency, BFCL v4 irrelevance triage, Sierra $\tau^2$-bench Pass$^1$, and token savings against leading open models. GNCA latency reflects local System-1 decisions ($N=89$); Open SOTA latencies reflect cloud API round-trips. $^\dagger$No speedup ratio is reported: the two latencies come from different hardware and execution modes (local CPU vs.\ remote API including network), so their ratio would not isolate the method. Diagnostic sample sizes ($N=10$ $\tau^2$-bench tasks, 7 writes; $N=1$ SWE task, 14 assertions) provide proof-of-concept verification. Dual GNCA cuts tokens by $44.0\%$ ($92{,}272$ saved).}
+\caption{\textbf{Live agentic benchmarks against Open SOTA.} Evaluating routing latency, BFCL v4 irrelevance triage, Sierra $\tau^2$-bench Pass$^1$, and token savings. GNCA latency reflects local System-1 decisions ($N=89$ turns). Open SOTA cells reproduce preliminary pilot logs (\texttt{EXP-20261102-003}); score JSON re-export is pending while the training engine is offline---treat as author-reported, not independently verified. $^\dagger$No speedup ratio: local CPU vs.\ remote API (network included). Diagnostic sizes: $N=10$ $\tau^2$-bench mock tasks ($8/10$ pass), $N=30$ BFCL irrelevance probes ($27/30$ correct), $N=1$ SWE episode ($14/14$ tests).}
 \label{tab:live-benchmarks}
 \vspace{-5mm}
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcccc@{}}
@@ -391,7 +394,7 @@ To measure real-world system utility, I evaluate GNCA in pilot diagnostic deploy
  & \textbf{(Llama-4 / 70B)} & \textbf{(ReAct 4B)} & \textbf{(This Work)} & \textbf{(vs Small LLM)} \\
 \midrule
 Routing Decision Latency (ms) & $1{,}678 - 4{,}409$ & $950 - 1{,}800$ & $\mathbf{21.43 \pm 10.2}$ & end-to-end only$^\dagger$ \\
-BFCL v4 Irrelevance Triage Rate & $80.0\% - 100\%$ & $65.0\%$ & $\mathbf{90.0\%}$ & $+25.0\text{ pp}$ \\
+BFCL v4 Irrelevance Triage Rate & $80.0\% - 100\%$ & $65.0\%$ & $\mathbf{90.0\%}$ ($27/30$) & $+25.0\text{ pp}$ \\
 BFCL v4 Tool Activation Rate & $94.2\%$ & $84.2\%$ & $\mathbf{100.0\%}$ & $+15.8\text{ pp}$ \\
 $\tau^2$-bench Mock Pass$^1$ Reward & $62.0\%$ & $60.0\%$ & $\mathbf{80.0\%}$ & $+20.0\text{ pp}$ \\
 $\tau^2$-bench Write Action Accuracy & $85.7\%$ & $85.7\%$ & $\mathbf{100.0\%}$ (7/7) & $+14.3\text{ pp}$ \\
@@ -408,7 +411,7 @@ Cumulative Benchmark Tokens & $209{,}734$ & $209{,}734$ & $\mathbf{117{,}462}$ &
 On Sierra $\tau^2$-bench~\cite{sierra2024tau}, multi-turn dialogues test state mutation and policy compliance. Published baselines report Pass$^1$ of $62.0\%$ for Llama-3.3-70B on diagnostic tasks, while smaller models drop below $45\%$ from syntax errors. Across 10 canonical diagnostic tasks in \texttt{mock} ($N=10$ episodes, 89 turns), Dual GNCA achieves an $\mathbf{80.0\%}$ Pass$^1$ reward ($8/10$ tasks, 95\% Wilson CI: $[49.0\%, 94.3\%]$) and executes $100\%$ ($7/7$) of database writes without error. On customer dialogues (\texttt{airline} Task 0), it reaches a perfect $\mathbf{1.000}$ Pass$^1$ reward with synchronized state. Across 89 live turns, GNCA operates with a mean local latency of $21.43\pm 10.2$\,ms on CPU.
 
 \paragraph{Irrelevance Triage on BFCL v4.}
-A major failure mode in tool agents is schema distraction: registries scaling beyond 20 tools degrade LLM accuracy to $62\%$--$78\%$ via false triggers~\cite{gorilla-bfcl}. On BFCL v4, I evaluate against open SOTA deployments (Meta Llama-4-Maverick-17B-128E MoE and DeepSeek-V4.1-Flash on Azure AI, and local Qwen-3.8-27B). While Llama-4 Maverick reaches $100\%$ irrelevance detection at $1{,}678$\,ms and DeepSeek-V4.1 achieves $80.0\%$ at $4{,}409$\,ms, smaller open models degrade to $65.0\%$ by hallucinating tools on dialogue. In contrast, GNCA routes non-tool queries to conversational dialogue (\texttt{respond}) with $\mathbf{90.0\%}$ precision in $15.18$\,ms, pruning unneeded schemas before System-2 actuation. These are point estimates on a small probe set without confidence intervals, so the differences between models are not statistically resolved, and I did not count false triggers separately. On functional queries (\texttt{BFCL\_v3\_simple}), GNCA achieves $\mathbf{100.0\%}$ tool activation in $15.06$\,ms.
+A major failure mode in tool agents is schema distraction: registries scaling beyond 20 tools degrade LLM accuracy to $62\%$--$78\%$ via false triggers~\cite{gorilla-bfcl}. On BFCL v4, I compare Dual GNCA against preliminary open-model pilot logs (Meta Llama-4-Maverick-17B-128E MoE and DeepSeek-V4.1-Flash on Azure AI, plus local Qwen-3.8-27B); those cloud scores are \emph{not} yet mirrored in \texttt{paper/si/} (\texttt{EXP-20261102-003}). Where logged, Llama-4 Maverick reached $100\%$ irrelevance detection at $1{,}678$\,ms and DeepSeek-V4.1 reached $80.0\%$ at $4{,}409$\,ms; smaller open models in the same pilot reached $65.0\%$. GNCA routes non-tool queries to \texttt{respond} with $\mathbf{90.0\%}$ precision ($27/30$ probes) in $15.18$\,ms mean local latency. These remain point estimates on a small probe set without confidence intervals, and I did not count false triggers separately. On functional queries (\texttt{BFCL\_v3\_simple}), GNCA reports $\mathbf{100.0\%}$ tool activation in $15.06$\,ms in the same pilot log.
 
 \paragraph{Autonomous Closed-Loop SWE Verification.}
 I evaluate the agent on synthesizing an interactive task manager with CRUD operations and JSON persistence. System-1 selects tools while System-2 emits code and generates 14 unit test assertions. When assertions fail, GNCA detects the failure signature, escalates entropy ($\tau_{\text{escalate}} = 0.76$), and routes to automated repair (\texttt{patch}), iterating until all $\mathbf{14/14}$ unit tests pass in $0.007$\,s.
@@ -417,7 +420,7 @@ I evaluate the agent on synthesizing an interactive task manager with CRUD opera
 Auditing tokens with \texttt{cl100k}, full tool registries consume $463$--$1{,}365$ schema tokens per turn. Dual GNCA prunes unneeded schemas completely on conversational turns, reducing prompt overhead by $68.4\%$. Across 10 multi-turn \texttt{mock} tasks, tokens drop from $31{,}255$ to $15{,}513$ ($50.4\%$), and in \texttt{airline} from $36{,}529$ to $22{,}879$ ($37.4\%$). Total benchmark consumption drops from $209{,}734$ to $117{,}462$ tokens, achieving a net $\mathbf{44.0\%}$ reduction ($92{,}272$ tokens saved).
 
 \paragraph{Benchmarking Scope \& Latency Disambiguation.}
-Dual GNCA's $21.43\pm 10.2$\,ms latency reflects in-situ execution on local CPU, isolating System-1 micro-routing from network transmission. In contrast, reported Open SOTA latencies ($1{,}678 - 4{,}409$\,ms) encompass cloud WAN round-trips and generation of Meta Llama-4-Maverick-17B MoE and DeepSeek-V4.1 on Azure AI, alongside Llama-3.3-70B under remote hosting. The diagnostic suite ($N=10$ $\tau^2$-bench tasks, 89 decisions, 7 writes; 14 assertions on SWE) provides proof-of-concept validation.
+Dual GNCA's $21.43\pm 10.2$\,ms latency reflects in-situ execution on local CPU, isolating System-1 micro-routing from network transmission. Open SOTA latencies in Table~\ref{tab:live-benchmarks} come from the same preliminary pilot log and include cloud WAN round-trips; they will be replaced after engine re-export. The diagnostic suite ($N=10$ $\tau^2$-bench mock tasks, 89 routing decisions, 7/7 writes; 14/14 SWE assertions on one episode) is proof-of-concept only.
 
 \section{Discussion \& Limitations}
 By extending NCAs into a meta-learned graph decision substrate with certified structural invariants, I show cellular automata can replace autoregressive decoders for deterministic agent actions while retaining interpretability. In the pilot, offloading triage cut prompt tokens by $44\%$ ($92{,}272$ tokens saved over 10 tasks). I did not model API pricing or caching, so this is a token count, not a measured cost saving. Routing also took less time end to end than cloud API calls, although that comparison includes network overhead. Pruning schemas on conversational turns should reduce exposure to schema distraction and slow the growth of the context window. I did not count false triggers or context-overflow events, so both effects remain to be measured.
@@ -426,7 +429,7 @@ By extending NCAs into a meta-learned graph decision substrate with certified st
 The architecture exhibits two boundaries: open-ended code diff synthesis requires autoregressive System-2 fallback, and the model operates on a pre-trained categorical registry of 13 tools. Because modern agents load tools dynamically via Model Context Protocol (MCP) servers, live retraining is infeasible. This motivates \emph{Zero-Shot Open-Vocabulary Graph NCAs} (Track 19), conditioning updates on continuous docstring embeddings via hypernetworks.
 
 \section{Conclusion}
-I have introduced Graph Neural Cellular Automata (GNCA) with architecture meta-learning, extending cellular automata beyond 1D chains to execute hierarchical tool dispatch with certified structural invariants. Training past 150k steps induces delayed generalization (grokking), reaching $\mathbf{68.07\%}$ test accuracy (95\% CI: $[66.49, 69.60]\%$) and approaching tuned tabular ensembles within $1.4\text{ pp}$ (Random Forest $67.88\%$, HistGradientBoosting $69.47\%$). In a Dual-System architecture, GNCA makes routing decisions in $21.43\text{ ms}$ on a local CPU end to end (sub-millisecond for the bare forward pass). In pilot diagnostic deployments ($N=10$ $\tau^2$-bench mock tasks, $N=1$ SWE task), it achieves $80.0\%$ Pass$^1$ and $90.0\%$ BFCL v4 triage while cutting tokens by $\mathbf{44.0\%}$ ($92{,}272$ tokens saved).
+I have introduced Graph Neural Cellular Automata (GNCA) with architecture meta-learning, extending cellular automata beyond 1D chains to execute hierarchical tool dispatch with certified structural invariants. Training past 150k steps induces delayed generalization (grokking), reaching $\mathbf{68.07\%}$ test accuracy (95\% CI: $[66.49, 69.60]\%$) and approaching tuned tabular ensembles within $1.4\text{ pp}$ (Random Forest $67.88\%$, HistGradientBoosting $69.47\%$). In a Dual-System architecture, GNCA makes routing decisions in $21.43\text{ ms}$ on a local CPU end to end (sub-millisecond for the bare forward pass). In pilot diagnostic deployments ($N=10$ $\tau^2$-bench mock tasks, $N=30$ BFCL probes, $N=1$ SWE episode), Dual GNCA reports $80.0\%$ Pass$^1$ ($8/10$) and $90.0\%$ BFCL triage ($27/30$) while cutting tokens by $\mathbf{44.0\%}$ ($92{,}272$ saved on logged mock tasks).
 
 \paragraph{Code, Data, and Model Availability.}
 {\fontsize{6.2pt}{7.0pt}\selectfont Models and the dataset are on Hugging Face (links below). The training code, the experiment records in \texttt{paper/si/} and the Lean 4 proofs are in the public repository below. The version described here is commit \texttt{6ea15ac}. The repository has no license file yet.

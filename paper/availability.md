@@ -1,8 +1,20 @@
 # Availability (paper)
 
-**Draft — fill links after top-4 promotion.**
+Last updated: 2026-11-02 (review pass toward ≥8.5/10).
 
-## Hugging Face (only four live artifacts)
+## Code (public)
+
+| Item | Location |
+| --- | --- |
+| Repository | https://github.com/cap-jmk-real/nca_research |
+| Manuscript pin | _set on merge — see `paper/main.tex` availability paragraph_ |
+| Primary benchmark JSON | `stage0/stage0_results/full_history_benchmarks.json` (`EXP-20261102-001`) |
+| Grokking JSON | `stage0/stage0_results/ultra_grokking_results.json` (`EXP-20261102-002`) |
+| SI experiment registry | `paper/si/experiments/` + `paper/si/experiments_index.json` |
+
+Lean 4 proofs: `formal_proofs/NCAMetaLearning` (`lake build`).
+
+## Hugging Face (top-4 slots — revisions still pending promotion)
 
 | Slot | Role | Repository | Revision |
 | --- | --- | --- | --- |
@@ -11,25 +23,24 @@
 | C | Best specialist student | `cap-jmk-real/specialist-python` | _pending_ |
 | D | Best scrubbed dataset | `cap-jmk-real/hermes-next-tool-mix` | _pending_ |
 
-Policy: [docs/huggingface-distribution.md](../docs/huggingface-distribution.md).
-Selector: `scripts/select_top4_artifacts.py`. Quants: `scripts/quantize_checkpoint.py`
-(fp16 → fp8 → int8 → nf4 → ≈2.5 bpw IQ2-class). At most one quant companion
-per slot; promote only if ≥98% of fp16 top-1 or Pareto-better on size/latency.
+Policy: [docs/huggingface-distribution.md](../docs/huggingface-distribution.md).  
+Selector: `scripts/select_top4_artifacts.py`.
 
-## Code
+## Pending engine exports (not blockers for text fixes)
 
-- Git commit: _pending_
-- Branch used for release cut: _pending_
-- SI experiment ids for claimed numbers: see `paper/si/experiments/`
+| Claim | SI record | Status |
+| --- | --- | --- |
+| Transformer 6L-4H + constrained Qwen Table 1 rows | `EXP-20261102-004` | Score JSON missing (engine offline) |
+| Azure / Open SOTA pilot latencies & BFCL compares | `EXP-20261102-003` | Preliminary log only; JSON re-export pending |
+| H1b no-class-weight seeds | _(none)_ | Queued on engine; not in SI |
 
-## Reproduce
+## Reproduce (local)
 
 ```bash
-python scripts/select_top4_artifacts.py --write
-python scripts/quantize_checkpoint.py --from-top4 --slot A
-python scripts/prepare_hf_dataset.py --lang python
-python scripts/publish_hf.py all --from-top4 --dry-run
+cd formal_proofs && lake build && lake exe ncametalearning
+python stage0/run_full_history_benchmarks.py --steps 10000 --seeds 0,1,2
+python stage0/run_ultra_grokking_nca.py
+cd paper && pdflatex main.tex && pdflatex main.tex
 ```
 
-Long-train architectural claims require ≥150k steps
-([docs/auto-research-loop.md](../docs/auto-research-loop.md)).
+Long-train architectural claims require ≥150k steps ([docs/auto-research-loop.md](../docs/auto-research-loop.md)).
