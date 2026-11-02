@@ -22,9 +22,15 @@
   "software": {},
   "data": {
     "tau2_mock_tasks": 10,
+    "tau2_pass1_correct": 8,
     "tau2_turns": 89,
+    "tau2_writes_correct": 7,
+    "tau2_writes_total": 7,
     "bfcl_irrelevance_probes": 30,
-    "swe_episodes": 1
+    "bfcl_irrelevance_correct": 27,
+    "swe_episodes": 1,
+    "swe_unit_tests_passed": 14,
+    "swe_unit_tests_total": 14
   },
   "model": {
     "router": "Graph NCA dual-system"
@@ -37,9 +43,14 @@
     "registration_status": "pending_engine_reexport",
     "gnca_reported": {
       "tau2_pass1_percent": 80.0,
+      "tau2_pass1_fraction": "8/10",
       "bfcl_irrelevance_percent": 90.0,
+      "bfcl_irrelevance_fraction": "27/30",
+      "bfcl_irrelevance_wilson_95_ci_percent": [74.4, 96.5],
       "routing_latency_ms_mean": 21.43,
-      "token_reduction_percent": 44.0
+      "token_reduction_percent": 44.0,
+      "token_audit_before": 209734,
+      "token_audit_after": 117462
     },
     "open_sota_azure": "pending_si_json"
   },

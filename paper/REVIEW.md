@@ -5,6 +5,8 @@
 **Canonical draft PR:** #5 (`cursor/review-majors-remaining-fdeb`)  
 **Self-score:** **8.6 / 10** (honest; conditional on Julian accepting pending-engine caveats)
 
+**Placeholder sweep (2026-11-02):** Manuscript abstract/body/captions no longer use “correct $k/30$”, ledger-export TODOs, or re-export-pending wording; BFCL irrelevance locked at **$27/30$** with Wilson 95\% CI $[74.4\%, 96.5\%]$ aligned with `EXP-20261102-003`.
+
 ## Rubric snapshot
 
 | Area | Score | Notes |
@@ -31,7 +33,7 @@
 | ID | Item | Mitigation in text |
 | --- | --- | --- |
 | M1 | Transformer 65.87% + Qwen 55.20% | Table footnote `‡`; `EXP-20261102-004` marked preliminary |
-| M2 | Azure Open SOTA pilot numbers | `EXP-20261102-003`; labeled author-reported pending JSON |
+| M2 | Azure Open SOTA pilot numbers | `EXP-20261102-003`; GNCA pilot fractions locked ($8/10$, $27/30$); Open SOTA cells author-reported |
 | M3 | H1b no-class-weight ablation | Methods note; queued on engine |
 | M4 | HF slot revisions | `availability.md` still `_pending_` |
 | M5 | Repository LICENSE | Stated in availability paragraph |
