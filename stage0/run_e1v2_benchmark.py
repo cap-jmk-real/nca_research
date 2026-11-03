@@ -113,7 +113,6 @@ def eval_nca_from_disk(best_path: Path, feat_path: Path, examples, topo: str) ->
 
     from obs_pack import pack_arch
 
-    torch.use_deterministic_algorithms(True)
     gt = load_features(feat_path)
     X, y = pack_arch("nca1d", examples, L2I, "tfidf_svd128", gt)
     X = torch.from_numpy(X).float()
@@ -121,7 +120,12 @@ def eval_nca_from_disk(best_path: Path, feat_path: Path, examples, topo: str) ->
     assert blob["feature_sha256"] == sha256_file(feat_path), "feature pipeline does not match checkpoint"
     model = build_model(X.shape[1], topo)
     model.load_state_dict(blob["state"])
-    return ranked_logits(model, X), np.asarray(y)
+    prev = torch.are_deterministic_algorithms_enabled()
+    torch.use_deterministic_algorithms(True)
+    try:
+        return ranked_logits(model, X), np.asarray(y)
+    finally:
+        torch.use_deterministic_algorithms(prev)
 
 
 def tab_features(gt, examples):
