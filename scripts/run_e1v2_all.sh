@@ -3,7 +3,7 @@
 set -euo pipefail
 cd ~/nca_research_git
 export NCA_DATA_ROOT=$HOME/nca_data_e1 PATH=$HOME/nca_venv/bin:$HOME/bin:$PATH CUBLAS_WORKSPACE_CONFIG=:4096:8
-P=$HOME/nca_venv/bin/python; SYN=$NCA_DATA_ROOT/synthetic/bfcl_e1v2_synth_train.filtered.jsonl
+P=$HOME/nca_venv/bin/python; SYN=$NCA_DATA_ROOT/synthetic/bfcl_e1v2_synth_train.v2.jsonl
 echo "== e1v2 start $(date -Is) sha=$(git rev-parse --short HEAD)"
 $P stage0/run_e1v2_benchmark.py --seeds 0,1,2 --topologies tree,meta,star,1d --steps 150000; research-backup-now e1v2_real
 $P stage0/run_e2v2_router_ablation.py --seeds 0,1,2 --variant run; research-backup-now e2v2_real
