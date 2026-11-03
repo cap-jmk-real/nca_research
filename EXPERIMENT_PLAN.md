@@ -79,6 +79,21 @@ python stage0/export_meta_adjacency.py \
 
 ---
 
+## E4 — Escalation hyperparameter sensitivity (pilot-only; no headline GPU)
+
+**Scope:** $\beta$ in the $\tau_{\text{escalate}}$ score and cutoff thresholds for Dual-System pilots only (does not affect curated test top-1 in Table 1).
+
+**Planned grid (after E2 harness freeze):**
+
+| Knob | Values | Metric |
+| --- | --- | --- |
+| $\beta$ | 0.25, 0.5, 1.0 | BFCL irrelevance triage + SWE repair trigger rate on validation probes |
+| $\tau_{\text{escalate}}$ cutoff | sweep on curated val abstain precision target | precision@escalation (no public label set yet) |
+
+**Status:** Not run in repo; document results in `EXP-20261102-003` follow-up or new EXP id when pilot harness is frozen.
+
+---
+
 ## Paper Hermes 65.33% meta (provenance only — not E1)
 
 See `REVIEW_RESPONSE_v1.5.md` § Provenance. That number is **not** reproduced by E1; E1/E3 meta checkpoints are BFCL-trained.

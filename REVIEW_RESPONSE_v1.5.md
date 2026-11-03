@@ -38,7 +38,29 @@ Manuscript: `paper/main.tex` · Branch: `cursor/review-majors-remaining-fdeb` ·
 | **Git pin in SI** | `repro.git_commit`: `1ceac61faaac21a32be2463d6b09eb987eef7807` |
 | **Learned α / `.pt` checkpoints** | **Not in repo and not on engine** (per Julian addendum). JSON metrics only — **cannot trace saved `alpha` or `meta_seed*.pt` for this 65.33% run.** E1 on BFCL will produce new meta checkpoints + `e3_meta_adjacency_audit.json`; those are **BFCL-trained**, not the Hermes Table 1 run. |
 
-**Flag:** Table 1 / Table 2 **65.33%** is traceable to **`full_history_benchmarks.json`** with the caveats above (10k-step run, no checkpoint archive, SI field mislabeled as boot_mean aggregate).
+**Flag:** Table 1 / Table 2 **65.33%** is traceable to **`full_history_benchmarks.json`** with the caveats above (10k-step run, no checkpoint archive; SI field renamed to `headline_test_top1_mean_percent`).
+
+## Klaut gateway audit (`docs/audits/nca-after.md`, PR #5 score 5.45/10)
+
+Reference report: `klaut-pro/klaut-research-gateway` branch `feat/review-aixiv-gap` (not fetched in CI; mirror summary below).
+
+| Klaut major (category) | Status | Response |
+| --- | --- | --- |
+| **split_labels** | **Done (text)** | Methods “Accuracy tagging” paragraph; Table 1 columns renamed Test Top-1/Top-3/F1; captions tag curated test vs val vs local Hermes vs pilot; $^\S$ / $^\ddagger$ / * footnotes for config. |
+| **laplacian_normalization** | **Done (text)** | Eqs. `\eqref{eq:gnca-lowpass}`–`\eqref{eq:gnca-perceive}`: row-stochastic $A$, $\delta=(A-I)x$ matches `GraphNCA._perceive`; $\tilde{L}$ analysis-only. **Not a forward-pass bug** — automated check likely conflated optional $\tilde{L}$ with Eqs. (2)–(4). |
+| **unjustified_hyperparam** | **Done (text + plan)** | $\beta$ / $\tau_{\text{escalate}}$ sensitivity paragraph in Methods; no effect on classification metrics; grid deferred to `EXPERIMENT_PLAN.md` E4. |
+| **single_dataset_eval** | **Open (E1 running)** | Second benchmark via `./scripts/run_e1.sh`; Discussion already limits Hermes-only claims. |
+| **pilot_matched_controls** | Open | E2 router ablation scripted; not executed in public artifacts. |
+| **missing_baseline_artifacts** | Open | `EXP-20261102-004` Transformer/Qwen rows lack public score JSON. |
+| **archived_meta_checkpoint** | Open | No $\alpha$ / `.pt` for Hermes `EXP-20261102-001`; E1 supplies BFCL-trained meta only. |
+| **compute_energy_accounting** | Open | `JULIAN_TODO.md` GPU/kWh table not in manuscript. |
+| **release_blockers** | Open | Root LICENSE + full corpus scripts pending (`JULIAN_TODO.md`). |
+| **related_work_lgca_training** | Open | Grattarola LGCA training-time comparison deferred (v1.5). |
+| **headline_step_budget** | **Mitigated (text)** | 10k vs 150k vs 200k separated in Methods (prior commit `0869030`). |
+| **pilot_probe_ledgers** | Open | BFCL $N=30$ aggregate only; no per-probe JSON in repo. |
+| **isotonic_escalation_calibration** | Open (E4) | No held-out human escalation labels; E4 plan documents intended sweep. |
+
+**Remaining Klaut majors after this commit:** **10** (all rows marked Open above; **single_dataset_eval** closes when E1 artifacts land).
 
 ## Files touched
 
