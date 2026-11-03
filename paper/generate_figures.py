@@ -201,7 +201,7 @@ def generate_fig3_pareto_efficiency():
 
     ax.scatter([], [], facecolors='white', edgecolors=COLORS['gray'], marker='o', s=36,
                label='Local Hermes OOD')
-    ax.scatter([], [], color=COLORS['blue'], marker='D', s=36, label='Curated test @150k')
+    ax.scatter([], [], color=COLORS['blue'], marker='D', s=36, label='Curated test @10k')
     ax.axhline(0.4947, color='#999999', ls='-.', lw=1.0, label='Always-terminal (49.5%)')
 
     ax.set_xscale('log')
