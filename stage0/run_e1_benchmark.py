@@ -68,6 +68,7 @@ def main() -> None:
     from nca_text.model import GraphNCA
     from obs_pack import fit_or_load_tfidf, pack_arch
     from run_full_history_benchmarks import bootstrap_top1, evaluate_neural, latency
+    from eval_utils import rank_from_proba
 
     LABELS = json.load(open(REPO_DIR / "stage0" / "labels.json"))
     L2I = {t: i for i, t in enumerate(LABELS)}
@@ -131,10 +132,10 @@ def main() -> None:
             max_leaf_nodes=31,
             random_state=seed,
         ).fit(X_tab["train"], y_tab["train"])
-        val_rank_h = [list(np.argsort(-p)) for p in clf.predict_proba(X_tab["val"])]
+        val_rank_h = [list(r) for r in rank_from_proba(clf.predict_proba(X_tab["val"]), clf.classes_)]
         v_hgb = metrics(list(y_tab["val"]), val_rank_h, N_CLASSES)["top1"]
-        test_pred_h = clf.predict(X_tab["test"])
-        test_rank_h = [list(np.argsort(-p)) for p in clf.predict_proba(X_tab["test"])]
+        test_rank_h = [list(r) for r in rank_from_proba(clf.predict_proba(X_tab["test"]), clf.classes_)]
+        test_pred_h = np.array([r[0] for r in test_rank_h])
         m_hgb = metrics(list(y_tab["test"]), test_rank_h, N_CLASSES)
         mean_h, sd_h, ci_h = bootstrap_top1(y_tab["test"], test_pred_h, seed=seed)
         m_hgb.update(boot_mean=mean_h, boot_sd=sd_h, ci95=ci_h)
@@ -148,9 +149,9 @@ def main() -> None:
             random_state=seed,
             n_jobs=2,
         ).fit(X_tab["train"], y_tab["train"])
-        rf_val_rank = [list(np.argsort(-p)) for p in rf.predict_proba(X_tab["val"])]
-        rf_test_pred = rf.predict(X_tab["test"])
-        rf_test_rank = [list(np.argsort(-p)) for p in rf.predict_proba(X_tab["test"])]
+        rf_val_rank = [list(r) for r in rank_from_proba(rf.predict_proba(X_tab["val"]), rf.classes_)]
+        rf_test_rank = [list(r) for r in rank_from_proba(rf.predict_proba(X_tab["test"]), rf.classes_)]
+        rf_test_pred = np.array([r[0] for r in rf_test_rank])
         m_rf = metrics(list(y_tab["test"]), rf_test_rank, N_CLASSES)
         mean_rf, sd_rf, ci_rf = bootstrap_top1(y_tab["test"], rf_test_pred, seed=seed)
         m_rf.update(boot_mean=mean_rf, boot_sd=sd_rf, ci95=ci_rf)

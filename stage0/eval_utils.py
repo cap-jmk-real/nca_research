@@ -8,9 +8,8 @@
 - Paired bootstrap resamples the same test indices for both systems.
 - Macro-F1 is reported two ways: ``macro_f1_gold`` averages over classes present
   in the gold test labels; ``macro_f1_all`` averages over every class present in
-  train ∪ test (classes absent from test contribute F1=0 if predicted, else are
-  ignored by sklearn only when they have no support AND no predictions - we pass
-  the label list explicitly so they count).
+  train ∪ test (passed explicitly, so a class absent from test but predicted
+  contributes F1=0 and an absent, never-predicted class contributes 0 as well).
 """
 
 from __future__ import annotations
@@ -116,9 +115,13 @@ def write_predictions(path: Path, ids, y_true, ranked, i2l) -> str:
 
     path.parent.mkdir(parents=True, exist_ok=True)
     lines = []
-    for ex_id, y, r in zip(ids, y_true, np.asarray(ranked)):
-        lines.append(json.dumps({"id": ex_id, "gold": i2l[int(y)], "pred": i2l[int(r[0])],
-                                 "top3": [i2l[int(x)] for x in r[:3]], "correct": bool(int(r[0]) == int(y))}))
+    ranked = np.asarray(ranked)
+    for ex_id, y, r in zip(ids, y_true, ranked):
+        r = np.atleast_1d(r)
+        row = {"id": ex_id, "gold": i2l[int(y)], "pred": i2l[int(r[0])], "correct": bool(int(r[0]) == int(y))}
+        if ranked.ndim == 2:
+            row["top3"] = [i2l[int(x)] for x in r[:3]]
+        lines.append(json.dumps(row))
     text = "\n".join(lines) + "\n"
     path.write_text(text)
     return hashlib.sha256(text.encode()).hexdigest()
