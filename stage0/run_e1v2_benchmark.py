@@ -141,6 +141,8 @@ def main() -> None:
     ap.add_argument("--n-boot", type=int, default=10000)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--results-dir", type=Path, default=RESULTS_DIR)
+    ap.add_argument("--synthetic-jsonl", type=Path, default=None,
+                    help="Synthetic rows appended to TRAIN only (ablation real+synthetic); val/test stay 100%% real")
     args = ap.parse_args()
     if args.dry_run:
         args.steps, args.eval_every, args.seeds, args.n_boot = min(args.steps, 1000), 250, "0", 1000
@@ -157,13 +159,22 @@ def main() -> None:
     from obs_pack import pack_arch
 
     man = verify_split(SPLITS / SPLIT_NAME)
-    res = args.results_dir / ("dry_run" if args.dry_run else "run")
+    variant = "run_synth" if args.synthetic_jsonl else "run"
+    res = args.results_dir / ("dry_run" if args.dry_run else variant)
     ck = res / "checkpoints"; pred_dir = res / "predictions"
     ck.mkdir(parents=True, exist_ok=True); pred_dir.mkdir(parents=True, exist_ok=True)
     seeds = [int(s) for s in args.seeds.split(",")]
     topos = [t.strip() for t in args.topologies.split(",")]
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     sp = {s: load_split(SPLIT_NAME, s) for s in ("train", "val", "test")}
+    synth_info = None
+    if args.synthetic_jsonl:
+        from common import load_jsonl_examples
+        syn = load_jsonl_examples(args.synthetic_jsonl)
+        real_ids = {e.session_id for s in sp for e in sp[s]}
+        assert not ({e.session_id for e in syn} & real_ids), "synthetic ids collide with real ids"
+        synth_info = {"path": str(args.synthetic_jsonl), "sha256": sha256_file(args.synthetic_jsonl), "rows": len(syn)}
+        sp["train"] = sp["train"] + syn
     test_ids = [e.session_id for e in sp["test"]]
     y = {s: np.array([L2I[e.label] for e in sp[s]]) for s in sp}
     labels_all = sorted(set(y["train"].tolist()) | set(y["test"].tolist()))
@@ -171,7 +182,7 @@ def main() -> None:
                "n": {s: len(sp[s]) for s in sp}, "steps": args.steps, "seeds": seeds, "dry_run": args.dry_run,
                "evaluated_weights": "best val top-1 state (earliest on ties), reloaded from disk on CPU",
                "macro_f1_note": "macro_f1_gold averages over classes present in gold test; macro_f1_all over classes in train∪test",
-               "device_train": str(dev), "models": {}, "paired": {}}
+               "device_train": str(dev), "synthetic_train": synth_info, "models": {}, "paired": {}}
     out_path = res / "e1v2_benchmark.json"
     t_start = time.time()
 

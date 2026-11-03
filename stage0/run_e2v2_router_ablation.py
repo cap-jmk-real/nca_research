@@ -38,6 +38,7 @@ def main() -> None:
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--n-boot", type=int, default=10000)
     ap.add_argument("--results-dir", type=Path, default=RESULTS_DIR)
+    ap.add_argument("--variant", default="run", choices=["run", "run_synth"])
     args = ap.parse_args()
     if args.dry_run:
         args.seeds, args.n_boot = "0", 1000
@@ -47,7 +48,7 @@ def main() -> None:
 
     require_nca_data_root()
     verify_split(SPLITS / SPLIT_NAME)
-    res = args.results_dir / ("dry_run" if args.dry_run else "run")
+    res = args.results_dir / ("dry_run" if args.dry_run else args.variant)
     ck = res / "checkpoints"; pred_dir = res / "predictions_e2"; pred_dir.mkdir(parents=True, exist_ok=True)
     train, test = load_split(SPLIT_NAME, "train"), load_split(SPLIT_NAME, "test")
     ids = [e.session_id for e in test]
