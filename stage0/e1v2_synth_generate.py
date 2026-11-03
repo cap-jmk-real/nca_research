@@ -35,7 +35,6 @@ LABEL_HINT = {
     "write_file": "create, write, save or update a file or record",
     "read_file": "open or read a specific file",
     "todo": "create or manage a task / todo item",
-    "memory": "remember or store a fact for later",
 }
 
 

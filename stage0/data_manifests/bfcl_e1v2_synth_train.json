@@ -1,0 +1,29 @@
+{
+  "name": "bfcl_e1v2_synth_train",
+  "use": "TRAIN only (ablation real+synthetic); val/test 100% real",
+  "generator": "stage0/e1v2_synth_generate.py",
+  "deployment": "gpt-4.1-mini (2025-04-14) @ klaut-research-aoai, Azure region Sweden Central (x-ms-region verified), api 2025-01-01-preview",
+  "temperature": 0.9,
+  "seeds": "per batch, logged",
+  "batches": 41,
+  "tokens_in": 9648,
+  "tokens_out": 29178,
+  "cost_eur_est": 0.0505,
+  "raw_rows": 801,
+  "dropped_dedupe_or_schema": 19,
+  "dedupe": "exact normalised text vs val+test; TF-IDF(1-2gram) cosine >0.9 vs val+test and vs earlier synthetic rows dropped",
+  "prompt_context": "train rows only as style examples; test never shown",
+  "rule_filter": "kept only rows whose function name maps to the target label via bfcl_label_map (dropped 116, mostly todo.add-style names)",
+  "manual_sample": "30 random rows read by hand 2026-11-03: 30/30 plausible for their label",
+  "caveat": "synthetic goals end with the single gold function name; real BFCL goals list all offered functions -> possible shortcut; compare real-only vs real+synthetic only",
+  "rows": 685,
+  "labels": {
+    "terminal": 174,
+    "write_file": 172,
+    "read_file": 214,
+    "todo": 125
+  },
+  "sha256": "3e06878a9fd64d4c1c56699d58b15ff6ac43d855b8aeefeb76edf4f73608f8a0",
+  "raw_sha256": "69a8c35fda09b444b95a0fd809ec160d94e316c6f412c89450cbc88906753fb6",
+  "batch_log_sha256": "16cdbdde5b6132f14724ad0bdc3599b7a7f1be59fcc36afeceb914f3b8e07c8f"
+}
