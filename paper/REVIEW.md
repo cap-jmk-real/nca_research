@@ -12,7 +12,7 @@
 | Area | Score | Notes |
 | --- | ---: | --- |
 | Claim ↔ number alignment | 8.5 | Table 1 tied to `EXP-20261102-001` + `full_history_benchmarks.json`; split sizes fixed (3,530 test / 64,670 total) |
-| Methods ↔ Results configs | 9.0 | 150k/$K=4$ vs 200k/$K=8$ grokking explicitly separated |
+| Methods ↔ Results configs | 9.0 | 10k headline (`EXP-20261102-001`) vs 150k ablations vs 200k/$K=8$ grokking explicitly separated |
 | Latency / deployment comparisons | 8.5 | No cross-hardware speedup ratios; pilot vs API labeled |
 | Small-$N$ pilot honesty | 8.5 | Raw counts where stated ($8/10$, $7/7$, $14/14$); BFCL $90.0\%$ on $N=30$ via \texttt{EXP-20261102-003} (no $k/N$ in repo) |
 | Repro / artifacts | 8.0 | Public GitHub + in-repo JSON for main benchmarks; HF slot revisions open |
