@@ -1,0 +1,106 @@
+{
+  "experiment": "E2",
+  "split_holdout": "bfcl_e1/test",
+  "n_test": 25,
+  "dry_run": false,
+  "routers": {
+    "random": [
+      {
+        "seed": 0,
+        "n": 25,
+        "dual_top1_percent": 72.0,
+        "router_top1_percent": 4.0,
+        "irrelevance_n": 0,
+        "irrelevance_triage_correct": 0,
+        "irrelevance_triage_percent": null,
+        "irrelevance_wilson_ci95": null,
+        "actuator_checkpoint": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints/seed0_star.pt"
+      },
+      {
+        "seed": 1,
+        "n": 25,
+        "dual_top1_percent": 76.0,
+        "router_top1_percent": 4.0,
+        "irrelevance_n": 0,
+        "irrelevance_triage_correct": 0,
+        "irrelevance_triage_percent": null,
+        "irrelevance_wilson_ci95": null,
+        "actuator_checkpoint": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints/seed1_star.pt"
+      }
+    ],
+    "nca1d": [
+      {
+        "seed": 0,
+        "n": 25,
+        "dual_top1_percent": 80.0,
+        "router_top1_percent": 80.0,
+        "irrelevance_n": 0,
+        "irrelevance_triage_correct": 0,
+        "irrelevance_triage_percent": null,
+        "irrelevance_wilson_ci95": null,
+        "actuator_checkpoint": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints/seed0_star.pt"
+      },
+      {
+        "seed": 1,
+        "n": 25,
+        "dual_top1_percent": 80.0,
+        "router_top1_percent": 80.0,
+        "irrelevance_n": 0,
+        "irrelevance_triage_correct": 0,
+        "irrelevance_triage_percent": null,
+        "irrelevance_wilson_ci95": null,
+        "actuator_checkpoint": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints/seed1_star.pt"
+      }
+    ],
+    "none": [
+      {
+        "seed": 0,
+        "n": 25,
+        "dual_top1_percent": 80.0,
+        "router_top1_percent": 80.0,
+        "irrelevance_n": 0,
+        "irrelevance_triage_correct": 0,
+        "irrelevance_triage_percent": null,
+        "irrelevance_wilson_ci95": null,
+        "actuator_checkpoint": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints/seed0_star.pt"
+      },
+      {
+        "seed": 1,
+        "n": 25,
+        "dual_top1_percent": 80.0,
+        "router_top1_percent": 80.0,
+        "irrelevance_n": 0,
+        "irrelevance_triage_correct": 0,
+        "irrelevance_triage_percent": null,
+        "irrelevance_wilson_ci95": null,
+        "actuator_checkpoint": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints/seed1_star.pt"
+      }
+    ],
+    "learned": [
+      {
+        "seed": 0,
+        "n": 25,
+        "dual_top1_percent": 80.0,
+        "router_top1_percent": 76.0,
+        "irrelevance_n": 0,
+        "irrelevance_triage_correct": 0,
+        "irrelevance_triage_percent": null,
+        "irrelevance_wilson_ci95": null,
+        "actuator_checkpoint": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints/seed0_star.pt"
+      },
+      {
+        "seed": 1,
+        "n": 25,
+        "dual_top1_percent": 80.0,
+        "router_top1_percent": 80.0,
+        "irrelevance_n": 0,
+        "irrelevance_triage_correct": 0,
+        "irrelevance_triage_percent": null,
+        "irrelevance_wilson_ci95": null,
+        "actuator_checkpoint": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints/seed1_star.pt"
+      }
+    ]
+  },
+  "actuator_topology": "star",
+  "config": "configs/dual_system_e2.yaml"
+}

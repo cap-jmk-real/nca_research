@@ -1,0 +1,149 @@
+{
+  "experiment": "E1",
+  "split": "bfcl_e1",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "steps": 150000,
+  "dry_run": false,
+  "n_train": 206,
+  "n_val": 25,
+  "n_test": 25,
+  "models": {
+    "HistGradientBoosting": [
+      {
+        "seed": 0,
+        "val_top1": 0.0,
+        "test": {
+          "n": 25,
+          "top1": 0.0,
+          "top3": 12.0,
+          "macro_f1": 0.0,
+          "boot_mean": 80.042,
+          "boot_sd": 7.930891248781563,
+          "ci95": [
+            64.0,
+            92.0
+          ]
+        }
+      }
+    ],
+    "RandomForest": [
+      {
+        "seed": 0,
+        "val_top1": 0.0,
+        "test": {
+          "n": 25,
+          "top1": 0.0,
+          "top3": 72.0,
+          "macro_f1": 0.0,
+          "boot_mean": 80.0536,
+          "boot_sd": 7.920626682277104,
+          "ci95": [
+            64.0,
+            96.0
+          ]
+        }
+      }
+    ],
+    "GraphNCA_tree": [
+      {
+        "seed": 0,
+        "val_top1": 84.0,
+        "test": {
+          "n": 25,
+          "top1": 80.0,
+          "top3": 88.0,
+          "macro_f1": 40.57,
+          "boot_mean": 80.042,
+          "boot_sd": 7.930891248781563,
+          "ci95": [
+            64.0,
+            92.0
+          ]
+        },
+        "latency_cpu": {
+          "p50_ms": 0.405,
+          "p95_ms": 0.469
+        },
+        "train_time_s": 463.6,
+        "checkpoint": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints/seed0_tree.pt"
+      }
+    ],
+    "GraphNCA_meta": [
+      {
+        "seed": 0,
+        "val_top1": 80.0,
+        "test": {
+          "n": 25,
+          "top1": 76.0,
+          "top3": 100.0,
+          "macro_f1": 39.68,
+          "boot_mean": 75.9924,
+          "boot_sd": 8.494795008709746,
+          "ci95": [
+            60.0,
+            92.0
+          ]
+        },
+        "latency_cpu": {
+          "p50_ms": 0.388,
+          "p95_ms": 0.494
+        },
+        "train_time_s": 470.4,
+        "checkpoint": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints/seed0_meta.pt"
+      }
+    ],
+    "GraphNCA_star": [
+      {
+        "seed": 0,
+        "val_top1": 80.0,
+        "test": {
+          "n": 25,
+          "top1": 80.0,
+          "top3": 92.0,
+          "macro_f1": 40.57,
+          "boot_mean": 80.042,
+          "boot_sd": 7.930891248781563,
+          "ci95": [
+            64.0,
+            92.0
+          ]
+        },
+        "latency_cpu": {
+          "p50_ms": 0.353,
+          "p95_ms": 0.421
+        },
+        "train_time_s": 483.7,
+        "checkpoint": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints/seed0_star.pt"
+      }
+    ],
+    "GraphNCA_1d": [
+      {
+        "seed": 0,
+        "val_top1": 80.0,
+        "test": {
+          "n": 25,
+          "top1": 80.0,
+          "top3": 96.0,
+          "macro_f1": 40.57,
+          "boot_mean": 80.042,
+          "boot_sd": 7.930891248781563,
+          "ci95": [
+            64.0,
+            92.0
+          ]
+        },
+        "latency_cpu": {
+          "p50_ms": 0.43,
+          "p95_ms": 0.459
+        },
+        "train_time_s": 483.4,
+        "checkpoint": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints/seed0_1d.pt"
+      }
+    ]
+  },
+  "checkpoint_dir": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints"
+}
