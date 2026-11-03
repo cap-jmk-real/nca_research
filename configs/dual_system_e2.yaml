@@ -1,0 +1,30 @@
+# E2 dual-system router ablation (no secrets; actuator path from env or E1 checkpoints).
+
+experiment: E2
+split_holdout: bfcl_e1/test
+
+routers:
+  random: uniform over 13 tool labels (seeded)
+  nca1d: GraphNCA topology=1d checkpoint from E1
+  none: skip System-1; fixed actuator only
+  learned: GraphNCA topology=meta checkpoint from E1
+
+actuator:
+  # Fixed System-2 policy for all routers (GraphNCA star weights from E1).
+  topology: star
+  checkpoint_glob: stage0/stage0_results/e1_checkpoints/seed{seed}_star.pt
+
+decision:
+  # If router predicts respond, final=respond; else final=actuator(goal).
+  schema_prune: false  # E2 classification ablation; no LLM token audit
+
+metrics:
+  - dual_top1
+  - router_top1
+  - irrelevance_triage_rate  # gold respond → router respond
+
+actuator_llm:
+  # Optional full LLM actuator on engine (not required for default eval).
+  # Set on host only, never commit secrets.
+  env_model: E2_ACTUATOR_OLLAMA_MODEL
+  default: ""
