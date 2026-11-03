@@ -51,3 +51,12 @@ def metrics(y_true: list[int], ranked: list[list[int]], n_classes: int) -> dict:
 def pct(xs, q):
     xs = sorted(xs); i = min(len(xs) - 1, int(round(q / 100 * (len(xs) - 1))))
     return round(xs[i], 3)
+
+
+def maybe_research_backup(step: str) -> None:
+    """Invoke ~/bin/research-backup-now when present (engine hook; no-op elsewhere)."""
+    import subprocess
+
+    hook = Path.home() / "bin" / "research-backup-now"
+    if hook.is_file():
+        subprocess.run([str(hook), step], check=False)

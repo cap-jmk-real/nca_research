@@ -50,7 +50,7 @@ def main() -> None:
     if args.dry_run:
         args.steps = min(args.steps, 150)
         args.seeds = "0"
-        args.topologies = "1d,meta"
+        args.topologies = "1d,meta,star"
         args.batch = min(args.batch, 128)
 
     _ensure_data(smoke=args.dry_run)
@@ -60,7 +60,7 @@ def main() -> None:
     import torch.nn.functional as F
     from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassifier
 
-    from common import load_split, metrics
+    from common import load_split, maybe_research_backup, metrics
     from features import goal_text, struct_feats
     from nca_text.model import GraphNCA
     from obs_pack import fit_or_load_tfidf, pack_arch
@@ -265,8 +265,10 @@ def main() -> None:
 
         (RESULTS_DIR / f"e1_seed{seed}.json").write_text(json.dumps(summary, indent=2))
         out_path.write_text(json.dumps(summary, indent=2))
+        maybe_research_backup(f"e1-seed{seed}")
 
     print(f"E1 complete → {out_path}", flush=True)
+    maybe_research_backup("e1")
 
     if not args.skip_e3 and "meta" in topologies:
         subprocess.check_call(

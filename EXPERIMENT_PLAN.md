@@ -26,10 +26,12 @@ python stage0/run_e1_benchmark.py \
 # On success, automatically runs stage0/export_meta_adjacency.py → e3_meta_adjacency_audit.json
 ```
 
-**Smoke (<2 min, CPU/GPU):**
+**Smoke (<2 min, CPU/GPU):** trains `1d`, `meta`, and `star` (150 steps, seed 0) so E2 dry-run can load the star actuator.
 
 ```bash
 ./scripts/run_e1.sh --dry-run
+./scripts/run_e2.sh --dry-run
+# or: bash scripts/test_stage0_e1_e2_dry_run.sh
 ```
 
 **Outputs:**

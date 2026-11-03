@@ -45,9 +45,36 @@ def _ensure_e1(dry_run: bool) -> None:
     subprocess.check_call(cmd)
 
 
+def _resolve_e1_checkpoint(seed: int, topology: str, *, dry_run: bool) -> Path:
+    primary = CKPT_DIR / f"seed{seed}_{topology}.pt"
+    if primary.is_file():
+        return primary
+    fallback = CKPT_DIR / f"seed0_{topology}.pt"
+    if seed != 0 and fallback.is_file():
+        return fallback
+    missing = [str(primary)]
+    if seed != 0:
+        missing.append(str(fallback))
+    hint = "./scripts/run_e1.sh --dry-run" if dry_run else "./scripts/run_e1.sh"
+    raise SystemExit(
+        "E2 missing required E1 checkpoint:\n"
+        f"  topology: {topology!r}\n"
+        f"  seed: {seed}\n"
+        f"  tried: {', '.join(missing)}\n"
+        f"  checkpoint_dir: {CKPT_DIR}\n"
+        f"Run {hint} (or stage0/run_e1_benchmark.py) to produce seed{{N}}_{topology}.pt."
+    )
+
+
 def _load_gnca(topology: str, ckpt_path: Path, obs_c: int, dev):
     import torch
     from nca_text.model import GraphNCA
+
+    if not ckpt_path.is_file():
+        raise SystemExit(
+            f"E2 cannot load GraphNCA checkpoint (file missing): {ckpt_path}\n"
+            "Train E1 first so stage0/stage0_results/e1_checkpoints/ contains the required .pt files."
+        )
 
     model = GraphNCA(
         obs_c=obs_c,
@@ -90,7 +117,7 @@ def main() -> None:
 
     import torch
 
-    from common import load_split
+    from common import load_split, maybe_research_backup
     from obs_pack import fit_or_load_tfidf, pack_arch
 
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -120,8 +147,7 @@ def main() -> None:
         obs_c = obs_t.shape[1]
 
         def _ckpt(topo: str) -> Path:
-            p = CKPT_DIR / f"seed{seed}_{topo}.pt"
-            return p if p.is_file() else CKPT_DIR / f"seed0_{topo}.pt"
+            return _resolve_e1_checkpoint(seed, topo, dry_run=args.dry_run)
 
         actuator = _load_gnca("star", _ckpt("star"), obs_c, dev)
         act_idx = _predict_batch(actuator, obs_t, dev)
@@ -177,10 +203,12 @@ def main() -> None:
             )
 
         (RESULTS_DIR / f"e2_seed{seed}.json").write_text(json.dumps(summary, indent=2))
+        maybe_research_backup(f"e2-seed{seed}")
 
     out_path = Path(args.out)
     out_path.write_text(json.dumps(summary, indent=2))
     print(f"E2 complete → {out_path}", flush=True)
+    maybe_research_backup("e2")
 
     if not args.skip_e3 and not args.dry_run:
         subprocess.check_call(

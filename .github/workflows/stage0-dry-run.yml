@@ -1,0 +1,46 @@
+name: stage0 E1 E2 dry-run
+
+on:
+  pull_request:
+    paths:
+      - "stage0/**"
+      - "scripts/run_e1.sh"
+      - "scripts/run_e2.sh"
+      - "scripts/test_stage0_e1_e2_dry_run.sh"
+      - "nca_text/**"
+      - "tests/test_e2_checkpoint_resolution.py"
+  push:
+    branches:
+      - main
+      - "cursor/**"
+    paths:
+      - "stage0/**"
+      - "scripts/run_e1.sh"
+      - "scripts/run_e2.sh"
+      - "scripts/test_stage0_e1_e2_dry_run.sh"
+      - "nca_text/**"
+      - "tests/test_e2_checkpoint_resolution.py"
+
+jobs:
+  dry-run-chain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt scikit-learn huggingface_hub
+
+      - name: Unit test (checkpoint resolution)
+        run: python -m unittest tests.test_e2_checkpoint_resolution -v
+
+      - name: E1 dry-run then E2 dry-run (CPU)
+        env:
+          NCA_DATA_ROOT: ${{ github.workspace }}/.nca_data
+        run: bash scripts/test_stage0_e1_e2_dry_run.sh
