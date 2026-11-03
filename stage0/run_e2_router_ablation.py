@@ -113,6 +113,9 @@ def main() -> None:
     if args.dry_run:
         args.seeds = "0"
 
+    from common import require_nca_data_root
+
+    require_nca_data_root()
     _ensure_e1(args.dry_run)
 
     import torch

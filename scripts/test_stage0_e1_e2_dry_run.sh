@@ -3,7 +3,8 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
-export NCA_DATA_ROOT="${NCA_DATA_ROOT:-$ROOT/.nca_data}"
+: "${NCA_DATA_ROOT:?Set NCA_DATA_ROOT to a writable directory before running this script}"
+mkdir -p "$NCA_DATA_ROOT"
 PYTHON="${PYTHON:-python3}"
 
 "$ROOT/scripts/run_e1.sh" --dry-run

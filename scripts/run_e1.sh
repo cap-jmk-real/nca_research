@@ -4,7 +4,10 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
-export NCA_DATA_ROOT="${NCA_DATA_ROOT:-$ROOT/.nca_data}"
+if [[ -z "${NCA_DATA_ROOT:-}" ]]; then
+  echo "NCA_DATA_ROOT must be set (no default). Example: export NCA_DATA_ROOT=\"\$PWD/.nca_data\"" >&2
+  exit 1
+fi
 PYTHON="${PYTHON:-python3}"
 
 if [[ "${1:-}" == "--dry-run" ]]; then

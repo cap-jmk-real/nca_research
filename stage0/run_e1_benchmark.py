@@ -53,6 +53,9 @@ def main() -> None:
         args.topologies = "1d,meta,star"
         args.batch = min(args.batch, 128)
 
+    from common import require_nca_data_root
+
+    require_nca_data_root()
     _ensure_data(smoke=args.dry_run)
 
     import torch

@@ -9,6 +9,7 @@ on:
       - "scripts/test_stage0_e1_e2_dry_run.sh"
       - "nca_text/**"
       - "tests/test_e2_checkpoint_resolution.py"
+      - "tests/test_stage0_preflight.py"
   push:
     branches:
       - main
@@ -20,6 +21,7 @@ on:
       - "scripts/test_stage0_e1_e2_dry_run.sh"
       - "nca_text/**"
       - "tests/test_e2_checkpoint_resolution.py"
+      - "tests/test_stage0_preflight.py"
 
 jobs:
   dry-run-chain:
@@ -38,9 +40,12 @@ jobs:
           pip install -r requirements.txt scikit-learn huggingface_hub
 
       - name: Unit test (checkpoint resolution)
-        run: python -m unittest tests.test_e2_checkpoint_resolution -v
+        env:
+          RESEARCH_BACKUP_OPTIONAL: "1"
+        run: python -m unittest tests.test_e2_checkpoint_resolution tests.test_stage0_preflight -v
 
       - name: E1 dry-run then E2 dry-run (CPU)
         env:
           NCA_DATA_ROOT: ${{ github.workspace }}/.nca_data
+          RESEARCH_BACKUP_OPTIONAL: "1"
         run: bash scripts/test_stage0_e1_e2_dry_run.sh

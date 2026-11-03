@@ -53,10 +53,50 @@ def pct(xs, q):
     return round(xs[i], 3)
 
 
+def require_nca_data_root() -> Path:
+    """E1/E2 preflight: NCA_DATA_ROOT must be set explicitly (no default), exist, and be writable."""
+    raw = os.environ.get("NCA_DATA_ROOT", "").strip()
+    if not raw:
+        raise SystemExit(
+            "NCA_DATA_ROOT is not set. Export a writable data directory on external storage "
+            "(no default path). Example: export NCA_DATA_ROOT='/Volumes/Extreme SSD/nca_research'"
+        )
+    root = Path(raw).expanduser()
+    if not root.exists():
+        raise SystemExit(f"NCA_DATA_ROOT does not exist: {root}")
+    if not root.is_dir():
+        raise SystemExit(f"NCA_DATA_ROOT is not a directory: {root}")
+    probe = root / ".nca_write_probe"
+    try:
+        probe.write_text("ok", encoding="utf-8")
+        probe.unlink(missing_ok=True)
+    except OSError as exc:
+        raise SystemExit(f"NCA_DATA_ROOT is not writable: {root} ({exc})") from exc
+    return root.resolve()
+
+
+def research_backup_optional() -> bool:
+    return os.environ.get("RESEARCH_BACKUP_OPTIONAL", "").strip() == "1"
+
+
 def maybe_research_backup(step: str) -> None:
-    """Invoke ~/bin/research-backup-now when present (engine hook; no-op elsewhere)."""
+    """Run ~/bin/research-backup-now (mandatory on engine; skip only if RESEARCH_BACKUP_OPTIONAL=1)."""
     import subprocess
 
     hook = Path.home() / "bin" / "research-backup-now"
-    if hook.is_file():
-        subprocess.run([str(hook), step], check=False)
+    optional = research_backup_optional()
+    if not hook.is_file():
+        if optional:
+            return
+        raise SystemExit(
+            "Missing mandatory backup hook ~/bin/research-backup-now.\n"
+            "Install on the engine host, or set RESEARCH_BACKUP_OPTIONAL=1 only for CI/dry-run."
+        )
+    proc = subprocess.run([str(hook), step], check=False)
+    if proc.returncode != 0:
+        if optional:
+            return
+        raise SystemExit(
+            f"research-backup-now {step!r} failed with exit code {proc.returncode} "
+            "(set RESEARCH_BACKUP_OPTIONAL=1 only for CI/dry-run to skip)."
+        )

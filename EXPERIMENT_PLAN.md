@@ -1,6 +1,6 @@
 # Experiment plan (aiXiv review v1.5)
 
-Engine commands assume repo root, `NCA_DATA_ROOT` (default `./.nca_data`), and CUDA PyTorch on the RTX 3060 host. **No private Hermes corpus** in E1/E2. Results land under `stage0/stage0_results/`.
+Engine commands assume repo root, **`NCA_DATA_ROOT` set explicitly** (must exist and be writable; no default in `run_e1.sh` / `run_e2.sh`), **`~/bin/research-backup-now`** after each seed (or `RESEARCH_BACKUP_OPTIONAL=1` for CI only), and CUDA PyTorch on the RTX 3060 host. **No private Hermes corpus** in E1/E2. Results land under `stage0/stage0_results/`.
 
 ## E1 — BFCL public classification (+ meta checkpoints + automatic E3)
 
@@ -10,7 +10,7 @@ Engine commands assume repo root, `NCA_DATA_ROOT` (default `./.nca_data`), and C
 
 ```bash
 cd /path/to/nca_research
-export NCA_DATA_ROOT="${NCA_DATA_ROOT:-$PWD/.nca_data}"
+export NCA_DATA_ROOT="/Volumes/Extreme SSD/nca_research"   # required; no fallback
 ./scripts/run_e1.sh
 ```
 
