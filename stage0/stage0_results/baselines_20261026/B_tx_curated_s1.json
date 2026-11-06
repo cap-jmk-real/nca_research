@@ -1,0 +1,28 @@
+{
+  "run": "20261026T032211_B_tx_curated_s1",
+  "arch": "tx",
+  "dataset": "curated",
+  "seed": 1,
+  "params": 276749,
+  "best_step": 2000,
+  "val_top1": 68.66,
+  "test": {
+    "n": 3530,
+    "top1": 66.43,
+    "top3": 94.7,
+    "macro_f1": 36.75
+  },
+  "split_rows": {
+    "train": 57675,
+    "val": 3465,
+    "test": 3530
+  },
+  "latency_gpu": {
+    "p50_ms": 0.315,
+    "p95_ms": 4.634
+  },
+  "latency_cpu_1thread": {
+    "p50_ms": 0.202,
+    "p95_ms": 0.22
+  }
+}

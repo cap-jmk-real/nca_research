@@ -1,0 +1,13 @@
+{
+  "model": "gemma4:12b-it-q4_K_M",
+  "dataset": "curated",
+  "split": "test",
+  "n": 3530,
+  "top1": 38.02,
+  "top3": 67.37,
+  "macro_f1": 19.74,
+  "no_letter_rows": 0,
+  "latency_ms_p50": 848.319,
+  "latency_ms_p95": 1244.878,
+  "method": "first-token logprob over lettered options, top_logprobs=20, think=false, batch 1, warm model"
+}

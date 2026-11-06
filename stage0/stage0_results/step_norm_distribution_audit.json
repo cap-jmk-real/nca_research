@@ -1,0 +1,209 @@
+{
+  "experiment": "Step-Norm & Escalation Score Empirical Audit (Eq. 13)",
+  "split": "bfcl_e1v2/test",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "n_test_per_seed": 692,
+  "n_total_evaluations_per_topology": 2076,
+  "topologies": {
+    "hermes_best_val_step6k": {
+      "split": "curated/test",
+      "checkpoint": "stage0/stage0_results/checkpoints/best_graph_nca_grokking.pt",
+      "n_evaluations": 3530,
+      "V": 5,
+      "H": 16,
+      "normalization_factor_1_over_V_sqrt_H": 0.05,
+      "normalized_step_norm": {
+        "mean": 0.4197,
+        "sd": 0.0906,
+        "median": 0.4051,
+        "p5": 0.3003,
+        "p25": 0.3576,
+        "p75": 0.4674,
+        "p95": 0.5904,
+        "min": 0.2407,
+        "max": 0.9893
+      },
+      "normalized_entropy": {
+        "mean": 0.3449,
+        "sd": 0.1543,
+        "median": 0.3478,
+        "p5": 0.0966,
+        "p95": 0.6065
+      },
+      "combined_escalation_score_tau": {
+        "mean": 0.7646,
+        "sd": 0.153,
+        "median": 0.7678,
+        "p5": 0.5228,
+        "p95": 1.0138,
+        "fraction_escalated_at_0_76": 0.517
+      }
+    },
+    "hermes_step10k": {
+      "split": "curated/test",
+      "checkpoint": "stage0/stage0_results/checkpoints/graph_nca_step_010000.pt",
+      "n_evaluations": 3530,
+      "V": 5,
+      "H": 16,
+      "normalization_factor_1_over_V_sqrt_H": 0.05,
+      "normalized_step_norm": {
+        "mean": 0.4824,
+        "sd": 0.1126,
+        "median": 0.4631,
+        "p5": 0.3399,
+        "p25": 0.4064,
+        "p75": 0.5395,
+        "p95": 0.6871,
+        "min": 0.2601,
+        "max": 1.4355
+      },
+      "normalized_entropy": {
+        "mean": 0.3221,
+        "sd": 0.1543,
+        "median": 0.3286,
+        "p5": 0.0796,
+        "p95": 0.5722
+      },
+      "combined_escalation_score_tau": {
+        "mean": 0.8045,
+        "sd": 0.1757,
+        "median": 0.8006,
+        "p5": 0.5369,
+        "p95": 1.1016,
+        "fraction_escalated_at_0_76": 0.5856
+      }
+    },
+    "star": {
+      "n_evaluations": 2076,
+      "V": 5,
+      "H": 16,
+      "normalization_factor_1_over_V_sqrt_H": 0.05,
+      "normalized_step_norm": {
+        "mean": 7.5195,
+        "sd": 5.8742,
+        "median": 5.5413,
+        "p5": 1.8587,
+        "p25": 3.3878,
+        "p75": 9.8096,
+        "p95": 20.1208,
+        "min": 0.1593,
+        "max": 36.2068
+      },
+      "normalized_entropy": {
+        "mean": 0.013,
+        "sd": 0.0492,
+        "median": 0.0,
+        "p5": 0.0,
+        "p95": 0.1031
+      },
+      "combined_escalation_score_tau": {
+        "mean": 7.5325,
+        "sd": 5.8676,
+        "median": 5.5413,
+        "p5": 1.8996,
+        "p95": 20.1226,
+        "fraction_escalated_at_0_76": 0.9961
+      }
+    },
+    "meta": {
+      "n_evaluations": 2076,
+      "V": 5,
+      "H": 16,
+      "normalization_factor_1_over_V_sqrt_H": 0.05,
+      "normalized_step_norm": {
+        "mean": 13.1777,
+        "sd": 7.0309,
+        "median": 11.9639,
+        "p5": 4.032,
+        "p25": 8.2803,
+        "p75": 16.6318,
+        "p95": 26.2358,
+        "min": 0.5137,
+        "max": 47.5829
+      },
+      "normalized_entropy": {
+        "mean": 0.0182,
+        "sd": 0.0569,
+        "median": 0.0,
+        "p5": 0.0,
+        "p95": 0.1638
+      },
+      "combined_escalation_score_tau": {
+        "mean": 13.1959,
+        "sd": 7.026,
+        "median": 11.9928,
+        "p5": 4.0327,
+        "p95": 26.2358,
+        "fraction_escalated_at_0_76": 0.9995
+      }
+    },
+    "tree": {
+      "n_evaluations": 2076,
+      "V": 5,
+      "H": 16,
+      "normalization_factor_1_over_V_sqrt_H": 0.05,
+      "normalized_step_norm": {
+        "mean": 13.5701,
+        "sd": 7.69,
+        "median": 13.0809,
+        "p5": 2.9125,
+        "p25": 8.437,
+        "p75": 17.6072,
+        "p95": 25.9063,
+        "min": 0.548,
+        "max": 76.147
+      },
+      "normalized_entropy": {
+        "mean": 0.0229,
+        "sd": 0.0628,
+        "median": 0.0,
+        "p5": 0.0,
+        "p95": 0.1955
+      },
+      "combined_escalation_score_tau": {
+        "mean": 13.593,
+        "sd": 7.6824,
+        "median": 13.1036,
+        "p5": 2.9131,
+        "p95": 25.9063,
+        "fraction_escalated_at_0_76": 1.0
+      }
+    },
+    "1d": {
+      "n_evaluations": 2076,
+      "V": 5,
+      "H": 16,
+      "normalization_factor_1_over_V_sqrt_H": 0.05,
+      "normalized_step_norm": {
+        "mean": 6.8908,
+        "sd": 4.4264,
+        "median": 6.007,
+        "p5": 1.8141,
+        "p25": 3.7083,
+        "p75": 8.8423,
+        "p95": 15.0215,
+        "min": 0.1834,
+        "max": 43.1429
+      },
+      "normalized_entropy": {
+        "mean": 0.0096,
+        "sd": 0.0421,
+        "median": 0.0,
+        "p5": 0.0,
+        "p95": 0.0494
+      },
+      "combined_escalation_score_tau": {
+        "mean": 6.9004,
+        "sd": 4.4197,
+        "median": 6.0181,
+        "p5": 1.8509,
+        "p95": 15.0215,
+        "fraction_escalated_at_0_76": 0.9942
+      }
+    }
+  }
+}

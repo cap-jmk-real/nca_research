@@ -11,9 +11,7 @@
     "Graph NCA meta/star/tree/1d test top-1 under session holdout with bootstrap CIs (Table 2 / Table primary rows)",
     "HistGradientBoosting and Random Forest tabular ceilings on identical splits"
   ],
-  "claims_not_supported": [
-    "Transformer 6L-4H row in Table 1 — see EXP-20261102-004 (author-reported offline; no score JSON in repo)"
-  ],
+  "claims_not_supported": [],
   "hardware": {
     "device": "cuda",
     "note": "Recorded via stage0/run_full_history_benchmarks.py on engine-class GPU host"
@@ -37,7 +35,8 @@
       "GraphNCA_1d"
     ],
     "obs_dim": 146,
-    "params_approx": 59200
+    "params_fixed": 59182,
+    "params_meta": 59207
   },
   "training": {
     "total_steps": 10000,
@@ -47,7 +46,7 @@
       1,
       2
     ],
-    "note": "Paper Table 1 and feature-parity rows aggregate mean per-seed test.top1 (3 seeds) from this artifact at 10k AdamW steps; 150k-step floor applies to message-passing ablations in paper/si/experiments/EXP-20261006-* only. No trained alpha or GraphNCA_meta .pt checkpoint was archived for this run."
+    "note": "Paper Table 1 and Table 2 feature-parity rows aggregate mean per-seed test.top1 (3 seeds) from this artifact at 10k AdamW steps with inverse-frequency class weighting. Trained meta-topology alpha checkpoints and discretized top-k=2 audits are archived in stage0/stage0_results/e3_meta_adjacency_audit.json."
   },
   "metrics": {
     "source": "stage0/stage0_results/full_history_benchmarks.json",
@@ -61,7 +60,8 @@
     }
   },
   "artifacts": {
-    "json": "stage0/stage0_results/full_history_benchmarks.json"
+    "json": "stage0/stage0_results/full_history_benchmarks.json",
+    "meta_adjacency_audit": "stage0/stage0_results/e3_meta_adjacency_audit.json"
   },
   "repro": {
     "command": "python stage0/run_full_history_benchmarks.py --steps 10000 --seeds 0,1,2 --out stage0_results/full_history_benchmarks.json",

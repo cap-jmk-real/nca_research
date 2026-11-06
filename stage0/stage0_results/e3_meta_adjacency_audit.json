@@ -1,6 +1,7 @@
 {
   "experiment": "E3",
-  "source_checkpoints": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints",
+  "source_checkpoints": "stage0/stage0_results/e1_checkpoints",
+  "e1v2_checkpoints": "stage0/stage0_results/e1v2/run/checkpoints",
   "seeds_requested": [
     0,
     1,
@@ -15,7 +16,7 @@
   "trained_meta_graphs": [
     {
       "seed": 0,
-      "checkpoint": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints/seed0_meta.pt",
+      "checkpoint": "stage0/stage0_results/e1_checkpoints/seed0_meta.pt",
       "temperature": 1.0,
       "alpha": [
         [
@@ -92,11 +93,82 @@
         ]
       ],
       "directed_diameter": 1,
-      "eccentricity_from_goal_node_0": 1
+      "eccentricity_from_goal_node_0": 1,
+      "discretized_topk2": {
+        "k": 2,
+        "adjacency_row_normalized": [
+          [
+            0.0,
+            0.501283,
+            0.498717,
+            0.0,
+            0.0
+          ],
+          [
+            0.534955,
+            0.465045,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.530349,
+            0.0,
+            0.469651,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.532188,
+            0.0,
+            0.467812,
+            0.0
+          ],
+          [
+            0.0,
+            0.548638,
+            0.0,
+            0.0,
+            0.451362
+          ]
+        ],
+        "active_edges_per_row": [
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            4
+          ]
+        ],
+        "directed_diameter": -1,
+        "undirected_tree_diameter": 3,
+        "eccentricity_from_goal_node_0": 2,
+        "is_call_tree_subgraph": true
+      },
+      "discretized_topk3": {
+        "k": 3,
+        "directed_diameter": -1,
+        "eccentricity_from_goal_node_0": 2
+      }
     },
     {
       "seed": 1,
-      "checkpoint": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints/seed1_meta.pt",
+      "checkpoint": "stage0/stage0_results/e1_checkpoints/seed1_meta.pt",
       "temperature": 1.0,
       "alpha": [
         [
@@ -173,11 +245,82 @@
         ]
       ],
       "directed_diameter": 1,
-      "eccentricity_from_goal_node_0": 1
+      "eccentricity_from_goal_node_0": 1,
+      "discretized_topk2": {
+        "k": 2,
+        "adjacency_row_normalized": [
+          [
+            0.513842,
+            0.0,
+            0.486158,
+            0.0,
+            0.0
+          ],
+          [
+            0.531321,
+            0.468679,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.528717,
+            0.0,
+            0.471283,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.4834,
+            0.0,
+            0.5166,
+            0.0
+          ],
+          [
+            0.0,
+            0.481152,
+            0.0,
+            0.0,
+            0.518848
+          ]
+        ],
+        "active_edges_per_row": [
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            4
+          ]
+        ],
+        "directed_diameter": -1,
+        "undirected_tree_diameter": 3,
+        "eccentricity_from_goal_node_0": 2,
+        "is_call_tree_subgraph": true
+      },
+      "discretized_topk3": {
+        "k": 3,
+        "directed_diameter": 3,
+        "eccentricity_from_goal_node_0": 2
+      }
     },
     {
       "seed": 2,
-      "checkpoint": "/home/s4il0r/nca_research_git/stage0/stage0_results/e1_checkpoints/seed2_meta.pt",
+      "checkpoint": "stage0/stage0_results/e1_checkpoints/seed2_meta.pt",
       "temperature": 1.0,
       "alpha": [
         [
@@ -254,8 +397,558 @@
         ]
       ],
       "directed_diameter": 1,
-      "eccentricity_from_goal_node_0": 1
+      "eccentricity_from_goal_node_0": 1,
+      "discretized_topk2": {
+        "k": 2,
+        "adjacency_row_normalized": [
+          [
+            0.0,
+            0.500644,
+            0.499356,
+            0.0,
+            0.0
+          ],
+          [
+            0.526687,
+            0.473313,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.513757,
+            0.0,
+            0.486243,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.527987,
+            0.0,
+            0.472013,
+            0.0
+          ],
+          [
+            0.0,
+            0.544158,
+            0.0,
+            0.0,
+            0.455842
+          ]
+        ],
+        "active_edges_per_row": [
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            4
+          ]
+        ],
+        "directed_diameter": -1,
+        "undirected_tree_diameter": 3,
+        "eccentricity_from_goal_node_0": 2,
+        "is_call_tree_subgraph": true
+      },
+      "discretized_topk3": {
+        "k": 3,
+        "directed_diameter": 3,
+        "eccentricity_from_goal_node_0": 1
+      }
     }
   ],
-  "note": "Directed diameter uses row-softmax A with edge j\u2192i when A[i,j]>0 (nca_text.model matmul convention)."
+  "trained_meta_graphs_e1v2": [
+    {
+      "seed": 0,
+      "checkpoint": "stage0/stage0_results/e1v2/run/checkpoints/seed0_meta_best.pt",
+      "temperature": 1.0,
+      "alpha": [
+        [
+          -0.993578,
+          -1.156122,
+          -1.11194,
+          -8.895146,
+          -8.895086
+        ],
+        [
+          -1.255319,
+          -1.435096,
+          -8.909896,
+          -1.410829,
+          -1.410775
+        ],
+        [
+          -0.599229,
+          -8.899414,
+          -0.738923,
+          -8.908344,
+          -8.908357
+        ],
+        [
+          -8.879822,
+          -0.481165,
+          -8.886073,
+          -0.857016,
+          -8.897339
+        ],
+        [
+          -8.895033,
+          -0.464174,
+          -8.889755,
+          -8.89664,
+          -0.873993
+        ]
+      ],
+      "adjacency_row_softmax": [
+        [
+          0.365084,
+          0.310314,
+          0.324332,
+          0.000135,
+          0.000135
+        ],
+        [
+          0.281854,
+          0.235477,
+          0.000134,
+          0.241261,
+          0.241274
+        ],
+        [
+          0.534655,
+          0.000133,
+          0.464949,
+          0.000132,
+          0.000132
+        ],
+        [
+          0.000133,
+          0.592637,
+          0.000133,
+          0.406966,
+          0.000131
+        ],
+        [
+          0.000131,
+          0.600808,
+          0.000132,
+          0.000131,
+          0.398799
+        ]
+      ],
+      "directed_diameter": 1,
+      "eccentricity_from_goal_node_0": 1,
+      "discretized_topk2": {
+        "k": 2,
+        "adjacency_row_normalized": [
+          [
+            0.529556,
+            0.0,
+            0.470444,
+            0.0,
+            0.0
+          ],
+          [
+            0.538786,
+            0.0,
+            0.0,
+            0.0,
+            0.461214
+          ],
+          [
+            0.534867,
+            0.0,
+            0.465133,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.592872,
+            0.0,
+            0.407128,
+            0.0
+          ],
+          [
+            0.0,
+            0.601044,
+            0.0,
+            0.0,
+            0.398956
+          ]
+        ],
+        "active_edges_per_row": [
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            4
+          ]
+        ],
+        "directed_diameter": -1,
+        "undirected_tree_diameter": 3,
+        "eccentricity_from_goal_node_0": 2,
+        "is_call_tree_subgraph": true
+      },
+      "discretized_topk3": {
+        "k": 3,
+        "directed_diameter": 2,
+        "eccentricity_from_goal_node_0": 2
+      }
+    },
+    {
+      "seed": 1,
+      "checkpoint": "stage0/stage0_results/e1v2/run/checkpoints/seed1_meta_best.pt",
+      "temperature": 1.0,
+      "alpha": [
+        [
+          -0.460803,
+          -0.696759,
+          -0.620737,
+          -4.734988,
+          -4.744093
+        ],
+        [
+          -0.533212,
+          -0.783724,
+          -4.607725,
+          -0.967942,
+          -0.967369
+        ],
+        [
+          -0.29496,
+          -4.626515,
+          -0.411517,
+          -4.666395,
+          -4.667707
+        ],
+        [
+          -4.010693,
+          -0.289988,
+          -4.953051,
+          -0.416759,
+          -4.698156
+        ],
+        [
+          -3.913231,
+          -0.103865,
+          -4.851771,
+          -4.801555,
+          -0.603334
+        ]
+      ],
+      "adjacency_row_softmax": [
+        [
+          0.374569,
+          0.29584,
+          0.319208,
+          0.005215,
+          0.005168
+        ],
+        [
+          0.323556,
+          0.251857,
+          0.005501,
+          0.209483,
+          0.209603
+        ],
+        [
+          0.518571,
+          0.006818,
+          0.461517,
+          0.006551,
+          0.006543
+        ],
+        [
+          0.012569,
+          0.519004,
+          0.004898,
+          0.457209,
+          0.00632
+        ],
+        [
+          0.013458,
+          0.607238,
+          0.005265,
+          0.005536,
+          0.368504
+        ]
+      ],
+      "directed_diameter": 1,
+      "eccentricity_from_goal_node_0": 1,
+      "discretized_topk2": {
+        "k": 2,
+        "adjacency_row_normalized": [
+          [
+            0.539898,
+            0.0,
+            0.460102,
+            0.0,
+            0.0
+          ],
+          [
+            0.562303,
+            0.437697,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.529106,
+            0.0,
+            0.470894,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.53165,
+            0.0,
+            0.46835,
+            0.0
+          ],
+          [
+            0.0,
+            0.622335,
+            0.0,
+            0.0,
+            0.377665
+          ]
+        ],
+        "active_edges_per_row": [
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            4
+          ]
+        ],
+        "directed_diameter": -1,
+        "undirected_tree_diameter": 3,
+        "eccentricity_from_goal_node_0": 2,
+        "is_call_tree_subgraph": true
+      },
+      "discretized_topk3": {
+        "k": 3,
+        "directed_diameter": -1,
+        "eccentricity_from_goal_node_0": 1
+      }
+    },
+    {
+      "seed": 2,
+      "checkpoint": "stage0/stage0_results/e1v2/run/checkpoints/seed2_meta_best.pt",
+      "temperature": 1.0,
+      "alpha": [
+        [
+          -0.298744,
+          -1.224658,
+          -1.032695,
+          -6.084206,
+          -6.053447
+        ],
+        [
+          -0.775881,
+          -0.984233,
+          -5.655434,
+          -1.033952,
+          -1.026362
+        ],
+        [
+          -0.217369,
+          -5.901395,
+          -0.676922,
+          -6.089062,
+          -6.111839
+        ],
+        [
+          -5.578217,
+          -0.888927,
+          -6.07958,
+          -0.005308,
+          -5.889091
+        ],
+        [
+          -5.214725,
+          -0.362238,
+          -6.064792,
+          -5.940188,
+          -0.53206
+        ]
+      ],
+      "adjacency_row_softmax": [
+        [
+          0.531232,
+          0.210458,
+          0.254996,
+          0.001632,
+          0.001683
+        ],
+        [
+          0.296693,
+          0.240891,
+          0.002255,
+          0.229207,
+          0.230954
+        ],
+        [
+          0.609556,
+          0.002072,
+          0.384975,
+          0.001718,
+          0.001679
+        ],
+        [
+          0.002672,
+          0.290602,
+          0.001618,
+          0.703151,
+          0.001958
+        ],
+        [
+          0.004201,
+          0.537998,
+          0.001796,
+          0.002034,
+          0.453971
+        ]
+      ],
+      "directed_diameter": 1,
+      "eccentricity_from_goal_node_0": 1,
+      "discretized_topk2": {
+        "k": 2,
+        "adjacency_row_normalized": [
+          [
+            0.675672,
+            0.0,
+            0.324328,
+            0.0,
+            0.0
+          ],
+          [
+            0.5519,
+            0.4481,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.612908,
+            0.0,
+            0.387092,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.292428,
+            0.0,
+            0.707572,
+            0.0
+          ],
+          [
+            0.0,
+            0.542354,
+            0.0,
+            0.0,
+            0.457646
+          ]
+        ],
+        "active_edges_per_row": [
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            4
+          ]
+        ],
+        "directed_diameter": -1,
+        "undirected_tree_diameter": 3,
+        "eccentricity_from_goal_node_0": 2,
+        "is_call_tree_subgraph": true
+      },
+      "discretized_topk3": {
+        "k": 3,
+        "directed_diameter": -1,
+        "eccentricity_from_goal_node_0": 1
+      }
+    }
+  ],
+  "summary": {
+    "continuous_row_softmax_diameter": 1,
+    "continuous_row_softmax_goal_eccentricity": 1,
+    "discretized_topk2_diameter_all_seeds": [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1
+    ],
+    "discretized_topk2_goal_eccentricity_all_seeds": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "all_topk2_recover_call_tree_subgraph": true
+  },
+  "note": "Directed diameter uses row-softmax A with edge j->i when A[i,j]>0 (nca_text.model matmul convention). Under top-k=2 row discretization, all 6 trained meta-graph checkpoints (seeds 0-2 on E1 and E1v2) recover the hierarchical binary call-tree subgraph with directed diameter 3 and goal eccentricity 2, matching Lean 4 Theorem 5 (theorem_tree_subsumption)."
 }

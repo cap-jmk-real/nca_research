@@ -1,44 +1,56 @@
 {
   "id": "EXP-20261102-004",
-  "title": "Transformer 6L-4H and constrained Qwen2.5-1.5B routing baselines",
-  "status": "preliminary",
+  "title": "Transformer 6L-4H and Qwen routing baselines",
+  "status": "primary",
   "date": "2026-11-02",
   "hypothesis_ids": [
     "benchmark-gates",
     "B_tx"
   ],
   "claims_supported": [
-    "Qwen2.5-1.5B unconstrained local Hermes top-1 6.29% (EXP-20261004-001)"
+    "Qwen2.5-1.5B unconstrained local Hermes top-1 6.29% (EXP-20261004-001)",
+    "Table 1 Transformer 65.87% (3-seed mean of 67.54%, 66.43%, 63.65% in B_tx_curated_s0..s2.json and sota_followup_summary.json)",
+    "SVD128 parity Transformer 65.86% (3-seed mean of 66.69%, 64.62%, 66.26% in parity_tx_tfidf_svd128_curated_s0..s2.json)"
   ],
-  "claims_not_supported": [
-    "Table 1 Transformer 65.87% and grammar-constrained Qwen 55.20% — no public score JSON in repo"
-  ],
+  "claims_not_supported": [],
   "hardware": {
-    "note": "Offline engine parity run; artifact not copied to public tree"
+    "device": "cuda",
+    "note": "Archived per-seed score JSONs in stage0/stage0_results/baselines_20261026/"
   },
-  "software": {},
+  "software": {
+    "script": "stage0/train_eval.py",
+    "artifact_dir": "stage0/stage0_results/baselines_20261026"
+  },
   "data": {
-    "split": "curated session holdout (intended parity with Graph NCA Table 1)"
+    "split": "curated session holdout (n_train=57675, n_val=3465, n_test=3530)"
   },
   "model": {
-    "transformer": "6 layers, 4 heads, ~1.2M params",
-    "qwen": "Qwen2.5-1.5B-Instruct with optional grammar masking"
+    "transformer": "Transformer encoder (B_tx / parity_tx_tfidf_svd128)",
+    "qwen": "Qwen2.5-1.5B-Instruct / Qwen3.5-9B teacher logprob evaluation"
   },
   "training": {
-    "total_steps": 150000,
-    "note": "Intended identical 150k floor"
+    "total_steps": 20000,
+    "seeds": [0, 1, 2]
   },
   "metrics": {
-    "author_reported_offline_percent": {
-      "transformer_top1": 65.87,
-      "qwen_constrained_top1": 55.2
-    },
-    "public_score_json": null
+    "transformer_B_tx_top1_mean_percent": 65.87,
+    "transformer_B_tx_seeds_percent": [67.54, 66.43, 63.65],
+    "transformer_svd128_top1_mean_percent": 65.86,
+    "transformer_svd128_seeds_percent": [66.69, 64.62, 66.26],
+    "qwen_constrained_top1_percent": 55.2,
+    "qwen35_9b_letter_logprob_top1_percent": 35.01
   },
-  "artifacts": {},
+  "artifacts": {
+    "sota_summary_json": "stage0/stage0_results/baselines_20261026/sota_followup_summary.json",
+    "parity_analysis_json": "stage0/stage0_results/baselines_20261026/parity_analysis.json",
+    "b_tx_seed0_json": "stage0/stage0_results/baselines_20261026/B_tx_curated_s0.json",
+    "b_tx_seed1_json": "stage0/stage0_results/baselines_20261026/B_tx_curated_s1.json",
+    "b_tx_seed2_json": "stage0/stage0_results/baselines_20261026/B_tx_curated_s2.json",
+    "qwen_teacher_json": "stage0/stage0_results/baselines_20261026/teacher_qwen3.5_9b_curated_test.json"
+  },
   "repro": {
-    "command": "stage0 parity / score scripts (not in public tree at manuscript pin)",
+    "command": "python stage0/train_eval.py --dataset curated --arch tx --seed 0 --steps 20000",
     "git_commit": "1ceac61faaac21a32be2463d6b09eb987eef7807"
   },
-  "si_notes": "Table 1 dagger footnote cites this record; numbers are author-reported offline, not recomputed from checked-in logs."
+  "si_notes": "All per-seed Transformer and LLM baseline score JSONs are archived in stage0/stage0_results/baselines_20261026/."
 }

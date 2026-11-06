@@ -1,0 +1,28 @@
+{
+  "run": "20261026T112201_parity_tx_tfidf_svd128_curated_s2",
+  "arch": "tx",
+  "dataset": "curated",
+  "seed": 2,
+  "params": 287501,
+  "best_step": 2500,
+  "val_top1": 66.81,
+  "test": {
+    "n": 3530,
+    "top1": 66.26,
+    "top3": 94.9,
+    "macro_f1": 45.71
+  },
+  "split_rows": {
+    "train": 57675,
+    "val": 3465,
+    "test": 3530
+  },
+  "latency_gpu": {
+    "p50_ms": 1.137,
+    "p95_ms": 5.021
+  },
+  "latency_cpu_1thread": {
+    "p50_ms": 0.217,
+    "p95_ms": 0.311
+  }
+}
