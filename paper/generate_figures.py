@@ -36,7 +36,7 @@ mpl.rcParams.update({
     'grid.linestyle': '--',
     'savefig.dpi': 300,
     'savefig.bbox': 'tight',
-    'savefig.pad_inches': 0.02,
+    'savefig.pad_inches': 0.08,
 })
 
 # Okabe-Ito Color Palette

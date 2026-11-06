@@ -21,8 +21,8 @@
 \setlength{\intextsep}{10pt plus 2pt minus 2pt}
 \setlength{\dbltextfloatsep}{14pt plus 3pt minus 2pt}
 \setlength{\dblfloatsep}{10pt plus 2pt minus 2pt}
-\setlength{\abovecaptionskip}{6pt}
-\setlength{\belowcaptionskip}{8pt}
+\setlength{\abovecaptionskip}{8pt plus 2pt minus 1pt}
+\setlength{\belowcaptionskip}{8pt plus 2pt minus 1pt}
 
 \hypersetup{
   colorlinks=true,
@@ -253,6 +253,7 @@ Let $\mathcal{T}_{\mathrm{tree}}$ denote a hierarchical decision tree DAG on $V$
 \end{itemize}
 Lean package: \nolinkurl{formal_proofs/NCAMetaLearning}
 }}
+\vspace{6pt}
 \caption{\textbf{Machine-checked formal verification status in the Lean 4 proof assistant.} Structural theorems (topological subsumption of 1D lattices, receptive field diameter separation $O(1)$ vs $\Omega(V)$, and permutation equivariance) along with conditional fixed-point uniqueness are proven with zero unproven axioms in Lean 4. Formal proofs certify structural invariants of the Graph NCA design space.}
 \label{fig:lean-status}
 \end{figure}
@@ -323,6 +324,7 @@ Table~\ref{tab:primary} reports primary performance on curated agent traces unde
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig2_learning_curves.pdf}
+\vspace{6pt}
 \caption{\textbf{Empirical training and validation trajectories over an extended 200k-step AdamW budget.} \textbf{Y-axis: curated val top-1} vs training steps (not test). Deep Tree uses $K=8$; other curves $K=4$. Peak \textbf{curated val} / \textbf{curated test} at end of run: Deep Tree $69.47\%$ val / $68.07\%$ test; Star $66.19\%$ test; 1D $64.64\%$ test; Flat $60.71\%$ test; HistGradientBoosting $70.58\%$ val / $69.47\%$ test.}
 \label{fig:learning-curves}
 \end{figure}
@@ -337,6 +339,7 @@ Table~\ref{tab:primary} reports primary performance on curated agent traces unde
   \centering
   \includegraphics[width=0.86\linewidth]{figures/fig4_ablation_bars.pdf}
 \end{minipage}
+\vspace{6pt}
 \caption{\textbf{Empirical efficiency and inductive bias breakdown.} (Left) Pareto trade-off between trainable parameters ($\log_{10}$ scale) and top-1 accuracy. \textbf{Open circles:} \textbf{local Hermes test} top-1 on compact $\sim$26.7k ablation configs (5k--150k steps; not comparable to Table~\ref{tab:primary}). \textbf{Filled diamonds:} \textbf{curated test} top-1 at 10k headline operating points from Table~\ref{tab:primary} (\texttt{EXP-20261102-001}). (Right) \textbf{Curated val} top-1 (blue) vs \textbf{local Hermes test} top-1 (orange) across message-passing variants (seeds 0--2).}
 \label{fig:pareto-and-ablations}
 \end{figure*}
@@ -353,7 +356,7 @@ Specifically, 1D lattices reach $64.64\%$, hierarchical tree DAGs $65.27\%$, con
 \setlength{\tabcolsep}{3.5pt}
 \caption{\textbf{Empirical feature parity and 10,000-iteration bootstrap significance evaluation.} \textbf{Val Top-1:} curated validation split. \textbf{Test Top-1:} curated test split (3{,}530 turns). Graph/tabular rows at 10k AdamW except Deep Tree ($K{=}8$, LS, 200k, \texttt{EXP-20261102-002}). Seeds 0--2; bootstrap CIs on test. Fixed star exceeds meta on \textbf{curated test} means ($66.19\%$ vs.\ $65.33\%$). Deep Tree \textbf{curated test} $68.07\%$ vs HistGradientBoosting $69.47\%$ (both test).}
 \label{tab:feature-parity}
-\vspace{6pt}
+\vspace{8pt}
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcccc@{}}
 \toprule
 \textbf{Model / Architecture Topology} & \textbf{Params} & \textbf{Val Top-1} & \textbf{Test Top-1 (Mean $\pm$ SD)} & \textbf{95\% Bootstrap CI} \\
@@ -379,6 +382,7 @@ Table~\ref{tab:ablations} summarizes the 150k-step ablations isolating the struc
 \centering
 \caption{\textbf{Ablation breakdown isolating cellular update mechanisms under 150k AdamW budget ($\approx 26.7$k-parameter runners).} Validation top-1 on curated val (\texttt{EXP-20261006-001} and siblings; Apple M1 MPS). Meta-learned graph topologies at SVD128 scale appear separately in Table~\ref{tab:primary} (\texttt{EXP-20261102-001}).}
 \label{tab:ablations}
+\vspace{8pt}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{@{}llcc@{}}
 \toprule
@@ -478,6 +482,7 @@ I have introduced Graph Neural Cellular Automata (GNCA) with architecture meta-l
 \textbf{Pending release:} full curated corpus compilation scripts and pilot harness reproduction package; target alignment with \texttt{docs/huggingface-distribution.md} slot **D** promotion.
 \textbf{Proofs:} \nolinkurl{formal_proofs/NCAMetaLearning} (Lean \texttt{v4.35.0}, \texttt{lake build \&\& lake exe ncametalearning}).}
 
+\newpage
 \begin{thebibliography}{10}
 \small
 \setlength{\itemsep}{1.5pt plus 0.5pt minus 0.5pt}
