@@ -16,13 +16,13 @@
 \usepackage{color}
 \usepackage{orcidlink}
 
-\setlength{\textfloatsep}{7pt plus 2pt minus 2pt}
-\setlength{\floatsep}{5pt plus 2pt minus 2pt}
-\setlength{\intextsep}{5pt plus 2pt minus 2pt}
-\setlength{\dbltextfloatsep}{5pt plus 2pt minus 2pt}
-\setlength{\dblfloatsep}{5pt plus 2pt minus 2pt}
-\setlength{\abovecaptionskip}{4pt}
-\setlength{\belowcaptionskip}{4pt}
+\setlength{\textfloatsep}{14pt plus 3pt minus 2pt}
+\setlength{\floatsep}{10pt plus 2pt minus 2pt}
+\setlength{\intextsep}{10pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{14pt plus 3pt minus 2pt}
+\setlength{\dblfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{6pt}
+\setlength{\belowcaptionskip}{8pt}
 
 \hypersetup{
   colorlinks=true,
@@ -260,9 +260,10 @@ Lean package: \nolinkurl{formal_proofs/NCAMetaLearning}
 \begin{table*}[tbp]
 \centering
 \small
+\setlength{\tabcolsep}{2.5pt}
 \caption{\textbf{Primary agent action routing benchmark at 10{,}000 AdamW steps.} All \textbf{Top-1/Top-3/Macro F1} columns are on the \textbf{curated Hermes test split} (3{,}530 turns; 57{,}675 train / 3{,}465 val; session holdout; \texttt{EXP-20261102-001}) unless marked. Default graph/tabular/linear rows: test top-1 = mean over seeds $\{0,1,2\}$, $K{=}4$, SVD128 (35.3k) or as listed, 10k steps, CUDA training. $^\S$Deep Tree row: \textbf{test} top-1 from 200k grokking run (\texttt{EXP-20261102-002}, $K{=}8$, label smoothing, SVD128). *Local Hermes \textbf{test} (\texttt{EXP-20261004-001}). $^\ddagger$Author-reported \textbf{test} (150k intent, \texttt{EXP-20261102-004}; no score JSON). Inference: batch-1 CPU forward p50 (1 thread, Apple M1).}
 \label{tab:primary}
-\vspace{2pt}
+\vspace{6pt}
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llccccc@{}}
 \toprule
 \textbf{Architecture} & \textbf{Model Family} & \textbf{Params} & \textbf{Inference} & \textbf{Test Top-1} & \textbf{Test Top-3} & \textbf{Test F1} \\
@@ -346,12 +347,14 @@ HistGradientBoosting and Random Forest baselines achieve \textbf{curated test} t
 Among cellular dynamic models, spatial graph routing improves \textbf{curated test} top-1 over the 1D lattice ($64.64\%$, 10k, $K{=}4$).
 Specifically, 1D lattices reach $64.64\%$, hierarchical tree DAGs $65.27\%$, continuous meta-learning $65.33\%$, and star goal broadcasting $66.19\%$ (\textbf{curated test}, 10k, Table~\ref{tab:feature-parity}; bootstrap CIs overlap). the accuracy difference between Deep Tree GNCA and Random Forest is $\Delta = +0.19\text{ pp}$ (95\% paired CI: $[-0.84, +1.22]\text{ pp}$, containing zero), demonstrating parity with Random Forest point estimates ($68.07\%$ vs $67.88\%$), while HistGradientBoosting retains a $1.40\text{ pp}$ advantage ($69.47\%$, 95\% paired CI: $[-2.48, -0.32]\text{ pp}$) while executing in $0.66$\,ms without tabular memory tables.
 
-\begin{table}[tbp]
+\begin{table*}[tbp]
 \centering
+\small
+\setlength{\tabcolsep}{3.5pt}
 \caption{\textbf{Empirical feature parity and 10,000-iteration bootstrap significance evaluation.} \textbf{Val Top-1:} curated validation split. \textbf{Test Top-1:} curated test split (3{,}530 turns). Graph/tabular rows at 10k AdamW except Deep Tree ($K{=}8$, LS, 200k, \texttt{EXP-20261102-002}). Seeds 0--2; bootstrap CIs on test. Fixed star exceeds meta on \textbf{curated test} means ($66.19\%$ vs.\ $65.33\%$). Deep Tree \textbf{curated test} $68.07\%$ vs HistGradientBoosting $69.47\%$ (both test).}
 \label{tab:feature-parity}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}lcccc@{}}
+\vspace{6pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcccc@{}}
 \toprule
 \textbf{Model / Architecture Topology} & \textbf{Params} & \textbf{Val Top-1} & \textbf{Test Top-1 (Mean $\pm$ SD)} & \textbf{95\% Bootstrap CI} \\
 \midrule
@@ -367,9 +370,8 @@ Graph NCA (1D Nearest-Neighbor Lattice) & 14.8k & $66.60\%$ & $64.64 \pm 0.81\%$
 Flat Linear / MLP Baseline Twin & 1.2k & $61.42\%$ & $60.71 \pm 0.48\%$ & $[59.77, 61.65]$ \\
 Always-Terminal Majority Prior & -- & $54.30\%$ & $54.30 \pm 0.49\%$ & $[53.34, 55.26]$ \\
 \bottomrule
-\end{tabular}%
-}
-\end{table}
+\end{tabular*}
+\end{table*}
 
 Table~\ref{tab:ablations} summarizes the 150k-step ablations isolating the structural components of the cellular update.
 
@@ -406,10 +408,11 @@ To measure real-world system utility, I report \textbf{preliminary} pilot diagno
 \begin{table*}[tbp]
 \centering
 \small
+\setlength{\tabcolsep}{2.5pt}
 \renewcommand{\arraystretch}{1.08}
 \caption{\textbf{Preliminary pilot agentic diagnostics (not matched controls).} GNCA column: \texttt{EXP-20261102-003}. Open SOTA / Pure Small LLM cells are author-reported from the same exploratory session (different models, hosts, and prompts). Do \textbf{not} treat point gaps as statistically significant. GNCA routing latency: Apple M1 CPU ($N=89$ $\tau^2$ turns). $^\dagger$Local CPU vs remote API (network included).}
 \label{tab:live-benchmarks}
-\vspace{2pt}
+\vspace{8pt}
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcccc@{}}
 \toprule
 \textbf{Evaluation Metric / Benchmark} & \textbf{Open SOTA} & \textbf{Pure Small LLM} & \textbf{Dual GNCA} & \textbf{Notes} \\
