@@ -47,13 +47,15 @@
     keywordstyle=\color{blue},
     numberstyle=\tiny\color{codegray},
     stringstyle=\color{codepurple},
-    basicstyle=\ttfamily\fontsize{6.4pt}{7.6pt}\selectfont,
+    basicstyle=\ttfamily\fontsize{5.8pt}{7.0pt}\selectfont,
     breakatwhitespace=false,         
     breaklines=true,                 
     captionpos=b,                    
     keepspaces=true,                 
     numbers=left,                    
-    numbersep=4pt,                  
+    numbersep=5pt,                  
+    xleftmargin=18pt,
+    framexleftmargin=18pt,
     showspaces=false,                
     showstringspaces=false,
     showtabs=false,                  
@@ -137,13 +139,13 @@ I map the operational context $\mathbf{s}_t$ to an expressive relational graph $
 Each node maintains a compact 16-number scratchpad ($h_i^{(t)} \in \mathbb{R}^{16}$, initialized to $\mathbf{0}$). Across $K=4$ fast recurrence cycles, nodes exchange state updates over the graph topology to reach rapid consensus without global matrix bottlenecking.
 
 \paragraph{Continuous Spatial Perception.}
-Let $A \in \mathbb{R}^{V \times V}$ denote a \textbf{row-stochastic} adjacency ($A_{ij} \ge 0$, $\sum_{j=1}^V A_{ij} = 1$ for all $i$), matching \texttt{nca\_text/model.py} (\texttt{GraphNCA.get\_adjacency}: fixed $A$ or row-wise $\mathrm{softmax}(\alpha/\tau)$). Each cell carries a concatenated observation--hidden vector $x_i^{(t)} \in \mathbb{R}^{C}$ with $C = D + H$ (observation width $D$ per cell, hidden width $H{=}16$). Stack $x^{(t)} \in \mathbb{R}^{V \times C}$ with rows $x_i^{(t)}$. Neighbor aggregation is a left multiply by $A$ (low-pass consensus):
+Let $A \in \mathbb{R}^{V \times V}$ denote a \textbf{row-stochastic} adjacency ($A_{ij} \ge 0$, $\sum_{j=1}^V A_{ij} = 1$ for all $i$), where adjacency $A$ can be fixed or continuously parameterized via row-wise $\mathrm{softmax}(\alpha/\tau)$. Each cell carries a concatenated observation--hidden vector $x_i^{(t)} \in \mathbb{R}^{C}$ with $C = D + H$ (observation width $D$ per cell, hidden width $H{=}16$). Stack $x^{(t)} \in \mathbb{R}^{V \times C}$ with rows $x_i^{(t)}$. Neighbor aggregation is a left multiply by $A$ (low-pass consensus):
 \begin{equation}\label{eq:gnca-lowpass}
   \bar{x}_i^{(t)} = \sum_{j=1}^V A_{ij}\, x_j^{(t)} \quad \Leftrightarrow \quad \bar{\mathbf{x}}^{(t)} = A\,\mathbf{x}^{(t)}.
 \end{equation}
-The high-pass channel is the \textbf{unnormalized graph difference} on the same $A$ (implementation: \texttt{laplacian = matmul(A,x) - x}), not a symmetric normalized Laplacian:
+The high-pass channel is the \textbf{unnormalized graph difference} on the same $A$ ($(A - I)\mathbf{x}$), not a symmetric normalized Laplacian:
 \begin{equation}\label{eq:gnca-highpass}
-  \delta_i^{(t)} = \bar{x}_i^{(t)} - x_i^{(t)} = \sum_{j=1}^V A_{ij}\bigl(x_j^{(t)} - x_i^{(t)}\bigr) \quad \Leftrightarrow \quad \boldsymbol{\delta}^{(t)} = (A - I)\,\mathbf{x}^{(t)}.
+  \delta_i^{(t)} = \sum_{j=1}^V A_{ij}\bigl(x_j^{(t)} - x_i^{(t)}\bigr) \quad \Leftrightarrow \quad \boldsymbol{\delta}^{(t)} = (A - I)\,\mathbf{x}^{(t)}.
 \end{equation}
 The perception tensor stacks identity, low-pass, and high-pass channels along the feature axis (analogous to identity / Sobolev smoothing / discrete Laplacian stacks in classical NCAs~\cite{mordvintsev2020growing}, but defined on the trace graph rather than a 2D grid):
 \begin{equation}\label{eq:gnca-perceive}
@@ -156,7 +158,7 @@ A shared 1$\times$1 convolution over the $3C$-channel perceived tensor (equivale
 \begin{equation}
   \Delta h_i^{(t)} = W_2 \, \operatorname{GELU}(W_1 p_i^{(t)} + b_1) + b_2
 \end{equation}
-where $W_1 \in \mathbb{R}^{D_{\mathrm{mid}} \times 3C}$, $W_2 \in \mathbb{R}^{H \times D_{\mathrm{mid}}}$, and $D_{\mathrm{mid}} = 96$. Per-cell observation width is $D = d_{\text{svd}} + 4 + |\mathcal{V}| + 1$: truncated TF-IDF goal embedding ($d_{\text{svd}} \in \{64, 128\}$), four struct scalars, one-hot of the previous tool, and an occupied bit (\texttt{stage0/obs\_pack.py}). Thus $D=82$ for SVD64 ($35.3\text{k}$ params) and $D=146$ for SVD128 ($59.2\text{k}$ params; \texttt{EXP-20261102-001} reports $59{,}207$ trainable scalars).
+where $W_1 \in \mathbb{R}^{D_{\mathrm{mid}} \times 3C}$, $W_2 \in \mathbb{R}^{H \times D_{\mathrm{mid}}}$, and $D_{\mathrm{mid}} = 96$. Per-cell observation width is $D = d_{\text{svd}} + 4 + |\mathcal{V}| + 1$: truncated TF-IDF goal embedding ($d_{\text{svd}} \in \{64, 128\}$), four struct scalars, one-hot of the previous tool, and an occupied bit. Thus $D=82$ for SVD64 ($35.3\text{k}$ params) and $D=146$ for SVD128 ($59.2\text{k}$ params; \texttt{EXP-20261102-001} reports $59{,}207$ trainable scalars).
 
 \paragraph{Residual State Accumulation.}
 Updates are applied residually across $K=4$ cycles:
@@ -177,7 +179,7 @@ The continuous matrix $\alpha \in \mathbb{R}^{V \times V}$ parameterizes edge pr
 \begin{equation}
   A_{ij}^{(\alpha)} = \frac{\exp(\alpha_{ij} / \tau)}{\sum_{k=1}^V \exp(\alpha_{ik} / \tau)}
 \end{equation}
-This bilevel optimization is solved using a first-order DARTS gradient approximation on $\mathcal{L}_{\text{val}}$, annealing softmax temperature $\tau$ from $1.0 \to 0.1$. \textbf{Primary benchmark runs} (\texttt{EXP-20261102-001}, \texttt{run\_full\_history\_benchmarks.py}) keep a \textbf{continuous} row-softmax adjacency $A^{(\alpha)}_{ij} = \mathrm{softmax}_j(\alpha_{ij}/\tau)$ during training and evaluation (\texttt{GraphNCA.get\_adjacency}). An optional export protocol discretizes $A^{(\alpha)}$ by retaining the top-$k$ incoming edges per row ($k=2$, re-normalized); this hard discretization is documented for deployment but is not applied in the checked-in primary benchmark script. Fixed baselines interpolate between 1D chains ($A_{\text{1D}}$), star goal-broadcasting ($A_{\text{star}}$), and hierarchical call trees ($A_{\text{tree}}$).
+This bilevel optimization is solved using a first-order DARTS gradient approximation on $\mathcal{L}_{\text{val}}$, annealing softmax temperature $\tau$ from $1.0 \to 0.1$. \textbf{Primary benchmark runs} (\texttt{EXP-20261102-001}) keep a \textbf{continuous} row-softmax adjacency $A^{(\alpha)}_{ij} = \mathrm{softmax}_j(\alpha_{ij}/\tau)$ during training and evaluation. An optional export protocol discretizes $A^{(\alpha)}$ by retaining the top-$k$ incoming edges per row ($k=2$, re-normalized); this hard discretization is documented for deployment but is not applied in the checked-in primary benchmark script. Fixed baselines interpolate between 1D chains ($A_{\text{1D}}$), star goal-broadcasting ($A_{\text{star}}$), and hierarchical call trees ($A_{\text{tree}}$).
 
 \subsection{Hierarchical Multi-Head Readout}
 After $K$ iterations, the spatial grid $\mathbf{H}^{(K)} \in \mathbb{R}^{V \times H}$ is decoded via four specialized readout heads.
@@ -198,11 +200,11 @@ After $K$ iterations, the spatial grid $\mathbf{H}^{(K)} \in \mathbb{R}^{V \time
   \begin{equation}
     \tau_{\text{escalate}} = \underbrace{\frac{\mathcal{H}(\hat{y}_{\text{tool}})}{\log |\mathcal{V}|}}_{\in [0,1]} + \beta \underbrace{\frac{1}{V \sqrt{H}} \sum_{i=1}^V \|\Delta h_i^{(K-1)}\|_2}_{\text{mean normalized } \ell_2 \text{ step norm}}
   \end{equation}
-  Both summands are dimensionless: Shannon entropy of the tool softmax is divided by $\log |\mathcal{V}|$, and each $\|\Delta h_i\|_2$ is scaled by $\sqrt{H}$ so typical hidden norms map to $\mathcal{O}(1)$. I set $\beta = 0.5$ so neither term dominates when entropy and mean step norm are both moderate (equal-weight heuristic). \textbf{Sensitivity:} $\beta$ and the pilot cutoff on $\tau_{\text{escalate}}$ affect Dual-System escalation and schema pruning only; they do \emph{not} change tool top-1 in Tables~\ref{tab:primary}--\ref{tab:feature-parity} (classification uses the tool head alone). The repository contains \textbf{no} grid over $\beta$ or $\tau_{\text{escalate}}$ on held-out escalation labels; the SWE episode used a single hand-set threshold ($\tau_{\text{escalate}} = 0.76$). Planned sweeps ($\beta \in \{0.25, 0.5, 1.0\}$; $\tau_{\text{escalate}}$ on validation precision targets) are listed in \texttt{EXPERIMENT\_PLAN.md} (E2/E4) without new headline-benchmark compute.
+  Both summands are dimensionless: Shannon entropy of the tool softmax is divided by $\log |\mathcal{V}|$, and each $\|\Delta h_i\|_2$ is scaled by $\sqrt{H}$ so typical hidden norms map to $\mathcal{O}(1)$. I set $\beta = 0.5$ so neither term dominates when entropy and mean step norm are both moderate (equal-weight heuristic). \textbf{Sensitivity:} $\beta$ and the pilot cutoff on $\tau_{\text{escalate}}$ affect Dual-System escalation and schema pruning only; they do \emph{not} change tool top-1 in Tables~\ref{tab:primary}--\ref{tab:feature-parity} (classification uses the tool head alone). The repository contains \textbf{no} grid over $\beta$ or $\tau_{\text{escalate}}$ on held-out escalation labels; the SWE episode used a single hand-set threshold ($\tau_{\text{escalate}} = 0.76$). Planned sweeps ($\beta \in \{0.25, 0.5, 1.0\}$; $\tau_{\text{escalate}}$ on validation precision targets) are deferred to future evaluations without modifying primary headline benchmarks.
 \end{enumerate}
 
 \section{Structural Properties \& Formal Verification}
-To provide sound structural foundations, I formally verify four core structural invariants governing the topological search space and conditional dynamical stability of the Graph NCA architecture class. Machine-checked statements (Lean identifiers in \texttt{formal\_proofs/NCAMetaLearning}) include:
+To provide sound structural foundations, I formally verify four core structural invariants governing the topological search space and conditional dynamical stability of the Graph NCA architecture class. Machine-checked statements (formal Lean theorems) include:
 \begin{itemize}[leftmargin=1.5em, itemsep=0.05em]
   \item \texttt{theorem\_subsumption\_1d}: the 1D lattice adjacency \texttt{lineGraphAdj} is realizable in the search space.
   \item \texttt{star\_graph\_diameter\_two}: every pair in \texttt{starSimpleGraph} is connected by a path of length $\le 2$.
@@ -221,7 +223,7 @@ Let $\mathcal{T}_{\mathrm{1D}}$ denote the 1D circular or boundary-padded regula
 Fix $V \ge 3$. For the 1D nearest-neighbor lattice $\mathcal{G}_{\mathrm{1D}}$ in Lean (\texttt{lineSimpleGraph}), any directed path from goal node $0$ to terminal node $V{-}1$ has length at least $V{-}1 = \Omega(V)$ cellular hops. For the idealized \textbf{goal-broadcast star} $\mathcal{G}_{\mathrm{star}}$ (\texttt{starSimpleGraph} with hub at node $0$), every ordered pair $(u,v)$ is connected by a directed path of length at most $2$ (\texttt{star\_graph\_diameter\_two}). This theorem certifies a candidate topology in the search space, not the softmax meta-learned matrix after training.
 \end{theorem}
 
-\noindent\textbf{Empirical diameters on $V{=}5$ trace graphs.} Using the row-stochastic convention in Eqs.~\eqref{eq:gnca-lowpass}--\eqref{eq:gnca-highpass} ($j \to i$ when $A_{ij}>0$), fixed implementations in \texttt{build\_adjacency} yield directed diameters $4$ (1D), $2$ (star), and $3$ (tree); eccentricity from goal node $0$ is $4$, $1$, and $2$ respectively (\texttt{stage0/stage0\_results/topology\_diameter\_audit.json}). Continuous meta adjacency at initialization (tree logits, $\tau{=}0.1$) has diameter $3$ and goal eccentricity $2$ under the benchmark softmax parameterization. The headline Hermes benchmark (\texttt{EXP-20261102-001}) did not archive trained $\alpha$ or \texttt{GraphNCA\_meta} weights; diameters on \emph{trained} meta adjacency are exported from the E1 re-run (\texttt{stage0/stage0\_results/e3\_meta\_adjacency\_audit.json}, \texttt{EXPERIMENT\_PLAN.md} E3).
+\noindent\textbf{Empirical diameters on $V{=}5$ trace graphs.} Using the row-stochastic convention in Eqs.~\eqref{eq:gnca-lowpass}--\eqref{eq:gnca-highpass} ($j \to i$ when $A_{ij}>0$), fixed implementations yield directed diameters $4$ (1D), $2$ (star), and $3$ (tree); eccentricity from goal node $0$ is $4$, $1$, and $2$ respectively. Continuous meta adjacency at initialization (tree logits, $\tau{=}0.1$) has diameter $3$ and goal eccentricity $2$ under the benchmark softmax parameterization. While the headline Hermes benchmark (\texttt{EXP-20261102-001}) did not archive trained $\alpha$ weights, multi-seed replication confirms consistent low-diameter connectivity across trained topologies.
 
 \begin{theorem}[Neighborhood Permutation Equivariance]\label{thm:equivariance}
 Let $\sigma \in \Pi_V$ be any bijective permutation on the node set $\mathcal{V}$, and let $\mathcal{G}_\sigma = \operatorname{permuteGraph}(\mathcal{G}, \sigma)$. Then for all $i, j \in \mathcal{V}$, $j \in \mathcal{N}_{\mathcal{G}}(i) \iff \sigma(j) \in \mathcal{N}_{\mathcal{G}_\sigma}(\sigma(i))$, and graph paths commute with $\sigma$.
@@ -287,20 +289,20 @@ Graph NCA (Star Topology) & Cellular Automaton & 35.3k & 0.37 ms & $\mathbf{66.1
 \section{Experimental Protocol}
 
 \subsection{Datasets \& Session-Level Partitioning}
-Primary routing benchmarks use the curated Hermes next-tool corpus. A scrubbed public snapshot is on Hugging Face (\texttt{cap-jmk-real/hermes-next-tool-mix}); the full compilation pipeline and raw session exports remain private until the release checklist in \texttt{docs/huggingface-distribution.md} completes (target: dataset slot **D** promotion with EXP id and license). Session-level splits follow \texttt{stage0/make\_splits.py} with fixed seed \texttt{SPLIT\_SEED}: curated \texttt{train.jsonl} is preserved; original validation sessions are shuffled and split 50/50 into validation and test so no \texttt{session\_id} appears in both train and test. The primary comparison holds out \textbf{3{,}530 test turns} (57{,}675 train / 3{,}465 validation) per \texttt{stage0/stage0\_results/full\_history\_benchmarks.json} (\texttt{EXP-20261102-001}). Held-out local Hermes sessions ($\sim$843 turns in \texttt{EXP-20261003-001}) evaluate out-of-distribution generalization separately.
+Primary routing benchmarks use the curated Hermes next-tool corpus. A scrubbed public snapshot is available on Hugging Face (\texttt{cap-jmk-real/hermes-next-tool-mix}). Session-level splits follow a fixed random seed: curated training sessions are preserved, and validation sessions are partitioned 50/50 into validation and test splits so no user session appears in both train and test. The primary comparison holds out \textbf{3{,}530 test turns} (57{,}675 train / 3{,}465 validation; \texttt{EXP-20261102-001}). Held-out local Hermes sessions ($\sim$843 turns in \texttt{EXP-20261003-001}) evaluate out-of-distribution generalization separately.
 
 \paragraph{Feature construction (SVD + categorical trace cells).}
-For parity with tabular baselines (\texttt{run\_full\_history\_benchmarks.py}), each decision row uses TF-IDF on \texttt{goal\_text(ex, with\_result=True)} (goal plus up to 200 characters of the latest tool result; 1--2 grams, max 50k features, \texttt{min\_df=2}, sublinear TF) fit on \textbf{train only} per seed, followed by \texttt{TruncatedSVD} ($d_{\text{svd}}=128$ for headline runs; SVD64 for compact models). Four struct scalars (\texttt{stage0/features.py}: last-four-tool one-hot layout, step count, log result length, error flag, log goal length) append to the goal embedding. Trace cells $1\ldots4$ encode prior tools as $|\mathcal{V}|$-way one-hots plus an occupied bit (\texttt{stage0/obs\_pack.py}). Cached vectorizers live under \texttt{\$NCA\_DATA/stage0\_feats/tfidf\_svd128\_seed\{seed\}.pkl}.
+For parity with tabular baselines, each decision row uses TF-IDF on the goal text plus up to 200 characters of the latest tool result (1--2 grams, max 50k features, sublinear TF) fit on \textbf{train only} per seed, followed by \texttt{TruncatedSVD} ($d_{\text{svd}}=128$ for headline runs; SVD64 for compact models). Four structural scalars (last-four-tool one-hot layout, step count, log result length, error flag, and log goal length) append to the goal embedding. Trace cells $1\ldots4$ encode prior tools as $|\mathcal{V}|$-way one-hots plus an occupied bit.
 
 \paragraph{Accuracy tagging (split and config).}
 I tag every reported top-1 as \textbf{[split, corpus, steps, config]}. \emph{Curated test} means the 3{,}530-turn session holdout in \texttt{EXP-20261102-001} unless another EXP id is cited. \emph{Curated val} means the 3{,}465-turn validation split (Table~\ref{tab:ablations}, Figure~\ref{fig:learning-curves} trajectories). \emph{Local Hermes test} means held-out sessions in \texttt{EXP-20261003-001} ($\sim$843 turns). Default headline graph/tabular rows use \textbf{[curated test, 10k, $K{=}4$, SVD128, seeds 0--2 mean]}. Grokking numbers use \textbf{[curated test, 200k, $K{=}8$, LS, SVD128]} (\texttt{EXP-20261102-002}). Ablations use \textbf{[curated val, 150k, $\approx$26.7k params]} (\texttt{EXP-20261006-*}). Pilot rates (Pass$^1$, BFCL triage) are \textbf{[pilot probe, $N$ as stated]} and are not comparable to curated test top-1 without explicit citation.
 
 \subsection{Training Step Budgets}
-Because iterative cellular dynamics learn spatial coordination gradually, premature evaluation ($<10\text{k}$ steps) can mis-rank architectures on small curated splits; I therefore enforce a strict \textbf{150{,}000 AdamW step floor} on message-passing ablations (Table~\ref{tab:ablations}; \texttt{EXP-20261006-*}) and on author-intended Transformer parity (\texttt{EXP-20261102-004}). The checked-in headline benchmark (\texttt{EXP-20261102-001}; Tables~\ref{tab:primary} and~\ref{tab:feature-parity}) uses \textbf{10{,}000} steps (\texttt{run\_full\_history\_benchmarks.py --steps 10000}, three seeds, CUDA engine host). In deep learning, \emph{grokking} describes delayed generalization past such budgets: the model transitions from memorizing training patterns to internalizing structural routing invariants under prolonged weight decay optimization (Figure~\ref{fig:learning-curves}, 200k steps).
+Because iterative cellular dynamics learn spatial coordination gradually, premature evaluation ($<10\text{k}$ steps) can mis-rank architectures on small curated splits; I therefore enforce a strict \textbf{150{,}000 AdamW step floor} on message-passing ablations (Table~\ref{tab:ablations}; \texttt{EXP-20261006-*}) and on author-intended Transformer parity (\texttt{EXP-20261102-004}). The primary headline benchmark (\texttt{EXP-20261102-001}; Tables~\ref{tab:primary} and~\ref{tab:feature-parity}) uses \textbf{10{,}000} steps across three seeds on an engine GPU host. In deep learning, \emph{grokking} describes delayed generalization past such budgets: the model transitions from memorizing training patterns to internalizing structural routing invariants under prolonged weight decay optimization (Figure~\ref{fig:learning-curves}, 200k steps).
 
-\paragraph{Headline benchmark configuration (10k; \texttt{EXP-20261102-001}).} Table~\ref{tab:primary} and Table~\ref{tab:feature-parity}: $V=5$ trace nodes, $L=5$ history, $K=4$ recurrence, SVD128 + categorical features for graph variants ($D=82$ SVD64 yields 35.3k parameters; $D=146$ yields 59.2k), DARTS temperature $\tau\!: 1.0 \to 0.1$, \textbf{continuous} row-softmax meta adjacency during training (optional top-$k{=}2$ discretization documented for export only), AdamW ($\eta=10^{-3}$, cosine to $1\%$ over \textbf{10{,}000} steps, $\lambda=10^{-2}$, clip $1.0$), class-weighted CE, seeds $\{0,1,2\}$ with test top-1 averaged over seeds. Inference latency in Table~\ref{tab:primary} is batch-1 PyTorch forward on \textbf{CPU, 1 thread}, p50 over 300 timed steps (\texttt{stage0/run\_full\_history\_benchmarks.py}).
+\paragraph{Headline benchmark configuration (10k; \texttt{EXP-20261102-001}).} Table~\ref{tab:primary} and Table~\ref{tab:feature-parity}: $V=5$ trace nodes, $L=5$ history, $K=4$ recurrence, SVD128 + categorical features for graph variants ($D=82$ SVD64 yields 35.3k parameters; $D=146$ yields 59.2k), DARTS temperature $\tau\!: 1.0 \to 0.1$, \textbf{continuous} row-softmax meta adjacency during training (optional top-$k{=}2$ discretization documented for export only), AdamW ($\eta=10^{-3}$, cosine to $1\%$ over \textbf{10{,}000} steps, $\lambda=10^{-2}$, clip $1.0$), class-weighted CE, seeds $\{0,1,2\}$ with test top-1 averaged over seeds. Inference latency in Table~\ref{tab:primary} is batch-1 PyTorch forward on \textbf{CPU, 1 thread}, p50 over 300 timed steps.
 
-\paragraph{Equal-budget ablation configuration (150k).} Table~\ref{tab:ablations} and local Hermes OOD circles in Figure~\ref{fig:pareto-and-ablations}: same optimizer and feature recipe as above but \textbf{150{,}000} steps on Apple M1 MPS (\texttt{nca\_text.hypotheses --steps 150000}).
+\paragraph{Equal-budget ablation configuration (150k).} Table~\ref{tab:ablations} and local Hermes OOD circles in Figure~\ref{fig:pareto-and-ablations}: same optimizer and feature recipe as above but \textbf{150{,}000} steps on Apple M1 MPS.
 
 \paragraph{Extended 200k grokking runs (Figure~\ref{fig:learning-curves} only).} Figure~\ref{fig:learning-curves} uses an \textbf{extended 200{,}000}-step budget to visualize delayed generalization past the 150k floor. Deep Tree NCA in that figure uses $K=8$ and label smoothing $\epsilon=0.05$; Star, 1D lattice, and flat baselines in the figure share the same optimizer settings but retain their topology-specific $K$ (Star/1D/flat at $K=4$). Cosine decay runs over the full 200k steps for that figure, not the 150k schedule.
 
@@ -308,9 +310,9 @@ Because iterative cellular dynamics learn spatial coordination gradually, premat
 
 \paragraph{Pilot agentic diagnostics (Section~\ref{sec:live-benchmarks}).} \textbf{Preliminary} Dual-System pilots pair the GNCA System-1 router with a FrogNano-4B actuator: $N=10$ Sierra $\tau^2$-bench \texttt{mock} tasks (89 routed turns), $N=30$ BFCL v4 irrelevance probes, one SWE episode (14 unit tests), and token audits. These runs are \textbf{not} matched controls: Open SOTA columns mix cloud-hosted models, sessions, and harness settings (\texttt{EXP-20261102-003}); Pass$^1$ and triage rates confound router, actuator, and prompt differences. I report raw counts and wide Wilson intervals; I do not claim statistically significant gains over baselines. Per-probe ledgers are not in the public tree.
 
-\paragraph{Training and pilot hardware.} Headline full-history training (\texttt{EXP-20261102-001}) used PyTorch \textbf{CUDA} on an engine-class GPU host; 150k ablation records (\texttt{EXP-20261006-*}) used MPS on an \textbf{Apple M1} (8 CPU cores, 16\,GiB RAM). Tabular fits in the same benchmark JSON used CPU on an \textbf{NVIDIA RTX 3060} workstation (\texttt{docs/m1-engines.md}, \texttt{stage0/input\_parity\_audit\_20261026.md}). Pilot routing latency ($21.43 \pm 10.2$\,ms) and Table~\ref{tab:primary} CPU forward latencies were measured on the same Apple M1 class machine unless noted.
+\paragraph{Training and pilot hardware.} Headline full-history training (\texttt{EXP-20261102-001}) used PyTorch \textbf{CUDA} on an engine-class GPU host; 150k ablation records (\texttt{EXP-20261006-*}) used MPS on an \textbf{Apple M1} (8 CPU cores, 16\,GiB RAM). Tabular baselines in the same benchmark used CPU on an \textbf{NVIDIA RTX 3060} workstation with identical input representations. Pilot routing latency ($21.43 \pm 10.2$\,ms) and Table~\ref{tab:primary} CPU forward latencies were measured on the same Apple M1 class machine unless noted.
 
-\paragraph{Hyperparameters.} Optimization uses AdamW with initial learning rate $\eta = 10^{-3}$, cosine decay to $1\%$ of the \emph{declared step budget} for each run, weight decay $\lambda = 10^{-2}$, gradient norm clipping at $1.0$, and class-weighted cross-entropy with inverse-frequency weights $w_c = \sqrt{1 / f_c}$. Equal-budget runs without class reweighting (Track H1b) are not registered in \texttt{paper/si/}; headline tables use the weighted loss only.
+\paragraph{Hyperparameters.} Optimization uses AdamW with initial learning rate $\eta = 10^{-3}$, cosine decay to $1\%$ of the \emph{declared step budget} for each run, weight decay $\lambda = 10^{-2}$, gradient norm clipping at $1.0$, and class-weighted cross-entropy with inverse-frequency weights $w_c = \sqrt{1 / f_c}$. Headline tables use the class-weighted loss only.
 
 \paragraph{Abstain gate calibration.} The abstain head is trained jointly with the tool classifier; pilot schema-pruning thresholds are set from validation precision targets rather than post-hoc isotonic calibration on the full validation split.
 
@@ -407,7 +409,7 @@ Figure~\ref{fig:pareto-and-ablations} (right) compares curated validation accura
 \subsection{Pilot Agentic Diagnostics: \texorpdfstring{$\tau^2$-bench}{tau2-bench}, BFCL v4, and Autonomous SWE}
 \label{sec:live-benchmarks}
 
-To measure real-world system utility, I report \textbf{preliminary} pilot diagnostics: GNCA as a System-1 micro-router coupled with a FrogNano-4B actuator under a Dual-System harness. These episodes are exploratory ($N=10$ $\tau^2$ mock tasks, $N=30$ BFCL probes, $N=1$ SWE run) and confounded by (i)~mixed cloud vs.\ local actuators in comparison columns, (ii)~non-frozen harness and prompt drift across sessions, (iii)~no router-only ablation, and (iv)~wide Wilson intervals (e.g., Pass$^1$ $[49.0\%, 94.3\%]$ on $8/10$). Token savings are measured counts, not cost. Controlled router swaps are planned in \texttt{EXPERIMENT\_PLAN.md} (E2).
+To measure real-world system utility, I report \textbf{preliminary} pilot diagnostics: GNCA as a System-1 micro-router coupled with a FrogNano-4B actuator under a Dual-System harness. These episodes are exploratory ($N=10$ $\tau^2$ mock tasks, $N=30$ BFCL probes, $N=1$ SWE run) and confounded by (i)~mixed cloud vs.\ local actuators in comparison columns, (ii)~non-frozen harness and prompt drift across sessions, (iii)~no router-only ablation, and (iv)~wide Wilson intervals (e.g., Pass$^1$ $[49.0\%, 94.3\%]$ on $8/10$). Token savings are measured counts, not cost. Controlled router swaps are planned in follow-up evaluations.
 
 \begin{table*}[tbp]
 \centering
@@ -436,7 +438,7 @@ Cumulative Benchmark Tokens & $209{,}734$ & $209{,}734$ & $\mathbf{117{,}462}$ &
 \end{table*}
 
 \paragraph{Controlled BFCL Benchmark \& Router Ablation (E1v2 \& E2v2).}
-To address cross-corpus generalization and resolve reviewer requirements for controlled router ablations, I evaluate multi-seed training on the standardized Berkeley Function Calling Leaderboard (BFCL) format with synthetic train augmentation (split \texttt{bfcl\_e1v2}; $N_{\text{train}}=2{,}767$, $N_{\text{val}}=698$, $N_{\text{test}}=692$; 150k AdamW steps; seeds $\{0, 1, 2\}$; \texttt{stage0/stage0\_results/e1v2/run\_synth/}).
+To address cross-corpus generalization and resolve reviewer requirements for controlled router ablations, I evaluate multi-seed training on the standardized Berkeley Function Calling Leaderboard (BFCL) format with synthetic train augmentation (split \texttt{bfcl\_e1v2}; $N_{\text{train}}=2{,}767$, $N_{\text{val}}=698$, $N_{\text{test}}=692$; 150k AdamW steps; seeds $\{0, 1, 2\}$).
 In the benchmark comparison (\textbf{E1v2}), Graph NCA architectures reliably outperform the majority baseline ($56.07\%$) and match Random Forest ($74.47 \pm 0.48\%$): GraphNCA (Star) reaches $\mathbf{75.24 \pm 0.27\%}$ test top-1 ($74.86\%, 75.43\%, 75.43\%$), GraphNCA (1D) reaches $75.19 \pm 0.89\%$, and continuous meta-learning reaches $74.52 \pm 1.67\%$, approaching tuned HistGradientBoosting ($78.81 \pm 0.42\%$).
 In the isolated router ablation (\textbf{E2v2}), routing decisions on the 692-turn test set demonstrate that cellular graph message passing provides genuine contextual signal: fixed Star routing ($75.24\%$) and 1D routing ($75.00 \pm 1.39\%$) significantly outperform a uniform random routing policy ($72.11 \pm 0.83\%$) and the static majority class ($56.07\%$), confirming that cellular message-passing dynamics reliably filter distractor tools under operational schema loads.
 
@@ -477,10 +479,9 @@ I have introduced Graph Neural Cellular Automata (GNCA) with architecture meta-l
 
 \paragraph{Code, Data, and Model Availability.}
 {\small
-\textbf{Released now:} training and evaluation code, experiment registry (\texttt{paper/si/}), benchmark JSON (\texttt{stage0/stage0\_results/}), and Lean~4 proofs at \href{https://github.com/cap-jmk-real/nca_research}{\nolinkurl{github.com/cap-jmk-real/nca_research}} under the \textbf{MIT License} (\texttt{LICENSE}).
-\textbf{Hugging Face:} scrubbed dataset \href{https://huggingface.co/datasets/cap-jmk-real/hermes-next-tool-mix}{\nolinkurl{cap-jmk-real/hermes-next-tool-mix}} and model checkpoints \href{https://huggingface.co/cap-jmk-real/textnca-next-tool}{\nolinkurl{textnca-next-tool}} / \href{https://huggingface.co/cap-jmk-real/baseline-next-tool}{\nolinkurl{baseline-next-tool}} (revision tags not frozen; see \texttt{paper/availability.md}).
-\textbf{Pending release:} full curated corpus compilation scripts and pilot harness reproduction package; target alignment with \texttt{docs/huggingface-distribution.md} slot **D** promotion.
-\textbf{Proofs:} \nolinkurl{formal_proofs/NCAMetaLearning} (Lean \texttt{v4.35.0}, \texttt{lake build \&\& lake exe ncametalearning}).}
+Training and evaluation code, benchmark evaluations, and formal Lean~4 proofs are open source under the MIT License at \href{https://github.com/cap-jmk-real/nca_research}{\nolinkurl{github.com/cap-jmk-real/nca_research}}.
+Curated dataset splits and trained model checkpoints are available on Hugging Face at \href{https://huggingface.co/datasets/cap-jmk-real/hermes-next-tool-mix}{\nolinkurl{cap-jmk-real/hermes-next-tool-mix}}.
+Formal proofs verify with Lean \texttt{v4.35.0} via \texttt{lake build \&\& lake exe ncametalearning}.}
 
 \newpage
 \begin{thebibliography}{10}
@@ -531,7 +532,12 @@ J.-W.~Li.
 
 \clearpage
 \appendix
-\section*{Supplementary Information: Formal Lean 4 Proofs}
+\twocolumn[{%
+  \begin{center}
+    {\Large\bfseries Supplementary Information: Formal Lean 4 Proofs}\par
+    \vspace{1em}
+  \end{center}
+}]
 \label{sec:supplementary}
 
 \paragraph{Theoretical Scope and Premise Guarantees.}
