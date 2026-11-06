@@ -21,8 +21,8 @@
 \setlength{\intextsep}{5pt plus 2pt minus 2pt}
 \setlength{\dbltextfloatsep}{5pt plus 2pt minus 2pt}
 \setlength{\dblfloatsep}{5pt plus 2pt minus 2pt}
-\setlength{\abovecaptionskip}{3pt}
-\setlength{\belowcaptionskip}{3pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{4pt}
 
 \hypersetup{
   colorlinks=true,
@@ -239,7 +239,6 @@ Let $\mathcal{T}_{\mathrm{tree}}$ denote a hierarchical decision tree DAG on $V$
 
 \begin{figure}[tbp]
 \centering
-\vspace{-2mm}
 \fbox{\parbox{0.92\columnwidth}{%
 \small
 \textbf{Lean 4 Kernel Verification Summary:}
@@ -254,20 +253,17 @@ Let $\mathcal{T}_{\mathrm{tree}}$ denote a hierarchical decision tree DAG on $V$
 \end{itemize}
 Lean package: \nolinkurl{formal_proofs/NCAMetaLearning}
 }}
-\vspace{-2mm}
 \caption{\textbf{Machine-checked formal verification status in the Lean 4 proof assistant.} Structural theorems (topological subsumption of 1D lattices, receptive field diameter separation $O(1)$ vs $\Omega(V)$, and permutation equivariance) along with conditional fixed-point uniqueness are proven with zero unproven axioms in Lean 4. Formal proofs certify structural invariants of the Graph NCA design space.}
 \label{fig:lean-status}
-\vspace{-2mm}
 \end{figure}
 
-\begin{table}[tbp]
+\begin{table*}[tbp]
 \centering
-\vspace{-2mm}
+\small
 \caption{\textbf{Primary agent action routing benchmark at 10{,}000 AdamW steps.} All \textbf{Top-1/Top-3/Macro F1} columns are on the \textbf{curated Hermes test split} (3{,}530 turns; 57{,}675 train / 3{,}465 val; session holdout; \texttt{EXP-20261102-001}) unless marked. Default graph/tabular/linear rows: test top-1 = mean over seeds $\{0,1,2\}$, $K{=}4$, SVD128 (35.3k) or as listed, 10k steps, CUDA training. $^\S$Deep Tree row: \textbf{test} top-1 from 200k grokking run (\texttt{EXP-20261102-002}, $K{=}8$, label smoothing, SVD128). *Local Hermes \textbf{test} (\texttt{EXP-20261004-001}). $^\ddagger$Author-reported \textbf{test} (150k intent, \texttt{EXP-20261102-004}; no score JSON). Inference: batch-1 CPU forward p50 (1 thread, Apple M1).}
 \label{tab:primary}
-\vspace{-2mm}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}llccccc@{}}
+\vspace{2pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llccccc@{}}
 \toprule
 \textbf{Architecture} & \textbf{Model Family} & \textbf{Params} & \textbf{Inference} & \textbf{Test Top-1} & \textbf{Test Top-3} & \textbf{Test F1} \\
 \midrule
@@ -283,10 +279,8 @@ Graph NCA (Star Topology) & Cellular Automaton & 35.3k & 0.37 ms & $\mathbf{66.1
 \midrule
 \textbf{Graph NCA (Deep Tree, $K{=}8$, LS)$^\S$} & \textbf{Cellular Automaton} & \textbf{59.2k} & \textbf{0.66 ms} & $\mathbf{68.07\%}$ & $\mathbf{91.24\%}$ & $\mathbf{0.628}$ \\
 \bottomrule
-\end{tabular}%
-}
-\vspace{-2mm}
-\end{table}
+\end{tabular*}
+\end{table*}
 
 \section{Experimental Protocol}
 
@@ -327,17 +321,13 @@ Table~\ref{tab:primary} reports primary performance on curated agent traces unde
 
 \begin{figure}[t]
 \centering
-\vspace{-2mm}
 \includegraphics[width=\columnwidth]{figures/fig2_learning_curves.pdf}
-\vspace{-2mm}
 \caption{\textbf{Empirical training and validation trajectories over an extended 200k-step AdamW budget.} \textbf{Y-axis: curated val top-1} vs training steps (not test). Deep Tree uses $K=8$; other curves $K=4$. Peak \textbf{curated val} / \textbf{curated test} at end of run: Deep Tree $69.47\%$ val / $68.07\%$ test; Star $66.19\%$ test; 1D $64.64\%$ test; Flat $60.71\%$ test; HistGradientBoosting $70.58\%$ val / $69.47\%$ test.}
 \label{fig:learning-curves}
-\vspace{-2mm}
 \end{figure}
 
 \begin{figure*}[t]
 \centering
-\vspace{-2mm}
 \begin{minipage}{0.48\textwidth}
   \centering
   \includegraphics[width=0.86\linewidth]{figures/fig3_pareto_efficiency.pdf}
@@ -346,10 +336,8 @@ Table~\ref{tab:primary} reports primary performance on curated agent traces unde
   \centering
   \includegraphics[width=0.86\linewidth]{figures/fig4_ablation_bars.pdf}
 \end{minipage}
-\vspace{-3mm}
 \caption{\textbf{Empirical efficiency and inductive bias breakdown.} (Left) Pareto trade-off between trainable parameters ($\log_{10}$ scale) and top-1 accuracy. \textbf{Open circles:} \textbf{local Hermes test} top-1 on compact $\sim$26.7k ablation configs (5k--150k steps; not comparable to Table~\ref{tab:primary}). \textbf{Filled diamonds:} \textbf{curated test} top-1 at 10k headline operating points from Table~\ref{tab:primary} (\texttt{EXP-20261102-001}). (Right) \textbf{Curated val} top-1 (blue) vs \textbf{local Hermes test} top-1 (orange) across message-passing variants (seeds 0--2).}
 \label{fig:pareto-and-ablations}
-\vspace{-3mm}
 \end{figure*}
 
 \subsection{Feature Parity \& Ablation Studies}
@@ -360,10 +348,8 @@ Specifically, 1D lattices reach $64.64\%$, hierarchical tree DAGs $65.27\%$, con
 
 \begin{table}[tbp]
 \centering
-\vspace{-2mm}
 \caption{\textbf{Empirical feature parity and 10,000-iteration bootstrap significance evaluation.} \textbf{Val Top-1:} curated validation split. \textbf{Test Top-1:} curated test split (3{,}530 turns). Graph/tabular rows at 10k AdamW except Deep Tree ($K{=}8$, LS, 200k, \texttt{EXP-20261102-002}). Seeds 0--2; bootstrap CIs on test. Fixed star exceeds meta on \textbf{curated test} means ($66.19\%$ vs.\ $65.33\%$). Deep Tree \textbf{curated test} $68.07\%$ vs HistGradientBoosting $69.47\%$ (both test).}
 \label{tab:feature-parity}
-\vspace{-2mm}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{@{}lcccc@{}}
 \toprule
@@ -383,7 +369,6 @@ Always-Terminal Majority Prior & -- & $54.30\%$ & $54.30 \pm 0.49\%$ & $[53.34, 
 \bottomrule
 \end{tabular}%
 }
-\vspace{-2mm}
 \end{table}
 
 Table~\ref{tab:ablations} summarizes the 150k-step ablations isolating the structural components of the cellular update.
@@ -405,7 +390,6 @@ Flat Baseline Twin & \texttt{EXP-20261006-001} & 62.49\% & 15{,}000 \\
 \bottomrule
 \end{tabular}%
 }
-\vspace{-3mm}
 \end{table}
 
 \paragraph{Analysis of Inductive Biases.}
@@ -421,12 +405,11 @@ To measure real-world system utility, I report \textbf{preliminary} pilot diagno
 
 \begin{table*}[tbp]
 \centering
-\scriptsize
-\renewcommand{\arraystretch}{0.60}
-\vspace{-6mm}
+\small
+\renewcommand{\arraystretch}{1.08}
 \caption{\textbf{Preliminary pilot agentic diagnostics (not matched controls).} GNCA column: \texttt{EXP-20261102-003}. Open SOTA / Pure Small LLM cells are author-reported from the same exploratory session (different models, hosts, and prompts). Do \textbf{not} treat point gaps as statistically significant. GNCA routing latency: Apple M1 CPU ($N=89$ $\tau^2$ turns). $^\dagger$Local CPU vs remote API (network included).}
 \label{tab:live-benchmarks}
-\vspace{-5mm}
+\vspace{2pt}
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcccc@{}}
 \toprule
 \textbf{Evaluation Metric / Benchmark} & \textbf{Open SOTA} & \textbf{Pure Small LLM} & \textbf{Dual GNCA} & \textbf{Notes} \\
@@ -443,7 +426,6 @@ Per-Turn Schema Token Savings & $0\%$ & $0\%$ & $\mathbf{68.4\%}$ & mock/airline
 Cumulative Benchmark Tokens & $209{,}734$ & $209{,}734$ & $\mathbf{117{,}462}$ & $-44.0\%$ ($92{,}272$ saved) \\
 \bottomrule
 \end{tabular*}
-\vspace{-5mm}
 \end{table*}
 
 \paragraph{Controlled BFCL Benchmark \& Router Ablation (E1v2 \& E2v2).}
