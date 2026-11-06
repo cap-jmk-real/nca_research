@@ -1,0 +1,13 @@
+{
+  "model": "qwen3.5:9b",
+  "dataset": "curated",
+  "split": "test",
+  "n": 3530,
+  "top1": 35.01,
+  "top3": 63.91,
+  "macro_f1": 19.7,
+  "no_letter_rows": 0,
+  "latency_ms_p50": 377.861,
+  "latency_ms_p95": 728.514,
+  "method": "first-token logprob over lettered options, top_logprobs=20, think=false, batch 1, warm model"
+}

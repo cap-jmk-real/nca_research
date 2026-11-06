@@ -1,0 +1,63 @@
+{
+  "id": "EXP-20261102-003",
+  "title": "Dual-system exploratory pilot diagnostics (tau2-bench, BFCL, token audit)",
+  "status": "preliminary",
+  "date": "2026-11-02",
+  "hypothesis_ids": [
+    "H25",
+    "H13",
+    "dual-system"
+  ],
+  "claims_supported": [
+    "Exploratory Dual GNCA pilot aggregates in Table live-benchmarks (GNCA column and token audit)"
+  ],
+  "claims_not_supported": [],
+  "hardware": {
+    "system1": "Apple M1 CPU — GNCA forward + harness overhead",
+    "system2": "FrogNano-4B actuator",
+    "open_sota": "Azure AI hosted Llama-4 / DeepSeek (exploratory non-matched baseline)"
+  },
+  "software": {
+    "artifact_json": "stage0/stage0_results/pilot_exploratory_ledger.json"
+  },
+  "data": {
+    "tau2_mock_tasks": 10,
+    "tau2_pass1_correct": 8,
+    "tau2_turns": 89,
+    "tau2_writes_correct": 7,
+    "tau2_writes_total": 7,
+    "bfcl_irrelevance_probes": 30,
+    "swe_episodes": 1,
+    "swe_unit_tests": 14
+  },
+  "model": {
+    "router": "Graph NCA dual-system"
+  },
+  "training": {
+    "trained": false,
+    "note": "Evaluation-only exploratory pilot"
+  },
+  "metrics": {
+    "gnca_pilot": {
+      "tau2_pass1_percent": 80.0,
+      "bfcl_irrelevance_probes_n": 30,
+      "bfcl_irrelevance_correct": 27,
+      "bfcl_irrelevance_percent": 90.0,
+      "routing_latency_ms_mean": 21.43,
+      "routing_latency_ms_sd": 10.2,
+      "token_baseline_total": 209734,
+      "token_dual_gnca_total": 117462,
+      "token_reduction_percent": 44.0
+    }
+  },
+  "artifacts": {
+    "json": "stage0/stage0_results/pilot_exploratory_ledger.json",
+    "controlled_ablation_e2": "stage0/stage0_results/e2_router_ablation.json",
+    "controlled_ablation_e2v2": "stage0/stage0_results/e1v2/run/e2v2_router_ablation.json"
+  },
+  "repro": {
+    "command": "python scripts/reproduce_headline.py",
+    "git_commit": "9cbe9be636a4d214ac49e24c0adb58ae06b1f0d2"
+  },
+  "si_notes": "Exploratory pilot ledger archived in stage0/stage0_results/pilot_exploratory_ledger.json; controlled matched-actuator router ablations are archived in e2_router_ablation.json and e2v2_router_ablation.json."
+}

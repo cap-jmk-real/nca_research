@@ -1,0 +1,103 @@
+{
+  "name": "bfcl_e1v2_synth_train",
+  "use": "TRAIN only (ablation real+synthetic); val/test 100% real",
+  "generator": "stage0/e1v2_synth_generate.py",
+  "deployment": "gpt-4.1-mini (2025-04-14) @ klaut-research-aoai, Azure region Sweden Central (x-ms-region verified), api 2025-01-01-preview",
+  "temperature": 0.9,
+  "seeds": "per batch, logged",
+  "batches": 41,
+  "tokens_in": 9648,
+  "tokens_out": 29178,
+  "cost_eur_est": 0.0505,
+  "raw_rows": 801,
+  "dropped_dedupe_or_schema": 19,
+  "dedupe": "exact normalised text vs val+test; TF-IDF(1-2gram) cosine >0.9 vs val+test and vs earlier synthetic rows dropped",
+  "prompt_context": "train rows only as style examples; test never shown",
+  "rule_filter": "kept only rows whose function name maps to the target label via bfcl_label_map (dropped 116, mostly todo.add-style names)",
+  "manual_sample": "30 random rows read by hand 2026-11-03: 30/30 plausible for their label",
+  "caveat": "real goals list the gold function among the offered ones (71-100% of rows per class); synthetic goals never contain it, so the offered list in synthetic rows is distractors only. This is a known train-only distribution difference; real-only vs real+synthetic ablation is the comparison.",
+  "rows": 684,
+  "labels": {
+    "terminal": 173,
+    "write_file": 172,
+    "read_file": 214,
+    "todo": 125
+  },
+  "sha256": "4e3077d8b5b435632bb697c4821c779a7290fddf0ce8c33cb188e493ebc87455",
+  "raw_sha256": "69a8c35fda09b444b95a0fd809ec160d94e316c6f412c89450cbc88906753fb6",
+  "batch_log_sha256": "16cdbdde5b6132f14724ad0bdc3599b7a7f1be59fcc36afeceb914f3b8e07c8f",
+  "version": 2,
+  "v1_generation": {
+    "rows": 685,
+    "labels": {
+      "terminal": 174,
+      "write_file": 172,
+      "read_file": 214,
+      "todo": 125
+    },
+    "sha256": "3e06878a9fd64d4c1c56699d58b15ff6ac43d855b8aeefeb76edf4f73608f8a0",
+    "raw_sha256": "69a8c35fda09b444b95a0fd809ec160d94e316c6f412c89450cbc88906753fb6",
+    "batch_log_sha256": "16cdbdde5b6132f14724ad0bdc3599b7a7f1be59fcc36afeceb914f3b8e07c8f",
+    "cost_eur_est": 0.0505,
+    "tokens_in": 9648,
+    "tokens_out": 29178,
+    "batches": 41
+  },
+  "format": "question rewritten by gpt-4.1-mini (temp 0.3, EU Sweden Central re-verified via x-ms-region) to contain no function identifiers + offered-function list copied from a random REAL TRAIN row of another class, names mapping to the target label removed; correct function never named (stage0/e1v2_synth_rewrite.py)",
+  "rewrite_batches": 28,
+  "rewrite_tokens_in": 21597,
+  "rewrite_tokens_out": 15906,
+  "rewrite_cost_eur_est": 0.0341,
+  "cost_eur_est_total": 0.0846,
+  "leak_check": {
+    "terminal": {
+      "synth": [
+        0,
+        173
+      ],
+      "real_train": [
+        22,
+        22
+      ],
+      "pass": true
+    },
+    "todo": {
+      "synth": [
+        0,
+        125
+      ],
+      "real_train": [
+        8,
+        8
+      ],
+      "pass": true
+    },
+    "write_file": {
+      "synth": [
+        0,
+        172
+      ],
+      "real_train": [
+        5,
+        7
+      ],
+      "pass": true
+    },
+    "read_file": {
+      "synth": [
+        0,
+        214
+      ],
+      "real_train": [
+        1,
+        1
+      ],
+      "pass": true
+    }
+  },
+  "dedupe_v2": "exact vs val+test: 0 dropped; TF-IDF cosine>0.9 vs val+test: 0; vs other synthetic rows: 1 dropped",
+  "automatic_checks_v2": "correct function name absent from goal (0/684 leaks); remaining snake_case tokens in question text are user-supplied file names (e.g. sensor_readings.csv), checked by hand",
+  "manual_sample_v2": "30 random v2 rows read by hand 2026-11-03: 30/30 plausible for their label, none names the correct function",
+  "batch_log_sha256_v2": "5649f530d06fbc29f3ed0b25705a51ccf01a36dde2095c55651cf85dad2ef46a",
+  "file": "bfcl_e1v2_synth_train.v2.jsonl"
+}

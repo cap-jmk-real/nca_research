@@ -1,0 +1,175 @@
+{
+  "split_name": "bfcl_e1v2",
+  "seed": 20261103,
+  "dataset": "gorilla-llm/Berkeley-Function-Calling-Leaderboard",
+  "fractions": {
+    "train": 0.6,
+    "val": 0.2,
+    "test": 0.2
+  },
+  "grouping": "normalised goal text",
+  "n_total": 3473,
+  "source_sha256": {
+    "BFCL_v3_simple.json": "fbc37b2ad252bf9af985582e0e07b456173fe627d957491472ea9cef5fb83158",
+    "possible_answer/BFCL_v3_simple.json": "2911a2bc00df82c4f999ffa64fedb0164cb88e96212ffa5972087eb91fd496ee",
+    "BFCL_v3_multiple.json": "aef168155ebd74b7ac2401198b201343bc7d16d7a3d7e0d4e6d8ee82c6969b2a",
+    "possible_answer/BFCL_v3_multiple.json": "244e00ce9395df948bcafc7bee64e8f9c87ef70887587d83cae45b13699f3047",
+    "BFCL_v3_parallel.json": "fad375d68295776efb63e5aa331dd884f8635e7bb50e05908113c74f14281c3c",
+    "possible_answer/BFCL_v3_parallel.json": "3af54bf04e5b7640b03a9b6a82440f52474feb24b398f94435fd2b155c7727de",
+    "BFCL_v3_parallel_multiple.json": "8863ea8433239f55c5f016154cf0830853c89f693c6ea270396a2fa121960579",
+    "possible_answer/BFCL_v3_parallel_multiple.json": "df4d2c16238c1465dc04697c273cf3ab4a450075fcd274e3dc86ad5bf0049b75",
+    "BFCL_v3_live_simple.json": "b398743e6c0dfd2a87cee97a3bc1b9b90b81edc228c3153a820a93b51186fc00",
+    "possible_answer/BFCL_v3_live_simple.json": "4a1988780cdd8a723967587614cb84a9f53aa5d6fd37f83c78a0dd7acc2f3d15",
+    "BFCL_v3_live_multiple.json": "af2520ac5bb0b05aa9b8abe14a79b87198e5a3137a707d4f5633c792330f0cee",
+    "possible_answer/BFCL_v3_live_multiple.json": "97e90d59c5bd76c55a2920ce93e5566e9046307d3f558578f085f9d3a56c3084",
+    "BFCL_v3_live_parallel.json": "6c26e9fdc3350cf596e6d1ea9c179cbff834761bccf562f4141ed29a839ca421",
+    "possible_answer/BFCL_v3_live_parallel.json": "5e3d26c9103dd25912003d3c5f681f30efc6fd2b5f8ba474450f2df21fdf6fcb",
+    "BFCL_v3_live_parallel_multiple.json": "21d4b9319c1faac431e22757b367ea28917fe467364c3a4b17f16ec06d4f6e79",
+    "possible_answer/BFCL_v3_live_parallel_multiple.json": "f5b5f360556c5feb51db46fb9f56ee4b304f4b45b161599bbb14161c98a2873f",
+    "BFCL_v3_irrelevance.json": "975f51c51f688649fd190078efd87081241e0a326f9114a2ea3c1ca2440d8690",
+    "BFCL_v3_live_irrelevance.json": "0d259e1c3ab6ba06c2a51911e2f49ecaa2eac3723a4a14f183a7687955e61338"
+  },
+  "splits": {
+    "train": {
+      "rows": 2083,
+      "sha256": "41e1e3356a50d0668eab5ef5aea277893a18f982cadac6bbe4f69d24f7cd1abb",
+      "ids_sha256": "61ca6a4cbfae219fe6e150ad1e59b1854103146a897b036e7a290be70f4a5386",
+      "labels": {
+        "execute_code": {
+          "n": 1168,
+          "pct": 56.07
+        },
+        "respond": {
+          "n": 674,
+          "pct": 32.36
+        },
+        "search_files": {
+          "n": 203,
+          "pct": 9.75
+        },
+        "terminal": {
+          "n": 22,
+          "pct": 1.06
+        },
+        "todo": {
+          "n": 8,
+          "pct": 0.38
+        },
+        "write_file": {
+          "n": 7,
+          "pct": 0.34
+        },
+        "read_file": {
+          "n": 1,
+          "pct": 0.05
+        }
+      },
+      "sources": {
+        "BFCL_v3_irrelevance.json": 152,
+        "BFCL_v3_live_irrelevance.json": 520,
+        "BFCL_v3_live_multiple.json": 619,
+        "BFCL_v3_live_parallel.json": 8,
+        "BFCL_v3_live_parallel_multiple.json": 13,
+        "BFCL_v3_live_simple.json": 151,
+        "BFCL_v3_multiple.json": 125,
+        "BFCL_v3_parallel.json": 137,
+        "BFCL_v3_parallel_multiple.json": 117,
+        "BFCL_v3_simple.json": 241
+      }
+    },
+    "val": {
+      "rows": 698,
+      "sha256": "71d0d55b9ecca7c70d7f84dcd6aa59336dc6577a192b2313b57bc3a6e2371acf",
+      "ids_sha256": "d20ca8d80ac100656ff1c55aad9ccdd6054bef56e8f5dca952d52d07901c4cef",
+      "labels": {
+        "execute_code": {
+          "n": 388,
+          "pct": 55.59
+        },
+        "respond": {
+          "n": 229,
+          "pct": 32.81
+        },
+        "search_files": {
+          "n": 68,
+          "pct": 9.74
+        },
+        "terminal": {
+          "n": 7,
+          "pct": 1.0
+        },
+        "todo": {
+          "n": 3,
+          "pct": 0.43
+        },
+        "write_file": {
+          "n": 2,
+          "pct": 0.29
+        },
+        "read_file": {
+          "n": 1,
+          "pct": 0.14
+        }
+      },
+      "sources": {
+        "BFCL_v3_irrelevance.json": 40,
+        "BFCL_v3_live_irrelevance.json": 187,
+        "BFCL_v3_live_multiple.json": 213,
+        "BFCL_v3_live_parallel.json": 5,
+        "BFCL_v3_live_parallel_multiple.json": 7,
+        "BFCL_v3_live_simple.json": 50,
+        "BFCL_v3_multiple.json": 41,
+        "BFCL_v3_parallel.json": 31,
+        "BFCL_v3_parallel_multiple.json": 42,
+        "BFCL_v3_simple.json": 82
+      }
+    },
+    "test": {
+      "rows": 692,
+      "sha256": "f4714d930a4ced3eb957890ce5abb8762be8a34feea5b0dce82058997d9db250",
+      "ids_sha256": "80e7d7b9c2ed5193f104c1d45d1da0fadc789d5b23ed83c0bcc52d07998c35a7",
+      "labels": {
+        "execute_code": {
+          "n": 388,
+          "pct": 56.07
+        },
+        "respond": {
+          "n": 223,
+          "pct": 32.23
+        },
+        "search_files": {
+          "n": 68,
+          "pct": 9.83
+        },
+        "terminal": {
+          "n": 7,
+          "pct": 1.01
+        },
+        "todo": {
+          "n": 3,
+          "pct": 0.43
+        },
+        "write_file": {
+          "n": 2,
+          "pct": 0.29
+        },
+        "read_file": {
+          "n": 1,
+          "pct": 0.14
+        }
+      },
+      "sources": {
+        "BFCL_v3_irrelevance.json": 48,
+        "BFCL_v3_live_irrelevance.json": 175,
+        "BFCL_v3_live_multiple.json": 221,
+        "BFCL_v3_live_parallel.json": 3,
+        "BFCL_v3_live_parallel_multiple.json": 4,
+        "BFCL_v3_live_simple.json": 57,
+        "BFCL_v3_multiple.json": 34,
+        "BFCL_v3_parallel.json": 32,
+        "BFCL_v3_parallel_multiple.json": 41,
+        "BFCL_v3_simple.json": 77
+      }
+    }
+  }
+}

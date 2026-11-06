@@ -1,0 +1,83 @@
+{
+  "experiment": "EXP-20261102-003",
+  "title": "Exploratory Dual-System Pilot Ledger (Non-Matched Controls)",
+  "status": "exploratory_pilot",
+  "caveat": "Exploratory end-to-end systems diagnostics; baselines differ in host, actuator model, and prompt scaffolding and are not matched controls. For controlled matched-actuator router ablations, see stage0/stage0_results/e2_router_ablation.json and stage0/stage0_results/e1v2/run/e2v2_router_ablation.json.",
+  "tau2_bench_mock_subset": {
+    "n_tasks": 10,
+    "n_turns": 89,
+    "db_write_calls_total": 7,
+    "systems": {
+      "Dual_GNCA_FrogNano4B": {
+        "pass1_correct": 8,
+        "pass1_percent": 80.0,
+        "wilson_ci95_percent": [49.0, 94.3],
+        "db_writes_correct": 7,
+        "db_writes_total": 7,
+        "db_write_accuracy_percent": 100.0,
+        "routing_latency_ms_mean": 21.43,
+        "routing_latency_ms_sd": 10.2,
+        "token_total": 117462,
+        "token_reduction_vs_open_sota_percent": 44.0,
+        "per_task_ledger": [
+          {"task_id": "tau2_mock_01", "turns": 9, "pass1": 1, "db_writes": 1, "db_writes_ok": 1},
+          {"task_id": "tau2_mock_02", "turns": 8, "pass1": 1, "db_writes": 1, "db_writes_ok": 1},
+          {"task_id": "tau2_mock_03", "turns": 10, "pass1": 1, "db_writes": 1, "db_writes_ok": 1},
+          {"task_id": "tau2_mock_04", "turns": 9, "pass1": 0, "db_writes": 0, "db_writes_ok": 0},
+          {"task_id": "tau2_mock_05", "turns": 8, "pass1": 1, "db_writes": 1, "db_writes_ok": 1},
+          {"task_id": "tau2_mock_06", "turns": 9, "pass1": 1, "db_writes": 1, "db_writes_ok": 1},
+          {"task_id": "tau2_mock_07", "turns": 11, "pass1": 0, "db_writes": 0, "db_writes_ok": 0},
+          {"task_id": "tau2_mock_08", "turns": 8, "pass1": 1, "db_writes": 1, "db_writes_ok": 1},
+          {"task_id": "tau2_mock_09", "turns": 9, "pass1": 1, "db_writes": 1, "db_writes_ok": 1},
+          {"task_id": "tau2_mock_10", "turns": 8, "pass1": 1, "db_writes": 0, "db_writes_ok": 0}
+        ]
+      },
+      "Open_SOTA_Llama4_DeepSeek": {
+        "pass1_correct": 2,
+        "pass1_percent": 20.0,
+        "wilson_ci95_percent": [5.7, 51.0],
+        "db_writes_correct": 2,
+        "db_writes_total": 7,
+        "db_write_accuracy_percent": 28.6,
+        "routing_latency_ms_mean": 1420.0,
+        "token_total": 209734
+      },
+      "Pure_Small_LLM_FrogNano4B": {
+        "pass1_correct": 1,
+        "pass1_percent": 10.0,
+        "wilson_ci95_percent": [1.8, 40.4],
+        "db_writes_correct": 1,
+        "db_writes_total": 7,
+        "db_write_accuracy_percent": 14.3,
+        "routing_latency_ms_mean": 480.0
+      }
+    }
+  },
+  "bfcl_irrelevance_pilot_subset": {
+    "n_probes": 30,
+    "threshold_tau_escalate": 0.76,
+    "systems": {
+      "Dual_GNCA_FrogNano4B": {
+        "triage_correct": 27,
+        "triage_percent": 90.0,
+        "wilson_ci95_percent": [74.4, 96.5]
+      },
+      "Open_SOTA_Llama4_DeepSeek": {
+        "triage_correct": 22,
+        "triage_percent": 73.3,
+        "wilson_ci95_percent": [55.6, 85.8]
+      },
+      "Pure_Small_LLM_FrogNano4B": {
+        "triage_correct": 12,
+        "triage_percent": 40.0,
+        "wilson_ci95_percent": [24.6, 57.7]
+      }
+    }
+  },
+  "swe_repair_case_study": {
+    "n_episodes": 1,
+    "unit_tests_passed": 14,
+    "unit_tests_total": 14,
+    "pass_rate_percent": 100.0
+  }
+}

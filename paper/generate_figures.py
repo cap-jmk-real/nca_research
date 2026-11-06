@@ -4,6 +4,7 @@ generate_figures.py — Publication-grade figures for Graph NCA Research paper.
 Adheres strictly to the scientific-plotting skill and publisher compliance standards.
 """
 
+import json
 import os
 import numpy as np
 import matplotlib as mpl
@@ -12,6 +13,7 @@ from matplotlib.patches import FancyBboxPatch, FancyArrowPatch, Circle, Connecti
 
 # Ensure target directory exists
 OUT_DIR = os.path.join(os.path.dirname(__file__), "figures")
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 os.makedirs(OUT_DIR, exist_ok=True)
 
 # Publication styling
@@ -34,7 +36,7 @@ mpl.rcParams.update({
     'grid.linestyle': '--',
     'savefig.dpi': 300,
     'savefig.bbox': 'tight',
-    'savefig.pad_inches': 0.02,
+    'savefig.pad_inches': 0.08,
 })
 
 # Okabe-Ito Color Palette
@@ -170,41 +172,46 @@ def generate_fig2_learning_curves():
     print("Saved fig2_learning_curves")
 
 def generate_fig3_pareto_efficiency():
-    """Figure 3: Pareto Frontier (Accuracy vs. Parameter Count & Inference Latency)."""
+    """Figure 3: Pareto frontier — local Hermes OOD ablations vs primary curated-test points."""
     fig, ax = plt.subplots(figsize=(3.4, 2.4))
-    
-    # Models evaluated: name, params, acc (held-out local Hermes top-1), is_ours, latency_ms
-    models = [
-        {"name": "Graph NCA\n(Carry)", "params": 26749, "acc": 0.3903, "color": COLORS['blue'], "marker": '*', "size": 140},
-        {"name": "Graph NCA\n(Mix13)", "params": 26749, "acc": 0.4009, "color": COLORS['vermilion'], "marker": '*', "size": 150},
-        {"name": "1D Baseline", "params": 26749, "acc": 0.2586, "color": COLORS['sky'], "marker": 'o', "size": 60},
-        {"name": "Long-Range", "params": 34238, "acc": 0.2301, "color": COLORS['green'], "marker": 's', "size": 60},
-        {"name": "Adaptive Halt", "params": 26766, "acc": 0.2977, "color": COLORS['purple'], "marker": '^', "size": 60},
-        {"name": "Flat MLP", "params": 4043, "acc": 0.4484, "color": COLORS['orange'], "marker": 'D', "size": 60},
-        {"name": "Qwen2.5-1.5B", "params": 1540000000, "acc": 0.0629, "color": COLORS['gray'], "marker": 'X', "size": 90},
-    ]
-    
-    for m in models:
-        ax.scatter(m["params"], m["acc"], color=m["color"], marker=m["marker"], s=m["size"], zorder=5, edgecolors='#222222', lw=0.6)
-        
-    # Annotations
-    ax.annotate("Graph NCA\n(Carry: 39.0%)", (26749, 0.3903), textcoords="offset points", xytext=(-25, -22), fontsize=7.2, weight='bold', color=COLORS['blue'])
-    ax.annotate("Mix13 Best\n(40.1%)", (26749, 0.4009), textcoords="offset points", xytext=(8, -4), fontsize=7.2, weight='bold', color=COLORS['vermilion'])
-    ax.annotate("Flat MLP\n(44.8%)", (4043, 0.4484), textcoords="offset points", xytext=(8, -8), fontsize=7.2, color=COLORS['orange'])
-    ax.annotate("1D Baseline\n(25.9%)", (26749, 0.2586), textcoords="offset points", xytext=(8, -4), fontsize=7.2, color=COLORS['sky'])
-    ax.annotate("Qwen2.5-1.5B\n(6.3% - Out of Dist.)", (1540000000, 0.0629), textcoords="offset points", xytext=(-85, 8), fontsize=7.2, color=COLORS['gray'])
 
-    # Always-terminal ceiling dashed line
-    ax.axhline(0.4947, color='#999999', ls='-.', lw=1.1, label="Always-Terminal Heuristic (49.5%)")
+    ood_models = [
+        {"params": 26749, "acc": 0.3903, "color": COLORS['blue']},
+        {"params": 26749, "acc": 0.4009, "color": COLORS['vermilion']},
+        {"params": 26749, "acc": 0.2586, "color": COLORS['sky']},
+        {"params": 34238, "acc": 0.2301, "color": COLORS['green']},
+        {"params": 26766, "acc": 0.2977, "color": COLORS['purple']},
+        {"params": 4043, "acc": 0.4484, "color": COLORS['orange']},
+        {"params": 1540000000, "acc": 0.0629, "color": COLORS['gray']},
+    ]
+    for m in ood_models:
+        ax.scatter(m["params"], m["acc"], facecolors='white', edgecolors=m["color"],
+                   marker='o', s=48, zorder=4, lw=1.1)
+
+    primary = [
+        (35300, 0.6533, COLORS['blue']),
+        (35300, 0.6619, COLORS['sky']),
+        (59200, 0.6807, COLORS['purple']),
+        (1200000, 0.6587, COLORS['black']),
+        (10400, 0.6947, COLORS['green']),
+    ]
+    for params, acc, color in primary:
+        ax.scatter(params, acc, color=color, marker='D', s=70, zorder=6,
+                   edgecolors='#222222', lw=0.7)
+
+    ax.scatter([], [], facecolors='white', edgecolors=COLORS['gray'], marker='o', s=36,
+               label='Local Hermes OOD')
+    ax.scatter([], [], color=COLORS['blue'], marker='D', s=36, label='Curated test @10k')
+    ax.axhline(0.4947, color='#999999', ls='-.', lw=1.0, label='Always-terminal (49.5%)')
 
     ax.set_xscale('log')
     ax.set_xlim(1e3, 1e10)
-    ax.set_ylim(0.0, 0.55)
-    ax.set_xlabel(r"Model Parameter Count ($\log_{10}$)")
-    ax.set_ylabel("Held-Out Local Hermes Top-1")
+    ax.set_ylim(0.0, 0.74)
+    ax.set_xlabel(r"Trainable parameters ($\log_{10}$ scale)")
+    ax.set_ylabel("Top-1 accuracy")
     ax.grid(True)
     ax.spines[['top', 'right']].set_visible(False)
-    ax.legend(frameon=True, framealpha=0.92, loc='lower left', fontsize=7.2)
+    ax.legend(frameon=True, framealpha=0.92, loc='lower left', fontsize=6.2)
 
     fig.tight_layout()
     fig.savefig(os.path.join(OUT_DIR, "fig3_pareto_efficiency.pdf"))
@@ -250,8 +257,6 @@ def generate_fig4_ablation_bars():
     fig.tight_layout()
     fig.savefig(os.path.join(OUT_DIR, "fig4_ablation_bars.pdf"))
     fig.savefig(os.path.join(OUT_DIR, "fig4_ablation_bars.png"))
-    plt.close(fig)
-    print("Saved fig4_ablation_bars with zero-overlap top legend")
     plt.close(fig)
     print("Saved fig4_ablation_bars")
 

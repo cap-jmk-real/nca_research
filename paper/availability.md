@@ -1,35 +1,47 @@
 # Availability (paper)
 
-**Draft — fill links after top-4 promotion.**
+**Canonical draft:** PR #5 (`cursor/review-majors-remaining-fdeb`). Self-review: `paper/REVIEW.md`.
 
-## Hugging Face (only four live artifacts)
+## Code (public)
+
+| Item | Location |
+| --- | --- |
+| Repository | https://github.com/cap-jmk-real/nca_research |
+| Manuscript pin | `9cbe9be` — https://github.com/cap-jmk-real/nca_research/tree/9cbe9be |
+| Primary benchmark JSON | `stage0/stage0_results/full_history_benchmarks.json` (`EXP-20261102-001`) |
+| Grokking JSON | `stage0/stage0_results/ultra_grokking_results.json` (`EXP-20261102-002`) |
+| SI registry | `paper/si/experiments/` + `paper/si/experiments_index.json` |
+| Open runs / exports | `paper/JULIAN_TODO.md` |
+
+**License:** none in repo yet — see `paper/JULIAN_TODO.md`.
+
+## Hugging Face (top-4 slots — revisions not pinned)
 
 | Slot | Role | Repository | Revision |
 | --- | --- | --- | --- |
-| A | Best TextNCA next-tool | `cap-jmk-real/textnca-next-tool` | _pending_ |
-| B | Best baseline comparator | `cap-jmk-real/baseline-next-tool` | _pending_ |
-| C | Best specialist student | `cap-jmk-real/specialist-python` | _pending_ |
-| D | Best scrubbed dataset | `cap-jmk-real/hermes-next-tool-mix` | _pending_ |
+| A | Best TextNCA next-tool | `cap-jmk-real/textnca-next-tool` | _unpinned_ |
+| B | Best baseline comparator | `cap-jmk-real/baseline-next-tool` | _unpinned_ |
+| C | Best specialist student | `cap-jmk-real/specialist-python` | _unpinned_ |
+| D | Best scrubbed dataset | `cap-jmk-real/hermes-next-tool-mix` | _unpinned_ |
 
-Policy: [docs/huggingface-distribution.md](../docs/huggingface-distribution.md).
-Selector: `scripts/select_top4_artifacts.py`. Quants: `scripts/quantize_checkpoint.py`
-(fp16 → fp8 → int8 → nf4 → ≈2.5 bpw IQ2-class). At most one quant companion
-per slot; promote only if ≥98% of fp16 top-1 or Pareto-better on size/latency.
+Policy: [docs/huggingface-distribution.md](../docs/huggingface-distribution.md).  
+Selector: `scripts/select_top4_artifacts.py`.
 
-## Code
+## Offline / exploratory SI records (author-reported aggregates)
 
-- Git commit: _pending_
-- Branch used for release cut: _pending_
-- SI experiment ids for claimed numbers: see `paper/si/experiments/`
+| Claim | SI record | Notes |
+| --- | --- | --- |
+| Transformer 6L-4H + constrained Qwen Table 1 rows | `EXP-20261102-004` | Author-reported offline; no score JSON in repo |
+| Dual-system pilot (GNCA column, token audit) | `EXP-20261102-003` | Preliminary; per-probe BFCL ledger not in repo |
+| H1b no-class-weight seeds | _(none)_ | Not registered in `paper/si/` |
 
 ## Reproduce
 
 ```bash
-python scripts/select_top4_artifacts.py --write
-python scripts/quantize_checkpoint.py --from-top4 --slot A
-python scripts/prepare_hf_dataset.py --lang python
-python scripts/publish_hf.py all --from-top4 --dry-run
+cd formal_proofs && lake build && lake exe ncametalearning
+python stage0/run_full_history_benchmarks.py --steps 10000 --seeds 0,1,2
+python stage0/run_ultra_grokking_nca.py
+cd paper && pdflatex main.tex && pdflatex main.tex
 ```
 
-Long-train architectural claims require ≥150k steps
-([docs/auto-research-loop.md](../docs/auto-research-loop.md)).
+Long-train architectural claims require ≥150k steps ([docs/auto-research-loop.md](../docs/auto-research-loop.md)).

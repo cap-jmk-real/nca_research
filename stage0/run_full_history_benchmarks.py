@@ -26,6 +26,7 @@ sys.path.insert(0, str(REPO_DIR / "stage0"))
 from common import DATA, load_split, metrics, pct
 from features import goal_text, struct_feats
 from obs_pack import fit_or_load_tfidf, pack_arch
+from eval_utils import rank_from_proba
 from nca_text.model import GraphNCA
 
 LABELS = json.load(open(REPO_DIR / "stage0" / "labels.json"))
@@ -157,13 +158,13 @@ def main():
             random_state=seed,
         ).fit(X_tab["train"], y_tab["train"])
         val_preds = clf.predict_proba(X_tab["val"])
-        val_rank = [list(np.argsort(-p)) for p in val_preds]
+        val_rank = [list(r) for r in rank_from_proba(val_preds, clf.classes_)]
         v_top1 = metrics(list(y_tab["val"]), val_rank, N_CLASSES)["top1"]
         print(f"HGB (lr=0.1, it=200): val_top1={v_top1:.2f}% ({round(time.time() - t0, 1)}s)", flush=True)
 
         test_preds_hgb = clf.predict_proba(X_tab["test"])
-        test_rank_hgb = [list(np.argsort(-p)) for p in test_preds_hgb]
-        test_pred_labels_hgb = np.argmax(test_preds_hgb, axis=1)
+        test_rank_hgb = [list(r) for r in rank_from_proba(test_preds_hgb, clf.classes_)]
+        test_pred_labels_hgb = np.array([r[0] for r in test_rank_hgb])
         m_hgb = metrics(list(y_tab["test"]), test_rank_hgb, N_CLASSES)
         m_hgb["macro_f1"] = round(float(f1_score(list(y_tab["test"]), test_pred_labels_hgb, average="macro", zero_division=0) * 100.0), 2)
         mean_hgb, sd_hgb, ci_hgb = bootstrap_top1(y_tab["test"], test_pred_labels_hgb, seed=seed)
@@ -189,12 +190,12 @@ def main():
         rf = RandomForestClassifier(n_estimators=50, max_depth=15, random_state=seed, n_jobs=4)
         rf.fit(X_tab["train"], y_tab["train"])
         rf_val_prob = rf.predict_proba(X_tab["val"])
-        rf_val_rank = [list(np.argsort(-p)) for p in rf_val_prob]
+        rf_val_rank = [list(r) for r in rank_from_proba(rf_val_prob, rf.classes_)]
         rf_val_top1 = metrics(list(y_tab["val"]), rf_val_rank, N_CLASSES)["top1"]
 
         rf_test_prob = rf.predict_proba(X_tab["test"])
-        rf_test_rank = [list(np.argsort(-p)) for p in rf_test_prob]
-        rf_pred_labels = np.argmax(rf_test_prob, axis=1)
+        rf_test_rank = [list(r) for r in rank_from_proba(rf_test_prob, rf.classes_)]
+        rf_pred_labels = np.array([r[0] for r in rf_test_rank])
         m_rf = metrics(list(y_tab["test"]), rf_test_rank, N_CLASSES)
         m_rf["macro_f1"] = round(float(f1_score(list(y_tab["test"]), rf_pred_labels, average="macro", zero_division=0) * 100.0), 2)
         mean_rf, sd_rf, ci_rf = bootstrap_top1(y_tab["test"], rf_pred_labels, seed=seed)
