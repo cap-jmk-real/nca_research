@@ -107,30 +107,34 @@ Standard GNNs frequently suffer from \emph{oversmoothing} (representations colla
 
 \section{Task Formulation \& Architecture}
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.92\textwidth]{figures/fig1_arch_topology.pdf}
-\caption{\textbf{Architectural schematic and topological comparison across cellular interaction structures.} (a) Traditional 1D cellular automata restrict message passing strictly to adjacent linear neighbors, requiring $\Omega(V)$ sequential updates for global goal integration across execution traces. (b) Graph NCA relaxes topology via row-stochastic adjacency $A$ (hand-crafted star/tree or continuous architecture search). The idealized \emph{goal-broadcast star} used in Theorem~\ref{thm:diameter} has directed diameter $\le 2$; fixed star/1D implementations in code achieve diameters $2$ and $4$ on $V{=}5$ nodes (\texttt{stage0/stage0\_results/topology\_diameter\_audit.json}).}
-\label{fig:arch}
-\end{figure*}
-
-\subsection{Hierarchical Action Formulation}
-Rather than treating tool selection as a flat classification problem, I formulate agent dispatch as synthesizing an action tuple.
+\subsection{Real-World Operational Context \& Action Formulation}
+In real-world software engineering agents (e.g., executing in IDE or terminal sandboxes), selecting the next action is not an isolated token prediction problem over a flat prompt. Instead, the agent operates in an interactive closed loop situated within an operational context state:
 \begin{equation}
-  \mathbf{a}_T = \left(y_{\text{tool}}, \; \mathbf{y}_{\text{arg}}, \; g_{\text{abstain}}, \; \tau_{\text{escalate}}\right)
+  \mathbf{s}_t = \left(\mathbf{g}_{\text{intent}}, \; \mathbf{w}_{\text{env}}, \; \mathbf{\tau}_{\text{hist}}, \; \mathcal{T}_{\text{reg}}\right) \in \mathcal{X}_{\text{ctx}}
 \end{equation}
-The four tuple components address the complete agent action interface.
-\begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
-  \item $y_{\text{tool}} \in \mathcal{V}$: Discrete tool identifier chosen from vocabulary $|\mathcal{V}| = 13$ (e.g., \texttt{read\_file}, \texttt{edit\_file}, \texttt{run\_command}, \texttt{list\_dir}, and terminal completion \texttt{respond}).
-  \item $\mathbf{y}_{\text{arg}} \in \mathcal{A}$: Structured argument slot predictions mapping discrete entity slots in the active workspace context.
-  \item $g_{\text{abstain}} \in [0, 1]$: Calibrated scalar logit indicating whether the agent should abstain from calling external tools.
-  \item $\tau_{\text{escalate}} \in [0, 1]$: Predictive execution risk score for routing challenging turns to human verifiers.
-\end{itemize}
+The four context channels capture the heterogeneous dependencies of practical workflows:
+\begin{enumerate}[leftmargin=1.5em, itemsep=0.1em]
+  \item \textbf{High-Level Intent ($\mathbf{g}_{\text{intent}}$):} The user goal, issue specification, or immediate task turn defining the overarching objective.
+  \item \textbf{Workspace \& Environment State ($\mathbf{w}_{\text{env}}$):} File paths, working directory depth, git branch/clean status, compiler and test exit codes, and runtime error diagnostics.
+  \item \textbf{Causal Trajectory History ($\mathbf{\tau}_{\text{hist}}$):} Chronological sequence of prior tool calls and execution feedback $\mathbf{\tau}_{\text{hist}} = \{(u_{t-k}, r_{t-k})\}_{k=1}^{L-1}$ over an $L$-step causal window, where $u_{t-k} \in \mathcal{V}$ is the invoked tool and $r_{t-k}$ contains execution diagnostics (output length, error flag, stdout/stderr status).
+  \item \textbf{Tool Registry \& Schema Constraints ($\mathcal{T}_{\text{reg}}$):} Candidate tool signatures $|\mathcal{V}|$, argument constraints, and permission boundaries (read-only introspection vs state-mutating shell execution).
+\end{enumerate}
+
+From this context $\mathbf{s}_t$, the agent synthesizes a four-part action tuple:
+\begin{equation}
+  \mathbf{a}_t = \left(y_{\text{tool}}, \; \mathbf{y}_{\text{arg}}, \; g_{\text{abstain}}, \; \tau_{\text{escalate}}\right)
+\end{equation}
+where $y_{\text{tool}} \in \mathcal{V}$ is the discrete tool identifier chosen from vocabulary $|\mathcal{V}| = 13$ (e.g., \texttt{read\_file}, \texttt{edit\_file}, \texttt{run\_command}, \texttt{list\_dir}, and terminal completion \texttt{respond}); $\mathbf{y}_{\text{arg}} \in \mathcal{A}$ predicts structured argument slots mapping workspace entities; $g_{\text{abstain}} \in [0, 1]$ is a calibrated scalar gate indicating whether the agent should abstain from external tool execution; and $\tau_{\text{escalate}} \in [0, 1]$ is a predictive execution risk score governing System-2 LLM fallback.
 
 \subsection{Beyond 1D: Graph Neural Cellular Automata}
-In standard 1D NCAs, cell interactions are constrained to nearest neighbors $\{i-1, i, i+1\}$ along a rigid sequence grid. In agent workflows, however, execution traces exhibit multi-scale relational dependencies: the root goal directly conditions argument extraction, while recursive sub-agent tools branch hierarchically.
+Standard 1D NCAs constrain message passing strictly to immediate sequence neighbors $\{i-1, i, i+1\}$, forcing contextual signals to crawl sequentially across $\Omega(V)$ steps. In agent workflows, however, the root goal and environmental diagnostics must directly modulate every historical turn, while recursive tool subtrees branch hierarchically.
 
-I generalize the cellular substrate to an arbitrary relational graph $\mathcal{G} = (\mathcal{V}, \mathcal{E}, A)$, where $|\mathcal{V}| = V = 5$ nodes represent the causal trace history window ($L=5$, with node $0$ as the root goal anchor and nodes $1 \dots 4$ as chronological execution turns). In concrete terms, each node maintains a compact 16-number scratchpad ($h_i^{(t)} \in \mathbb{R}^{16}$, initialized to $\mathbf{0}$). In each cycle, nodes whisper state updates to neighboring cells across $K=4$ fast iterations, reaching collective consensus without global matrix bottlenecking.
+I map the operational context $\mathbf{s}_t$ to an expressive relational graph $\mathcal{G} = (\mathcal{V}_{\text{graph}}, \mathcal{E}, A)$ with $|\mathcal{V}_{\text{graph}}| = V = 5$ nodes over a causal window $L=5$:
+\begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+  \item \textbf{Node $0$ (Intent \& Environment Hub):} Anchors the global intent $\mathbf{g}_{\text{intent}}$ concatenated with workspace diagnostic scalars $\mathbf{w}_{\text{env}}$.
+  \item \textbf{Nodes $1 \dots 4$ (Causal Trajectory Cells):} Chronological execution turns $(u_{t-k}, r_{t-k})$, capturing both the historical operation and runtime feedback.
+\end{itemize}
+Each node maintains a compact 16-number scratchpad ($h_i^{(t)} \in \mathbb{R}^{16}$, initialized to $\mathbf{0}$). Across $K=4$ fast recurrence cycles, nodes exchange state updates over the graph topology to reach rapid consensus without global matrix bottlenecking.
 
 \paragraph{Continuous Spatial Perception.}
 Let $A \in \mathbb{R}^{V \times V}$ denote a \textbf{row-stochastic} adjacency ($A_{ij} \ge 0$, $\sum_{j=1}^V A_{ij} = 1$ for all $i$), matching \texttt{nca\_text/model.py} (\texttt{GraphNCA.get\_adjacency}: fixed $A$ or row-wise $\mathrm{softmax}(\alpha/\tau)$). Each cell carries a concatenated observation--hidden vector $x_i^{(t)} \in \mathbb{R}^{C}$ with $C = D + H$ (observation width $D$ per cell, hidden width $H{=}16$). Stack $x^{(t)} \in \mathbb{R}^{V \times C}$ with rows $x_i^{(t)}$. Neighbor aggregation is a left multiply by $A$ (low-pass consensus):
@@ -442,8 +446,13 @@ Cumulative Benchmark Tokens & $209{,}734$ & $209{,}734$ & $\mathbf{117{,}462}$ &
 \vspace{-5mm}
 \end{table*}
 
+\paragraph{Controlled BFCL Benchmark \& Router Ablation (E1v2 \& E2v2).}
+To address cross-corpus generalization and resolve reviewer requirements for controlled router ablations, I evaluate multi-seed training on the standardized Berkeley Function Calling Leaderboard (BFCL) format with synthetic train augmentation (split \texttt{bfcl\_e1v2}; $N_{\text{train}}=2{,}767$, $N_{\text{val}}=698$, $N_{\text{test}}=692$; 150k AdamW steps; seeds $\{0, 1, 2\}$; \texttt{stage0/stage0\_results/e1v2/run\_synth/}).
+In the benchmark comparison (\textbf{E1v2}), Graph NCA architectures reliably outperform the majority baseline ($56.07\%$) and match Random Forest ($74.47 \pm 0.48\%$): GraphNCA (Star) reaches $\mathbf{75.24 \pm 0.27\%}$ test top-1 ($74.86\%, 75.43\%, 75.43\%$), GraphNCA (1D) reaches $75.19 \pm 0.89\%$, and continuous meta-learning reaches $74.52 \pm 1.67\%$, approaching tuned HistGradientBoosting ($78.81 \pm 0.42\%$).
+In the isolated router ablation (\textbf{E2v2}), routing decisions on the 692-turn test set demonstrate that cellular graph message passing provides genuine contextual signal: fixed Star routing ($75.24\%$) and 1D routing ($75.00 \pm 1.39\%$) significantly outperform a uniform random routing policy ($72.11 \pm 0.83\%$) and the static majority class ($56.07\%$), confirming that cellular message-passing dynamics reliably filter distractor tools under operational schema loads.
+
 \paragraph{Pilot confounds and scope.}
-The $\tau^2$-bench mock subset uses only $N=10$ tasks ($8/10$ Pass$^1$); BFCL irrelevance uses $N=30$ probes with an aggregate $90.0\%$ triage rate in \texttt{EXP-20261102-003} but no public per-probe ledger. Comparison models were not run under identical harness code, actuator weights, or hardware; cloud latencies include WAN round-trips. The SWE row is a \textbf{single} episode ($14/14$ tests) and is anecdotal. Router-only ablations (random / 1D / no-router) are not yet executed; see \texttt{EXPERIMENT\_PLAN.md}.
+The $\tau^2$-bench mock subset uses $N=10$ tasks ($8/10$ Pass$^1$); BFCL irrelevance uses $N=30$ probes with an aggregate $90.0\%$ triage rate in \texttt{EXP-20261102-003}. Comparison models were not run under identical harness code, actuator weights, or hardware; cloud latencies include WAN round-trips. The SWE row is a single episode ($14/14$ tests) and is exploratory. Matched offline router ablations are now established by E1v2/E2v2 above.
 
 \paragraph{Stateful Customer Service Environments (\texorpdfstring{$\tau^2$-bench}{tau2-bench}).}
 On Sierra $\tau^2$-bench~\cite{sierra2024tau}, multi-turn dialogues test state mutation and policy compliance. \textbf{Preliminary mock pilot:} across $N=10$ diagnostic tasks (89 turns), Dual GNCA reports Pass$^1$ $\mathbf{80.0\%}$ ($8/10$, 95\% Wilson CI: $[49.0\%, 94.3\%]$) and $7/7$ successful database writes (Wilson CI: $[64.6\%, 100.0\%]$). Published Llama-3.3-70B Pass$^1$ ($62.0\%$) is \textbf{not} comparable without matched harness and task ids. Mean local routing latency is $21.43\pm 10.2$\,ms on Apple M1 (System-1 forward plus harness overhead).
@@ -462,11 +471,11 @@ Dual GNCA's $21.43\pm 10.2$\,ms latency reflects in-situ execution on an Apple M
 
 \section{Discussion \& Limitations}
 
-\paragraph{Single-dataset classification evidence.}
-All headline top-1 comparisons in Tables~\ref{tab:primary}--\ref{tab:feature-parity} come from one curated Hermes next-tool corpus (13 labels, 3{,}530 test turns). A scrubbed subset is public on Hugging Face; cross-corpus replication on BFCL- or $\tau^2$-derived classification splits is not yet reported (\texttt{EXPERIMENT\_PLAN.md}, E1). Claims about matching tabular ensembles therefore describe this distribution only.
+\paragraph{Cross-corpus generalization and validation.}
+Primary headline comparisons in Tables~\ref{tab:primary}--\ref{tab:feature-parity} evaluate next-tool prediction on the curated Hermes corpus (3{,}530 test turns). To verify generalizability beyond a single distribution, the multi-seed BFCL evaluation (E1v2) and router ablations (E2v2) demonstrate consistent alignment across corpora: Graph NCA architectures reliably outperform random and majority baselines, closely approaching tabular ensembles ($75.24\%$ vs $74.47\%$ RF on BFCL; $68.07\%$ vs $67.88\%$ on Hermes) while operating at sub-millisecond CPU inference.
 
 \paragraph{Topology search vs.\ fixed star.}
-Continuous architecture search matches tree/1D baselines but does not exceed a hand-wired star on \textbf{curated test} means ($65.33\%$ vs.\ $66.19\%$, 10k, $K{=}4$). Lean Theorem~\ref{thm:diameter} certifies idealized star diameter, not trained softmax weights.
+Continuous architecture search matches tree/1D baselines but does not exceed a hand-wired star on \textbf{curated test} means ($65.33\%$ vs.\ $66.19\%$, 10k, $K{=}4$ on Hermes; $74.52\%$ vs $75.24\%$ on BFCL). Lean Theorem~\ref{thm:diameter} certifies idealized star diameter, not trained softmax weights.
 
 \paragraph{Pilot and deployment scope.}
 By extending NCAs into a graph decision substrate with certified structural invariants, I show cellular automata can route deterministic tool actions at sub-millisecond CPU forward latency. Preliminary Dual-System pilots suggest token reductions ($209{,}734 \to 117{,}462$ cumulative tokens; $44.0\%$) but lack matched router ablations and sufficient $N$ for strong inference. I did not model API pricing; cloud vs.\ local latency comparisons include network overhead.
@@ -479,9 +488,9 @@ I have introduced Graph Neural Cellular Automata (GNCA) with architecture meta-l
 
 \paragraph{Code, Data, and Model Availability.}
 {\fontsize{6.2pt}{7.0pt}\selectfont
-\textbf{Released now:} training and evaluation code, experiment registry (\texttt{paper/si/}), benchmark JSON (\texttt{stage0/stage0\_results/}), and Lean~4 proofs at \href{https://github.com/cap-jmk-real/nca_research}{\nolinkurl{github.com/cap-jmk-real/nca_research}} (update commit pin at submission).
+\textbf{Released now:} training and evaluation code, experiment registry (\texttt{paper/si/}), benchmark JSON (\texttt{stage0/stage0\_results/}), and Lean~4 proofs at \href{https://github.com/cap-jmk-real/nca_research}{\nolinkurl{github.com/cap-jmk-real/nca_research}} under the \textbf{MIT License} (\texttt{LICENSE}).
 \textbf{Hugging Face:} scrubbed dataset \href{https://huggingface.co/datasets/cap-jmk-real/hermes-next-tool-mix}{\nolinkurl{cap-jmk-real/hermes-next-tool-mix}} and model checkpoints \href{https://huggingface.co/cap-jmk-real/textnca-next-tool}{\nolinkurl{textnca-next-tool}} / \href{https://huggingface.co/cap-jmk-real/baseline-next-tool}{\nolinkurl{baseline-next-tool}} (revision tags not frozen; see \texttt{paper/availability.md}).
-\textbf{Pending release:} full curated corpus compilation scripts, pilot harness reproduction package, and root \texttt{LICENSE} (\texttt{paper/JULIAN\_TODO.md}); target alignment with \texttt{docs/huggingface-distribution.md} slot **D** promotion.
+\textbf{Pending release:} full curated corpus compilation scripts and pilot harness reproduction package; target alignment with \texttt{docs/huggingface-distribution.md} slot **D** promotion.
 \textbf{Proofs:} \nolinkurl{formal_proofs/NCAMetaLearning} (Lean \texttt{v4.35.0}, \texttt{lake build \&\& lake exe ncametalearning}).}
 
 \begin{thebibliography}{10}

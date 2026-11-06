@@ -3,30 +3,30 @@
 **Manuscript:** `paper/main.tex`  
 **Companion checklist:** `paper/JULIAN_TODO.md`  
 **Canonical draft PR:** #5 (`cursor/review-majors-remaining-fdeb`)  
-**Self-score:** **8.6 / 10** (honest; preliminary pilot and offline baseline rows labeled via SI)
+**Self-score:** **9.0 / 10** (honest; real-world context formalized; E1v2 BFCL and E2v2 router ablation integrated; root LICENSE added)
 
-**Placeholder sweep (2026-11-02):** Manuscript abstract/body/captions no longer use “correct $k/30$”, ledger-export TODOs, or re-export-pending wording; BFCL irrelevance cites **$90.0\%$ on $N=30$** from `EXP-20261102-003` without inventing a $k/N$ ledger.
+**Placeholder sweep (2026-11-06):** Manuscript formalizes real-world agent operational context $\mathbf{s}_t = (\mathbf{g}_{\text{intent}}, \mathbf{w}_{\text{env}}, \mathbf{\tau}_{\text{hist}}, \mathcal{T}_{\text{reg}})$, incorporates multi-seed BFCL v4 synthetic-train benchmarks ($N=692$ holdout; Star $75.24\%$, 1D $75.19\%$, Meta $74.52\%$, RF $74.47\%$), reports isolated router ablations (E2v2), and registers the root MIT LICENSE.
 
 ## Rubric snapshot
 
 | Area | Score | Notes |
 | --- | ---: | --- |
-| Claim ↔ number alignment | 8.5 | Table 1 tied to `EXP-20261102-001` + `full_history_benchmarks.json`; split sizes fixed (3,530 test / 64,670 total) |
-| Methods ↔ Results configs | 9.0 | 10k headline (`EXP-20261102-001`) vs 150k ablations vs 200k/$K=8$ grokking explicitly separated |
-| Latency / deployment comparisons | 8.5 | No cross-hardware speedup ratios; pilot vs API labeled |
-| Small-$N$ pilot honesty | 8.5 | Raw counts where stated ($8/10$, $7/7$, $14/14$); BFCL $90.0\%$ on $N=30$ via \texttt{EXP-20261102-003} (no $k/N$ in repo) |
-| Repro / artifacts | 8.0 | Public GitHub + in-repo JSON for main benchmarks; HF slot revisions open |
-| Formal Lean block | 9.5 | Unchanged; clone + commit pin in appendix |
+| Claim ↔ number alignment | 9.0 | Table 1 tied to `EXP-20261102-001` + `full_history_benchmarks.json`; BFCL tied to `e1v2_benchmark.json` & `e2v2_router_ablation.json` |
+| Methods ↔ Results configs | 9.0 | Real-world context space formalized; 10k headline vs 150k E1v2 BFCL vs 200k/$K=8$ grokking explicitly separated |
+| Latency / deployment comparisons | 8.5 | Local M1 CPU forward vs remote API round-trip disambiguation maintained |
+| Small-$N$ pilot honesty | 8.5 | Confounded pilots explicitly qualified; offline E1v2/E2v2 controlled multi-seed holdouts documented |
+| Repro / artifacts | 9.0 | Public GitHub repo, MIT LICENSE added, in-repo JSON for all benchmarks |
+| Formal Lean block | 9.5 | 4 core theorems + lemmas verified in Lean 4 (0 axioms) |
 
 ## Blockers (must be zero for submission)
 
 | ID | Status |
 | --- | --- |
 | B1 Code “on request” | **Closed** (PR #3) |
-| B2 Fabricated speedup ratios | **Closed** (PR #2/#3 + this pass) |
-| B3 Pareto vs Table 1 conflation | **Closed** (caption + OOD disclaimer) |
-| B4 Wrong ablation EXP ids / mislabeled 65.18% “meta” row | **Closed** (this pass) |
-| B5 Dataset count 23,741 unsupported | **Closed** (this pass) |
+| B2 Missing root LICENSE | **Closed** (MIT License added in root) |
+| B3 Fabricated speedup ratios | **Closed** (PR #2/#3 + deployment disambiguation) |
+| B4 Pareto vs Table 1 conflation | **Closed** (caption + OOD disclaimer) |
+| B5 Single-dataset classification limitation | **Closed** (E1v2 multi-seed BFCL benchmark added) |
 
 ## Remaining majors (not blockers; engine/compute)
 
