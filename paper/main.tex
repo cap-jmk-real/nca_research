@@ -469,15 +469,15 @@ Theorem~\ref{thm:contraction} is conditional; SGD weights are not verified to sa
 I have introduced Graph Neural Cellular Automata (GNCA) with architecture meta-learning, extending cellular automata beyond 1D chains to execute hierarchical tool dispatch with certified structural invariants. Extended training (200k steps) induces delayed generalization (grokking), reaching $\mathbf{68.07\%}$ \textbf{curated test} top-1 (95\% bootstrap CI: $[66.49, 69.60]\%$) and approaching tuned tabular ensembles within $1.4\text{ pp}$ on the same split (Random Forest $67.88\%$ test, HistGradientBoosting $69.47\%$ test). In a Dual-System architecture, GNCA makes routing decisions in $21.43\text{ ms}$ on an Apple M1 CPU end to end (sub-millisecond for the bare forward pass). In \textbf{preliminary} Dual-System pilots (\texttt{EXP-20261102-003}; $N=10$ $\tau^2$-bench mock tasks, $N=30$ BFCL v4 probes, $N=1$ SWE task), the harness reports $80.0\%$ Pass$^1$ ($8/10$) and $90.0\%$ BFCL irrelevance triage on $N=30$ while reducing cumulative tokens by $\mathbf{44.0\%}$ ($209{,}734 \to 117{,}462$; $92{,}272$ saved); these figures are confounded and not matched controls.
 
 \paragraph{Code, Data, and Model Availability.}
-{\fontsize{6.2pt}{7.0pt}\selectfont
+{\small
 \textbf{Released now:} training and evaluation code, experiment registry (\texttt{paper/si/}), benchmark JSON (\texttt{stage0/stage0\_results/}), and Lean~4 proofs at \href{https://github.com/cap-jmk-real/nca_research}{\nolinkurl{github.com/cap-jmk-real/nca_research}} under the \textbf{MIT License} (\texttt{LICENSE}).
 \textbf{Hugging Face:} scrubbed dataset \href{https://huggingface.co/datasets/cap-jmk-real/hermes-next-tool-mix}{\nolinkurl{cap-jmk-real/hermes-next-tool-mix}} and model checkpoints \href{https://huggingface.co/cap-jmk-real/textnca-next-tool}{\nolinkurl{textnca-next-tool}} / \href{https://huggingface.co/cap-jmk-real/baseline-next-tool}{\nolinkurl{baseline-next-tool}} (revision tags not frozen; see \texttt{paper/availability.md}).
 \textbf{Pending release:} full curated corpus compilation scripts and pilot harness reproduction package; target alignment with \texttt{docs/huggingface-distribution.md} slot **D** promotion.
 \textbf{Proofs:} \nolinkurl{formal_proofs/NCAMetaLearning} (Lean \texttt{v4.35.0}, \texttt{lake build \&\& lake exe ncametalearning}).}
 
 \begin{thebibliography}{10}
-\fontsize{5.7pt}{6.4pt}\selectfont
-\setlength{\itemsep}{-5.6pt}
+\small
+\setlength{\itemsep}{1.5pt plus 0.5pt minus 0.5pt}
 \setlength{\parskip}{0pt}
 \bibitem{mordvintsev2020growing}
 A.~Mordvintsev, E.~Randazzo, E.~Niklasson, and M.~Levin.
