@@ -1,0 +1,156 @@
+{
+  "split_name": "toolbench",
+  "seed": 20261107,
+  "dataset": "Yhyu13/ToolBench_toolllama_G123_dfs",
+  "fractions": {
+    "train": 0.6,
+    "val": 0.2,
+    "test": 0.2
+  },
+  "n_total": 2198,
+  "source_sha256": {
+    "toolllama_G123_dfs_eval.json": "036fee26f3d027e8f7cdd920a45a7ef1744a295dc0d7fe12c6ba737fc15ef5d4"
+  },
+  "splits": {
+    "train": {
+      "rows": 1324,
+      "sha256": "c1c903022d9f004c79569835b55831d44ccfb8a5e7c81185eed1d4fb902a96c7",
+      "ids_sha256": "875e33d9bbb301e3a6fea8246fa2fecf9fe99a2e2b5111c81d6c1d59772b48e2",
+      "labels": {
+        "execute_code": {
+          "n": 466,
+          "pct": 35.2
+        },
+        "search_files": {
+          "n": 402,
+          "pct": 30.36
+        },
+        "respond": {
+          "n": 201,
+          "pct": 15.18
+        },
+        "read_file": {
+          "n": 115,
+          "pct": 8.69
+        },
+        "memory": {
+          "n": 53,
+          "pct": 4.0
+        },
+        "write_file": {
+          "n": 48,
+          "pct": 3.63
+        },
+        "patch": {
+          "n": 15,
+          "pct": 1.13
+        },
+        "todo": {
+          "n": 11,
+          "pct": 0.83
+        },
+        "skill_view": {
+          "n": 10,
+          "pct": 0.76
+        },
+        "terminal": {
+          "n": 3,
+          "pct": 0.23
+        }
+      },
+      "multi_step_fraction": 0.6541
+    },
+    "val": {
+      "rows": 452,
+      "sha256": "d372f790b46432ed401fbd1410225e74329e68c4036cfbcd1357a1f4c625e968",
+      "ids_sha256": "9a3d86c1b738db197fdf7d702b4c98d3e5b9ef7da0b105db8a836e8becfd8398",
+      "labels": {
+        "execute_code": {
+          "n": 171,
+          "pct": 37.83
+        },
+        "search_files": {
+          "n": 140,
+          "pct": 30.97
+        },
+        "respond": {
+          "n": 62,
+          "pct": 13.72
+        },
+        "read_file": {
+          "n": 36,
+          "pct": 7.96
+        },
+        "write_file": {
+          "n": 15,
+          "pct": 3.32
+        },
+        "memory": {
+          "n": 14,
+          "pct": 3.1
+        },
+        "patch": {
+          "n": 8,
+          "pct": 1.77
+        },
+        "todo": {
+          "n": 5,
+          "pct": 1.11
+        },
+        "skill_view": {
+          "n": 1,
+          "pct": 0.22
+        }
+      },
+      "multi_step_fraction": 0.6615
+    },
+    "test": {
+      "rows": 422,
+      "sha256": "84c65a6012a4b33f85bf5af206c30330962f5cc8aa6b2fbc861d75715ef0c05d",
+      "ids_sha256": "6203ba55126c80c1ba81ed9f70e683a1d82f2c0e0143a9bbb38124f08592c3cc",
+      "labels": {
+        "execute_code": {
+          "n": 153,
+          "pct": 36.26
+        },
+        "search_files": {
+          "n": 134,
+          "pct": 31.75
+        },
+        "respond": {
+          "n": 62,
+          "pct": 14.69
+        },
+        "read_file": {
+          "n": 40,
+          "pct": 9.48
+        },
+        "memory": {
+          "n": 12,
+          "pct": 2.84
+        },
+        "write_file": {
+          "n": 10,
+          "pct": 2.37
+        },
+        "todo": {
+          "n": 5,
+          "pct": 1.18
+        },
+        "patch": {
+          "n": 3,
+          "pct": 0.71
+        },
+        "skill_view": {
+          "n": 2,
+          "pct": 0.47
+        },
+        "terminal": {
+          "n": 1,
+          "pct": 0.24
+        }
+      },
+      "multi_step_fraction": 0.6422
+    }
+  }
+}

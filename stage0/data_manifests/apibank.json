@@ -1,0 +1,167 @@
+{
+  "split_name": "apibank",
+  "seed": 20261107,
+  "dataset": "liminghao1630/API-Bank",
+  "fractions": {
+    "train": 0.6,
+    "val": 0.2,
+    "test": 0.2
+  },
+  "n_total": 2552,
+  "source_sha256": {
+    "test-data/level-1-api.json": "0d3155c5495399836b5b1f1cc4eb6d5d50efa16b2734af50a016a158e9dd79bb",
+    "test-data/level-1-response.json": "c02a1bd648727b539e245fa248580f511ee80cae8dad742ed4cfa7e7d7144f75",
+    "test-data/level-2-api.json": "c61966448d9d5cf98334f39b44c0db1fe5a9c6c84a1f53e652f4aacdbbfc5da0",
+    "test-data/level-2-response.json": "6dbdce1f4f142fa9073fda8da337dc6ef9c6722d08e99606456afb1ac4dc380f",
+    "test-data/level-3-batch-inf.json": "c201843f4be19b80dd035ac9aaaa2ff0d40962a21dff66195f8f19744acd45e8",
+    "test-data/level-3-batch-inf-response.json": "738210a725d3be1d70d358b5d6e9c5a000d3a0c940a574f81be2127d8ef802a5",
+    "training-data/lv3-api-train.json": "f9223633cb0ea4f26182aa3bca48590dff26e6b620163377d2b3059e7660413f",
+    "training-data/lv3-response-train.json": "68f912b4928b0b903ea41ff567bb347236c8de70b9756734efb2f9cb5b0e7b0f"
+  },
+  "splits": {
+    "train": {
+      "rows": 1552,
+      "sha256": "f992b393c0ad16811b6086dd93dd8288f841111031eeafb894f8d45600dd81ea",
+      "ids_sha256": "825788eb4ac148aa330ab57a953e86349048b779499329c9d2faca70120dfac3",
+      "labels": {
+        "respond": {
+          "n": 532,
+          "pct": 34.28
+        },
+        "skill_view": {
+          "n": 381,
+          "pct": 24.55
+        },
+        "execute_code": {
+          "n": 213,
+          "pct": 13.72
+        },
+        "read_file": {
+          "n": 133,
+          "pct": 8.57
+        },
+        "search_files": {
+          "n": 102,
+          "pct": 6.57
+        },
+        "todo": {
+          "n": 100,
+          "pct": 6.44
+        },
+        "patch": {
+          "n": 40,
+          "pct": 2.58
+        },
+        "memory": {
+          "n": 30,
+          "pct": 1.93
+        },
+        "write_file": {
+          "n": 19,
+          "pct": 1.22
+        },
+        "terminal": {
+          "n": 2,
+          "pct": 0.13
+        }
+      },
+      "multi_step_fraction": 0.7481
+    },
+    "val": {
+      "rows": 517,
+      "sha256": "7b7b2dddb8df15dfd2c89f533ef28aad0ee48cd67dad2a081e8beaea3e483db8",
+      "ids_sha256": "d8021414de8c3eee550ef05ec3a4af6547e71f93d342451213c6863a7e6024e2",
+      "labels": {
+        "respond": {
+          "n": 178,
+          "pct": 34.43
+        },
+        "skill_view": {
+          "n": 129,
+          "pct": 24.95
+        },
+        "execute_code": {
+          "n": 71,
+          "pct": 13.73
+        },
+        "read_file": {
+          "n": 44,
+          "pct": 8.51
+        },
+        "search_files": {
+          "n": 34,
+          "pct": 6.58
+        },
+        "todo": {
+          "n": 32,
+          "pct": 6.19
+        },
+        "patch": {
+          "n": 12,
+          "pct": 2.32
+        },
+        "memory": {
+          "n": 9,
+          "pct": 1.74
+        },
+        "write_file": {
+          "n": 7,
+          "pct": 1.35
+        },
+        "terminal": {
+          "n": 1,
+          "pct": 0.19
+        }
+      },
+      "multi_step_fraction": 0.7331
+    },
+    "test": {
+      "rows": 483,
+      "sha256": "1eaef021da79392337aa323e0bbfbd939e1a552dfe3a84ef68a8932f26628154",
+      "ids_sha256": "a3b0a1c5483d06a536783dacffc6d85a8cee6c9e7fe5c14adbbf6e2eead168d9",
+      "labels": {
+        "respond": {
+          "n": 162,
+          "pct": 33.54
+        },
+        "skill_view": {
+          "n": 126,
+          "pct": 26.09
+        },
+        "execute_code": {
+          "n": 69,
+          "pct": 14.29
+        },
+        "read_file": {
+          "n": 39,
+          "pct": 8.07
+        },
+        "search_files": {
+          "n": 34,
+          "pct": 7.04
+        },
+        "todo": {
+          "n": 29,
+          "pct": 6.0
+        },
+        "memory": {
+          "n": 10,
+          "pct": 2.07
+        },
+        "patch": {
+          "n": 9,
+          "pct": 1.86
+        },
+        "write_file": {
+          "n": 4,
+          "pct": 0.83
+        },
+        "terminal": {
+          "n": 1,
+          "pct": 0.21
+        }
+      },
+      "multi_step_fraction": 0.7495
+    }
+  }
+}

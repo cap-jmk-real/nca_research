@@ -2,3 +2,4 @@ import NCAMetaLearning.Basic
 import NCAMetaLearning.Topology
 import NCAMetaLearning.Equivariance
 import NCAMetaLearning.Contraction
+import NCAMetaLearning.DecisionTreeEquivalence

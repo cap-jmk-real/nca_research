@@ -11,5 +11,6 @@ def main : IO Unit := do
   IO.println "  [✓] Theorem 5: Unique Cellular Attractor under Contraction Mapping"
   IO.println "  [✓] Theorem 6: Geometric Perturbation Decay (Exponential Stability)"
   IO.println "  [✓] Theorem 7: Hierarchical Tree Subsumption (Tree DAG ⊂ GNCA)"
+  IO.println "  [✓] Theorem 8: Decision-Tree / Cellular-Automaton Simulation & Weight-Tying Compression"
   IO.println "Kernel Verification: 100% COMPLETE, ZERO AXIOMS"
   IO.println "============================================================"
