@@ -1,0 +1,2865 @@
+{
+  "eval_steps": [
+    0,
+    50,
+    100,
+    200,
+    400,
+    600,
+    800,
+    1000,
+    1500,
+    2000,
+    2500,
+    3000,
+    4000,
+    5000,
+    6000,
+    7000,
+    8000,
+    9000,
+    10000
+  ],
+  "n_runs": {
+    "n=1": {
+      "name": "Tree_n1",
+      "params": 59134,
+      "best_val_top1": 69.78,
+      "best_step": 9000,
+      "test_top1_at_best_val": 68.16,
+      "final_val_top1": 69.61,
+      "final_test_top1": 68.1,
+      "elapsed_s": 18.23,
+      "trajectory": [
+        {
+          "step": 0,
+          "train_acc": 0.09,
+          "val_top1": 0.09,
+          "val_top3": 5.54,
+          "val_loss": 2.5853,
+          "best_val_top1": 0.09,
+          "test_top1": 0.08,
+          "best_test_top1": 0.08
+        },
+        {
+          "step": 50,
+          "train_acc": 0.0,
+          "val_top1": 0.09,
+          "val_top3": 14.11,
+          "val_loss": 2.5651,
+          "best_val_top1": 0.09,
+          "test_top1": 0.08,
+          "best_test_top1": 0.08
+        },
+        {
+          "step": 100,
+          "train_acc": 52.93,
+          "val_top1": 55.76,
+          "val_top3": 81.04,
+          "val_loss": 2.0701,
+          "best_val_top1": 55.76,
+          "test_top1": 52.86,
+          "best_test_top1": 52.86
+        },
+        {
+          "step": 200,
+          "train_acc": 54.3,
+          "val_top1": 55.76,
+          "val_top3": 82.22,
+          "val_loss": 1.4999,
+          "best_val_top1": 55.76,
+          "test_top1": 52.86,
+          "best_test_top1": 52.86
+        },
+        {
+          "step": 400,
+          "train_acc": 63.28,
+          "val_top1": 65.66,
+          "val_top3": 92.21,
+          "val_loss": 1.1993,
+          "best_val_top1": 65.66,
+          "test_top1": 63.65,
+          "best_test_top1": 63.65
+        },
+        {
+          "step": 600,
+          "train_acc": 65.23,
+          "val_top1": 66.29,
+          "val_top3": 94.49,
+          "val_loss": 1.1275,
+          "best_val_top1": 66.29,
+          "test_top1": 65.52,
+          "best_test_top1": 65.52
+        },
+        {
+          "step": 800,
+          "train_acc": 64.45,
+          "val_top1": 67.47,
+          "val_top3": 94.75,
+          "val_loss": 1.1009,
+          "best_val_top1": 67.47,
+          "test_top1": 66.12,
+          "best_test_top1": 66.12
+        },
+        {
+          "step": 1000,
+          "train_acc": 65.62,
+          "val_top1": 68.17,
+          "val_top3": 95.12,
+          "val_loss": 1.087,
+          "best_val_top1": 68.17,
+          "test_top1": 65.95,
+          "best_test_top1": 65.95
+        },
+        {
+          "step": 1500,
+          "train_acc": 64.84,
+          "val_top1": 68.57,
+          "val_top3": 95.32,
+          "val_loss": 1.0649,
+          "best_val_top1": 68.57,
+          "test_top1": 66.77,
+          "best_test_top1": 66.77
+        },
+        {
+          "step": 2000,
+          "train_acc": 71.09,
+          "val_top1": 68.86,
+          "val_top3": 95.76,
+          "val_loss": 1.049,
+          "best_val_top1": 68.86,
+          "test_top1": 67.2,
+          "best_test_top1": 67.2
+        },
+        {
+          "step": 2500,
+          "train_acc": 67.19,
+          "val_top1": 69.58,
+          "val_top3": 95.76,
+          "val_loss": 1.0365,
+          "best_val_top1": 69.58,
+          "test_top1": 67.56,
+          "best_test_top1": 67.56
+        },
+        {
+          "step": 3000,
+          "train_acc": 68.95,
+          "val_top1": 69.35,
+          "val_top3": 95.84,
+          "val_loss": 1.0303,
+          "best_val_top1": 69.58,
+          "test_top1": 67.39,
+          "best_test_top1": 67.56
+        },
+        {
+          "step": 4000,
+          "train_acc": 66.99,
+          "val_top1": 69.44,
+          "val_top3": 96.1,
+          "val_loss": 1.0229,
+          "best_val_top1": 69.58,
+          "test_top1": 67.96,
+          "best_test_top1": 67.56
+        },
+        {
+          "step": 5000,
+          "train_acc": 70.7,
+          "val_top1": 69.67,
+          "val_top3": 95.99,
+          "val_loss": 1.0221,
+          "best_val_top1": 69.67,
+          "test_top1": 67.82,
+          "best_test_top1": 67.82
+        },
+        {
+          "step": 6000,
+          "train_acc": 70.51,
+          "val_top1": 69.58,
+          "val_top3": 96.13,
+          "val_loss": 1.0178,
+          "best_val_top1": 69.67,
+          "test_top1": 67.99,
+          "best_test_top1": 67.82
+        },
+        {
+          "step": 7000,
+          "train_acc": 72.85,
+          "val_top1": 69.49,
+          "val_top3": 96.1,
+          "val_loss": 1.017,
+          "best_val_top1": 69.67,
+          "test_top1": 68.19,
+          "best_test_top1": 67.82
+        },
+        {
+          "step": 8000,
+          "train_acc": 71.68,
+          "val_top1": 69.64,
+          "val_top3": 96.16,
+          "val_loss": 1.0166,
+          "best_val_top1": 69.67,
+          "test_top1": 68.33,
+          "best_test_top1": 67.82
+        },
+        {
+          "step": 9000,
+          "train_acc": 74.02,
+          "val_top1": 69.78,
+          "val_top3": 96.16,
+          "val_loss": 1.0176,
+          "best_val_top1": 69.78,
+          "test_top1": 68.16,
+          "best_test_top1": 68.16
+        },
+        {
+          "step": 10000,
+          "train_acc": 70.12,
+          "val_top1": 69.61,
+          "val_top3": 96.1,
+          "val_loss": 1.0171,
+          "best_val_top1": 69.78,
+          "test_top1": 68.1,
+          "best_test_top1": 68.16
+        }
+      ],
+      "n_steps": 1
+    },
+    "n=2": {
+      "name": "Tree_n2",
+      "params": 59150,
+      "best_val_top1": 70.1,
+      "best_step": 5000,
+      "test_top1_at_best_val": 68.24,
+      "final_val_top1": 69.61,
+      "final_test_top1": 68.56,
+      "elapsed_s": 32.03,
+      "trajectory": [
+        {
+          "step": 0,
+          "train_acc": 0.09,
+          "val_top1": 0.09,
+          "val_top3": 5.54,
+          "val_loss": 2.5853,
+          "best_val_top1": 0.09,
+          "test_top1": 0.08,
+          "best_test_top1": 0.08
+        },
+        {
+          "step": 50,
+          "train_acc": 0.0,
+          "val_top1": 0.38,
+          "val_top3": 14.11,
+          "val_loss": 2.548,
+          "best_val_top1": 0.38,
+          "test_top1": 0.14,
+          "best_test_top1": 0.14
+        },
+        {
+          "step": 100,
+          "train_acc": 52.93,
+          "val_top1": 55.76,
+          "val_top3": 81.15,
+          "val_loss": 1.7456,
+          "best_val_top1": 55.76,
+          "test_top1": 52.86,
+          "best_test_top1": 52.86
+        },
+        {
+          "step": 200,
+          "train_acc": 56.84,
+          "val_top1": 60.66,
+          "val_top3": 83.32,
+          "val_loss": 1.4245,
+          "best_val_top1": 60.66,
+          "test_top1": 55.98,
+          "best_test_top1": 55.98
+        },
+        {
+          "step": 400,
+          "train_acc": 63.28,
+          "val_top1": 66.61,
+          "val_top3": 93.04,
+          "val_loss": 1.1718,
+          "best_val_top1": 66.61,
+          "test_top1": 64.82,
+          "best_test_top1": 64.82
+        },
+        {
+          "step": 600,
+          "train_acc": 65.23,
+          "val_top1": 66.75,
+          "val_top3": 94.4,
+          "val_loss": 1.117,
+          "best_val_top1": 66.75,
+          "test_top1": 65.75,
+          "best_test_top1": 65.75
+        },
+        {
+          "step": 800,
+          "train_acc": 65.04,
+          "val_top1": 67.71,
+          "val_top3": 94.72,
+          "val_loss": 1.1008,
+          "best_val_top1": 67.71,
+          "test_top1": 65.21,
+          "best_test_top1": 65.21
+        },
+        {
+          "step": 1000,
+          "train_acc": 66.02,
+          "val_top1": 67.76,
+          "val_top3": 94.83,
+          "val_loss": 1.0811,
+          "best_val_top1": 67.76,
+          "test_top1": 65.92,
+          "best_test_top1": 65.92
+        },
+        {
+          "step": 1500,
+          "train_acc": 64.84,
+          "val_top1": 68.48,
+          "val_top3": 95.53,
+          "val_loss": 1.0498,
+          "best_val_top1": 68.48,
+          "test_top1": 66.8,
+          "best_test_top1": 66.8
+        },
+        {
+          "step": 2000,
+          "train_acc": 72.07,
+          "val_top1": 69.26,
+          "val_top3": 95.76,
+          "val_loss": 1.0349,
+          "best_val_top1": 69.26,
+          "test_top1": 67.48,
+          "best_test_top1": 67.48
+        },
+        {
+          "step": 2500,
+          "train_acc": 66.8,
+          "val_top1": 69.52,
+          "val_top3": 96.05,
+          "val_loss": 1.0221,
+          "best_val_top1": 69.52,
+          "test_top1": 67.96,
+          "best_test_top1": 67.96
+        },
+        {
+          "step": 3000,
+          "train_acc": 71.48,
+          "val_top1": 68.98,
+          "val_top3": 96.02,
+          "val_loss": 1.0259,
+          "best_val_top1": 69.52,
+          "test_top1": 67.62,
+          "best_test_top1": 67.96
+        },
+        {
+          "step": 4000,
+          "train_acc": 67.19,
+          "val_top1": 69.99,
+          "val_top3": 95.96,
+          "val_loss": 1.0169,
+          "best_val_top1": 69.99,
+          "test_top1": 67.96,
+          "best_test_top1": 67.96
+        },
+        {
+          "step": 5000,
+          "train_acc": 71.68,
+          "val_top1": 70.1,
+          "val_top3": 96.1,
+          "val_loss": 1.0203,
+          "best_val_top1": 70.1,
+          "test_top1": 68.24,
+          "best_test_top1": 68.24
+        },
+        {
+          "step": 6000,
+          "train_acc": 72.46,
+          "val_top1": 69.7,
+          "val_top3": 96.33,
+          "val_loss": 1.0208,
+          "best_val_top1": 70.1,
+          "test_top1": 68.56,
+          "best_test_top1": 68.24
+        },
+        {
+          "step": 7000,
+          "train_acc": 76.17,
+          "val_top1": 70.04,
+          "val_top3": 96.05,
+          "val_loss": 1.0187,
+          "best_val_top1": 70.1,
+          "test_top1": 68.5,
+          "best_test_top1": 68.24
+        },
+        {
+          "step": 8000,
+          "train_acc": 72.07,
+          "val_top1": 69.93,
+          "val_top3": 95.87,
+          "val_loss": 1.0208,
+          "best_val_top1": 70.1,
+          "test_top1": 68.41,
+          "best_test_top1": 68.24
+        },
+        {
+          "step": 9000,
+          "train_acc": 74.02,
+          "val_top1": 69.61,
+          "val_top3": 95.9,
+          "val_loss": 1.0248,
+          "best_val_top1": 70.1,
+          "test_top1": 68.67,
+          "best_test_top1": 68.24
+        },
+        {
+          "step": 10000,
+          "train_acc": 73.63,
+          "val_top1": 69.61,
+          "val_top3": 95.87,
+          "val_loss": 1.025,
+          "best_val_top1": 70.1,
+          "test_top1": 68.56,
+          "best_test_top1": 68.24
+        }
+      ],
+      "n_steps": 2
+    },
+    "n=3": {
+      "name": "Tree_n3",
+      "params": 59166,
+      "best_val_top1": 70.01,
+      "best_step": 7000,
+      "test_top1_at_best_val": 68.61,
+      "final_val_top1": 69.96,
+      "final_test_top1": 68.39,
+      "elapsed_s": 47.1,
+      "trajectory": [
+        {
+          "step": 0,
+          "train_acc": 0.09,
+          "val_top1": 0.09,
+          "val_top3": 5.54,
+          "val_loss": 2.5853,
+          "best_val_top1": 0.09,
+          "test_top1": 0.08,
+          "best_test_top1": 0.08
+        },
+        {
+          "step": 50,
+          "train_acc": 5.47,
+          "val_top1": 10.48,
+          "val_top3": 45.83,
+          "val_loss": 2.5308,
+          "best_val_top1": 10.48,
+          "test_top1": 8.36,
+          "best_test_top1": 8.36
+        },
+        {
+          "step": 100,
+          "train_acc": 52.93,
+          "val_top1": 55.76,
+          "val_top3": 81.15,
+          "val_loss": 1.6535,
+          "best_val_top1": 55.76,
+          "test_top1": 52.86,
+          "best_test_top1": 52.86
+        },
+        {
+          "step": 200,
+          "train_acc": 56.64,
+          "val_top1": 60.89,
+          "val_top3": 85.11,
+          "val_loss": 1.384,
+          "best_val_top1": 60.89,
+          "test_top1": 56.69,
+          "best_test_top1": 56.69
+        },
+        {
+          "step": 400,
+          "train_acc": 63.28,
+          "val_top1": 66.67,
+          "val_top3": 93.22,
+          "val_loss": 1.1607,
+          "best_val_top1": 66.67,
+          "test_top1": 64.67,
+          "best_test_top1": 64.67
+        },
+        {
+          "step": 600,
+          "train_acc": 65.23,
+          "val_top1": 66.84,
+          "val_top3": 94.29,
+          "val_loss": 1.1222,
+          "best_val_top1": 66.84,
+          "test_top1": 65.89,
+          "best_test_top1": 65.89
+        },
+        {
+          "step": 800,
+          "train_acc": 64.45,
+          "val_top1": 67.91,
+          "val_top3": 94.83,
+          "val_loss": 1.0928,
+          "best_val_top1": 67.91,
+          "test_top1": 65.38,
+          "best_test_top1": 65.38
+        },
+        {
+          "step": 1000,
+          "train_acc": 67.19,
+          "val_top1": 67.71,
+          "val_top3": 94.55,
+          "val_loss": 1.0836,
+          "best_val_top1": 67.91,
+          "test_top1": 65.58,
+          "best_test_top1": 65.38
+        },
+        {
+          "step": 1500,
+          "train_acc": 66.21,
+          "val_top1": 68.02,
+          "val_top3": 95.87,
+          "val_loss": 1.0465,
+          "best_val_top1": 68.02,
+          "test_top1": 67.54,
+          "best_test_top1": 67.54
+        },
+        {
+          "step": 2000,
+          "train_acc": 72.46,
+          "val_top1": 69.61,
+          "val_top3": 96.02,
+          "val_loss": 1.0324,
+          "best_val_top1": 69.61,
+          "test_top1": 67.62,
+          "best_test_top1": 67.62
+        },
+        {
+          "step": 2500,
+          "train_acc": 67.58,
+          "val_top1": 69.44,
+          "val_top3": 96.1,
+          "val_loss": 1.0226,
+          "best_val_top1": 69.61,
+          "test_top1": 68.13,
+          "best_test_top1": 67.62
+        },
+        {
+          "step": 3000,
+          "train_acc": 70.9,
+          "val_top1": 69.61,
+          "val_top3": 95.93,
+          "val_loss": 1.0266,
+          "best_val_top1": 69.61,
+          "test_top1": 68.02,
+          "best_test_top1": 67.62
+        },
+        {
+          "step": 4000,
+          "train_acc": 70.51,
+          "val_top1": 69.41,
+          "val_top3": 95.99,
+          "val_loss": 1.0232,
+          "best_val_top1": 69.61,
+          "test_top1": 68.87,
+          "best_test_top1": 67.62
+        },
+        {
+          "step": 5000,
+          "train_acc": 72.46,
+          "val_top1": 69.61,
+          "val_top3": 96.19,
+          "val_loss": 1.0251,
+          "best_val_top1": 69.61,
+          "test_top1": 68.95,
+          "best_test_top1": 67.62
+        },
+        {
+          "step": 6000,
+          "train_acc": 71.48,
+          "val_top1": 69.73,
+          "val_top3": 96.19,
+          "val_loss": 1.0261,
+          "best_val_top1": 69.73,
+          "test_top1": 68.84,
+          "best_test_top1": 68.84
+        },
+        {
+          "step": 7000,
+          "train_acc": 76.56,
+          "val_top1": 70.01,
+          "val_top3": 96.19,
+          "val_loss": 1.026,
+          "best_val_top1": 70.01,
+          "test_top1": 68.61,
+          "best_test_top1": 68.61
+        },
+        {
+          "step": 8000,
+          "train_acc": 73.44,
+          "val_top1": 69.9,
+          "val_top3": 96.1,
+          "val_loss": 1.0303,
+          "best_val_top1": 70.01,
+          "test_top1": 69.01,
+          "best_test_top1": 68.61
+        },
+        {
+          "step": 9000,
+          "train_acc": 75.2,
+          "val_top1": 69.73,
+          "val_top3": 96.08,
+          "val_loss": 1.0373,
+          "best_val_top1": 70.01,
+          "test_top1": 68.47,
+          "best_test_top1": 68.61
+        },
+        {
+          "step": 10000,
+          "train_acc": 76.56,
+          "val_top1": 69.96,
+          "val_top3": 95.96,
+          "val_loss": 1.0374,
+          "best_val_top1": 70.01,
+          "test_top1": 68.39,
+          "best_test_top1": 68.61
+        }
+      ],
+      "n_steps": 3
+    },
+    "n=4": {
+      "name": "Tree_n4",
+      "params": 59182,
+      "best_val_top1": 69.96,
+      "best_step": 7000,
+      "test_top1_at_best_val": 68.95,
+      "final_val_top1": 69.09,
+      "final_test_top1": 68.84,
+      "elapsed_s": 62.06,
+      "trajectory": [
+        {
+          "step": 0,
+          "train_acc": 0.09,
+          "val_top1": 0.09,
+          "val_top3": 5.54,
+          "val_loss": 2.5853,
+          "best_val_top1": 0.09,
+          "test_top1": 0.08,
+          "best_test_top1": 0.08
+        },
+        {
+          "step": 50,
+          "train_acc": 12.11,
+          "val_top1": 12.96,
+          "val_top3": 63.35,
+          "val_loss": 2.5136,
+          "best_val_top1": 12.96,
+          "test_top1": 10.11,
+          "best_test_top1": 10.11
+        },
+        {
+          "step": 100,
+          "train_acc": 52.93,
+          "val_top1": 55.76,
+          "val_top3": 81.15,
+          "val_loss": 1.6478,
+          "best_val_top1": 55.76,
+          "test_top1": 52.86,
+          "best_test_top1": 52.86
+        },
+        {
+          "step": 200,
+          "train_acc": 58.2,
+          "val_top1": 60.92,
+          "val_top3": 86.12,
+          "val_loss": 1.3638,
+          "best_val_top1": 60.92,
+          "test_top1": 56.91,
+          "best_test_top1": 56.91
+        },
+        {
+          "step": 400,
+          "train_acc": 62.89,
+          "val_top1": 66.7,
+          "val_top3": 93.36,
+          "val_loss": 1.1549,
+          "best_val_top1": 66.7,
+          "test_top1": 64.62,
+          "best_test_top1": 64.62
+        },
+        {
+          "step": 600,
+          "train_acc": 63.67,
+          "val_top1": 67.01,
+          "val_top3": 94.34,
+          "val_loss": 1.107,
+          "best_val_top1": 67.01,
+          "test_top1": 66.03,
+          "best_test_top1": 66.03
+        },
+        {
+          "step": 800,
+          "train_acc": 64.84,
+          "val_top1": 67.59,
+          "val_top3": 94.78,
+          "val_loss": 1.0879,
+          "best_val_top1": 67.59,
+          "test_top1": 65.35,
+          "best_test_top1": 65.35
+        },
+        {
+          "step": 1000,
+          "train_acc": 67.38,
+          "val_top1": 67.73,
+          "val_top3": 94.63,
+          "val_loss": 1.0806,
+          "best_val_top1": 67.73,
+          "test_top1": 65.86,
+          "best_test_top1": 65.86
+        },
+        {
+          "step": 1500,
+          "train_acc": 66.02,
+          "val_top1": 68.43,
+          "val_top3": 95.96,
+          "val_loss": 1.0392,
+          "best_val_top1": 68.43,
+          "test_top1": 67.42,
+          "best_test_top1": 67.42
+        },
+        {
+          "step": 2000,
+          "train_acc": 73.05,
+          "val_top1": 69.47,
+          "val_top3": 96.16,
+          "val_loss": 1.0273,
+          "best_val_top1": 69.47,
+          "test_top1": 68.19,
+          "best_test_top1": 68.19
+        },
+        {
+          "step": 2500,
+          "train_acc": 67.97,
+          "val_top1": 69.87,
+          "val_top3": 96.13,
+          "val_loss": 1.0168,
+          "best_val_top1": 69.87,
+          "test_top1": 68.16,
+          "best_test_top1": 68.16
+        },
+        {
+          "step": 3000,
+          "train_acc": 71.88,
+          "val_top1": 69.35,
+          "val_top3": 95.87,
+          "val_loss": 1.0198,
+          "best_val_top1": 69.87,
+          "test_top1": 68.39,
+          "best_test_top1": 68.16
+        },
+        {
+          "step": 4000,
+          "train_acc": 68.75,
+          "val_top1": 69.44,
+          "val_top3": 96.16,
+          "val_loss": 1.0178,
+          "best_val_top1": 69.87,
+          "test_top1": 68.44,
+          "best_test_top1": 68.16
+        },
+        {
+          "step": 5000,
+          "train_acc": 73.24,
+          "val_top1": 69.87,
+          "val_top3": 95.93,
+          "val_loss": 1.0257,
+          "best_val_top1": 69.87,
+          "test_top1": 68.67,
+          "best_test_top1": 68.16
+        },
+        {
+          "step": 6000,
+          "train_acc": 74.22,
+          "val_top1": 69.47,
+          "val_top3": 96.05,
+          "val_loss": 1.0261,
+          "best_val_top1": 69.87,
+          "test_top1": 69.29,
+          "best_test_top1": 68.16
+        },
+        {
+          "step": 7000,
+          "train_acc": 77.93,
+          "val_top1": 69.96,
+          "val_top3": 95.99,
+          "val_loss": 1.0241,
+          "best_val_top1": 69.96,
+          "test_top1": 68.95,
+          "best_test_top1": 68.95
+        },
+        {
+          "step": 8000,
+          "train_acc": 75.0,
+          "val_top1": 69.96,
+          "val_top3": 95.82,
+          "val_loss": 1.0312,
+          "best_val_top1": 69.96,
+          "test_top1": 69.32,
+          "best_test_top1": 68.95
+        },
+        {
+          "step": 9000,
+          "train_acc": 75.59,
+          "val_top1": 69.47,
+          "val_top3": 95.7,
+          "val_loss": 1.0396,
+          "best_val_top1": 69.96,
+          "test_top1": 68.39,
+          "best_test_top1": 68.95
+        },
+        {
+          "step": 10000,
+          "train_acc": 74.22,
+          "val_top1": 69.09,
+          "val_top3": 95.76,
+          "val_loss": 1.0397,
+          "best_val_top1": 69.96,
+          "test_top1": 68.84,
+          "best_test_top1": 68.95
+        }
+      ],
+      "n_steps": 4
+    },
+    "n=5": {
+      "name": "Tree_n5",
+      "params": 59198,
+      "best_val_top1": 70.16,
+      "best_step": 4000,
+      "test_top1_at_best_val": 68.5,
+      "final_val_top1": 69.52,
+      "final_test_top1": 68.19,
+      "elapsed_s": 76.71,
+      "trajectory": [
+        {
+          "step": 0,
+          "train_acc": 0.09,
+          "val_top1": 0.09,
+          "val_top3": 5.54,
+          "val_loss": 2.5853,
+          "best_val_top1": 0.09,
+          "test_top1": 0.08,
+          "best_test_top1": 0.08
+        },
+        {
+          "step": 50,
+          "train_acc": 12.5,
+          "val_top1": 16.05,
+          "val_top3": 65.05,
+          "val_loss": 2.4967,
+          "best_val_top1": 16.05,
+          "test_top1": 13.57,
+          "best_test_top1": 13.57
+        },
+        {
+          "step": 100,
+          "train_acc": 52.93,
+          "val_top1": 55.76,
+          "val_top3": 81.15,
+          "val_loss": 1.625,
+          "best_val_top1": 55.76,
+          "test_top1": 52.86,
+          "best_test_top1": 52.86
+        },
+        {
+          "step": 200,
+          "train_acc": 59.38,
+          "val_top1": 61.01,
+          "val_top3": 86.9,
+          "val_loss": 1.3518,
+          "best_val_top1": 61.01,
+          "test_top1": 57.22,
+          "best_test_top1": 57.22
+        },
+        {
+          "step": 400,
+          "train_acc": 63.28,
+          "val_top1": 66.7,
+          "val_top3": 93.56,
+          "val_loss": 1.1505,
+          "best_val_top1": 66.7,
+          "test_top1": 64.42,
+          "best_test_top1": 64.42
+        },
+        {
+          "step": 600,
+          "train_acc": 64.26,
+          "val_top1": 67.1,
+          "val_top3": 94.52,
+          "val_loss": 1.1038,
+          "best_val_top1": 67.1,
+          "test_top1": 65.75,
+          "best_test_top1": 65.75
+        },
+        {
+          "step": 800,
+          "train_acc": 65.23,
+          "val_top1": 67.42,
+          "val_top3": 94.81,
+          "val_loss": 1.0939,
+          "best_val_top1": 67.42,
+          "test_top1": 65.44,
+          "best_test_top1": 65.44
+        },
+        {
+          "step": 1000,
+          "train_acc": 68.16,
+          "val_top1": 67.68,
+          "val_top3": 95.01,
+          "val_loss": 1.0773,
+          "best_val_top1": 67.68,
+          "test_top1": 65.75,
+          "best_test_top1": 65.75
+        },
+        {
+          "step": 1500,
+          "train_acc": 64.84,
+          "val_top1": 68.4,
+          "val_top3": 95.64,
+          "val_loss": 1.0456,
+          "best_val_top1": 68.4,
+          "test_top1": 66.46,
+          "best_test_top1": 66.46
+        },
+        {
+          "step": 2000,
+          "train_acc": 73.44,
+          "val_top1": 69.18,
+          "val_top3": 96.08,
+          "val_loss": 1.0315,
+          "best_val_top1": 69.18,
+          "test_top1": 68.1,
+          "best_test_top1": 68.1
+        },
+        {
+          "step": 2500,
+          "train_acc": 66.8,
+          "val_top1": 69.58,
+          "val_top3": 96.02,
+          "val_loss": 1.0222,
+          "best_val_top1": 69.58,
+          "test_top1": 68.27,
+          "best_test_top1": 68.27
+        },
+        {
+          "step": 3000,
+          "train_acc": 70.9,
+          "val_top1": 69.64,
+          "val_top3": 95.93,
+          "val_loss": 1.0232,
+          "best_val_top1": 69.64,
+          "test_top1": 68.44,
+          "best_test_top1": 68.44
+        },
+        {
+          "step": 4000,
+          "train_acc": 68.55,
+          "val_top1": 70.16,
+          "val_top3": 96.22,
+          "val_loss": 1.0191,
+          "best_val_top1": 70.16,
+          "test_top1": 68.5,
+          "best_test_top1": 68.5
+        },
+        {
+          "step": 5000,
+          "train_acc": 74.22,
+          "val_top1": 70.01,
+          "val_top3": 95.99,
+          "val_loss": 1.0278,
+          "best_val_top1": 70.16,
+          "test_top1": 68.56,
+          "best_test_top1": 68.5
+        },
+        {
+          "step": 6000,
+          "train_acc": 73.24,
+          "val_top1": 69.87,
+          "val_top3": 96.05,
+          "val_loss": 1.0316,
+          "best_val_top1": 70.16,
+          "test_top1": 68.75,
+          "best_test_top1": 68.5
+        },
+        {
+          "step": 7000,
+          "train_acc": 79.1,
+          "val_top1": 70.13,
+          "val_top3": 95.96,
+          "val_loss": 1.034,
+          "best_val_top1": 70.16,
+          "test_top1": 68.24,
+          "best_test_top1": 68.5
+        },
+        {
+          "step": 8000,
+          "train_acc": 75.0,
+          "val_top1": 69.99,
+          "val_top3": 95.87,
+          "val_loss": 1.0409,
+          "best_val_top1": 70.16,
+          "test_top1": 68.67,
+          "best_test_top1": 68.5
+        },
+        {
+          "step": 9000,
+          "train_acc": 75.59,
+          "val_top1": 70.04,
+          "val_top3": 95.99,
+          "val_loss": 1.0483,
+          "best_val_top1": 70.16,
+          "test_top1": 68.39,
+          "best_test_top1": 68.5
+        },
+        {
+          "step": 10000,
+          "train_acc": 75.98,
+          "val_top1": 69.52,
+          "val_top3": 95.76,
+          "val_loss": 1.0506,
+          "best_val_top1": 70.16,
+          "test_top1": 68.19,
+          "best_test_top1": 68.5
+        }
+      ],
+      "n_steps": 5
+    },
+    "n=6": {
+      "name": "Tree_n6",
+      "params": 59214,
+      "best_val_top1": 70.27,
+      "best_step": 4000,
+      "test_top1_at_best_val": 68.5,
+      "final_val_top1": 69.35,
+      "final_test_top1": 68.78,
+      "elapsed_s": 92.24,
+      "trajectory": [
+        {
+          "step": 0,
+          "train_acc": 0.09,
+          "val_top1": 0.09,
+          "val_top3": 5.54,
+          "val_loss": 2.5853,
+          "best_val_top1": 0.09,
+          "test_top1": 0.08,
+          "best_test_top1": 0.08
+        },
+        {
+          "step": 50,
+          "train_acc": 27.93,
+          "val_top1": 38.7,
+          "val_top3": 65.83,
+          "val_loss": 2.4814,
+          "best_val_top1": 38.7,
+          "test_top1": 35.38,
+          "best_test_top1": 35.38
+        },
+        {
+          "step": 100,
+          "train_acc": 52.93,
+          "val_top1": 55.76,
+          "val_top3": 81.15,
+          "val_loss": 1.6119,
+          "best_val_top1": 55.76,
+          "test_top1": 52.86,
+          "best_test_top1": 52.86
+        },
+        {
+          "step": 200,
+          "train_acc": 59.96,
+          "val_top1": 61.18,
+          "val_top3": 87.45,
+          "val_loss": 1.3414,
+          "best_val_top1": 61.18,
+          "test_top1": 58.3,
+          "best_test_top1": 58.3
+        },
+        {
+          "step": 400,
+          "train_acc": 63.09,
+          "val_top1": 66.64,
+          "val_top3": 93.68,
+          "val_loss": 1.146,
+          "best_val_top1": 66.64,
+          "test_top1": 64.42,
+          "best_test_top1": 64.42
+        },
+        {
+          "step": 600,
+          "train_acc": 64.26,
+          "val_top1": 67.3,
+          "val_top3": 94.69,
+          "val_loss": 1.0972,
+          "best_val_top1": 67.3,
+          "test_top1": 65.5,
+          "best_test_top1": 65.5
+        },
+        {
+          "step": 800,
+          "train_acc": 64.84,
+          "val_top1": 67.76,
+          "val_top3": 95.09,
+          "val_loss": 1.0776,
+          "best_val_top1": 67.76,
+          "test_top1": 65.44,
+          "best_test_top1": 65.44
+        },
+        {
+          "step": 1000,
+          "train_acc": 68.36,
+          "val_top1": 68.2,
+          "val_top3": 95.04,
+          "val_loss": 1.0727,
+          "best_val_top1": 68.2,
+          "test_top1": 65.89,
+          "best_test_top1": 65.89
+        },
+        {
+          "step": 1500,
+          "train_acc": 65.43,
+          "val_top1": 68.86,
+          "val_top3": 95.82,
+          "val_loss": 1.0402,
+          "best_val_top1": 68.86,
+          "test_top1": 66.88,
+          "best_test_top1": 66.88
+        },
+        {
+          "step": 2000,
+          "train_acc": 73.05,
+          "val_top1": 69.73,
+          "val_top3": 96.13,
+          "val_loss": 1.0268,
+          "best_val_top1": 69.73,
+          "test_top1": 68.58,
+          "best_test_top1": 68.58
+        },
+        {
+          "step": 2500,
+          "train_acc": 67.38,
+          "val_top1": 69.84,
+          "val_top3": 96.16,
+          "val_loss": 1.0191,
+          "best_val_top1": 69.84,
+          "test_top1": 68.78,
+          "best_test_top1": 68.78
+        },
+        {
+          "step": 3000,
+          "train_acc": 70.9,
+          "val_top1": 69.73,
+          "val_top3": 96.05,
+          "val_loss": 1.0207,
+          "best_val_top1": 69.84,
+          "test_top1": 68.67,
+          "best_test_top1": 68.78
+        },
+        {
+          "step": 4000,
+          "train_acc": 68.95,
+          "val_top1": 70.27,
+          "val_top3": 96.16,
+          "val_loss": 1.017,
+          "best_val_top1": 70.27,
+          "test_top1": 68.5,
+          "best_test_top1": 68.5
+        },
+        {
+          "step": 5000,
+          "train_acc": 72.85,
+          "val_top1": 70.04,
+          "val_top3": 96.16,
+          "val_loss": 1.0168,
+          "best_val_top1": 70.27,
+          "test_top1": 68.95,
+          "best_test_top1": 68.5
+        },
+        {
+          "step": 6000,
+          "train_acc": 73.83,
+          "val_top1": 69.41,
+          "val_top3": 96.33,
+          "val_loss": 1.0271,
+          "best_val_top1": 70.27,
+          "test_top1": 69.32,
+          "best_test_top1": 68.5
+        },
+        {
+          "step": 7000,
+          "train_acc": 77.73,
+          "val_top1": 69.67,
+          "val_top3": 96.1,
+          "val_loss": 1.0301,
+          "best_val_top1": 70.27,
+          "test_top1": 68.56,
+          "best_test_top1": 68.5
+        },
+        {
+          "step": 8000,
+          "train_acc": 76.17,
+          "val_top1": 70.01,
+          "val_top3": 95.84,
+          "val_loss": 1.0367,
+          "best_val_top1": 70.27,
+          "test_top1": 68.78,
+          "best_test_top1": 68.5
+        },
+        {
+          "step": 9000,
+          "train_acc": 75.2,
+          "val_top1": 69.58,
+          "val_top3": 95.87,
+          "val_loss": 1.044,
+          "best_val_top1": 70.27,
+          "test_top1": 68.24,
+          "best_test_top1": 68.5
+        },
+        {
+          "step": 10000,
+          "train_acc": 76.37,
+          "val_top1": 69.35,
+          "val_top3": 95.73,
+          "val_loss": 1.0488,
+          "best_val_top1": 70.27,
+          "test_top1": 68.78,
+          "best_test_top1": 68.5
+        }
+      ],
+      "n_steps": 6
+    },
+    "n=7": {
+      "name": "Tree_n7",
+      "params": 59230,
+      "best_val_top1": 70.16,
+      "best_step": 5000,
+      "test_top1_at_best_val": 69.09,
+      "final_val_top1": 68.89,
+      "final_test_top1": 68.9,
+      "elapsed_s": 106.72,
+      "trajectory": [
+        {
+          "step": 0,
+          "train_acc": 0.09,
+          "val_top1": 0.09,
+          "val_top3": 5.54,
+          "val_loss": 2.5853,
+          "best_val_top1": 0.09,
+          "test_top1": 0.08,
+          "best_test_top1": 0.08
+        },
+        {
+          "step": 50,
+          "train_acc": 40.82,
+          "val_top1": 46.35,
+          "val_top3": 67.47,
+          "val_loss": 2.4676,
+          "best_val_top1": 46.35,
+          "test_top1": 42.04,
+          "best_test_top1": 42.04
+        },
+        {
+          "step": 100,
+          "train_acc": 52.93,
+          "val_top1": 55.76,
+          "val_top3": 81.15,
+          "val_loss": 1.6092,
+          "best_val_top1": 55.76,
+          "test_top1": 52.86,
+          "best_test_top1": 52.86
+        },
+        {
+          "step": 200,
+          "train_acc": 60.74,
+          "val_top1": 61.47,
+          "val_top3": 88.14,
+          "val_loss": 1.3328,
+          "best_val_top1": 61.47,
+          "test_top1": 58.95,
+          "best_test_top1": 58.95
+        },
+        {
+          "step": 400,
+          "train_acc": 62.3,
+          "val_top1": 66.67,
+          "val_top3": 93.88,
+          "val_loss": 1.1418,
+          "best_val_top1": 66.67,
+          "test_top1": 64.45,
+          "best_test_top1": 64.45
+        },
+        {
+          "step": 600,
+          "train_acc": 65.62,
+          "val_top1": 67.42,
+          "val_top3": 94.75,
+          "val_loss": 1.094,
+          "best_val_top1": 67.42,
+          "test_top1": 65.44,
+          "best_test_top1": 65.44
+        },
+        {
+          "step": 800,
+          "train_acc": 64.06,
+          "val_top1": 67.71,
+          "val_top3": 95.12,
+          "val_loss": 1.0749,
+          "best_val_top1": 67.71,
+          "test_top1": 65.55,
+          "best_test_top1": 65.55
+        },
+        {
+          "step": 1000,
+          "train_acc": 68.36,
+          "val_top1": 68.23,
+          "val_top3": 94.95,
+          "val_loss": 1.068,
+          "best_val_top1": 68.23,
+          "test_top1": 66.15,
+          "best_test_top1": 66.15
+        },
+        {
+          "step": 1500,
+          "train_acc": 66.21,
+          "val_top1": 69.29,
+          "val_top3": 95.87,
+          "val_loss": 1.0361,
+          "best_val_top1": 69.29,
+          "test_top1": 67.25,
+          "best_test_top1": 67.25
+        },
+        {
+          "step": 2000,
+          "train_acc": 73.44,
+          "val_top1": 69.75,
+          "val_top3": 96.13,
+          "val_loss": 1.0237,
+          "best_val_top1": 69.75,
+          "test_top1": 68.61,
+          "best_test_top1": 68.61
+        },
+        {
+          "step": 2500,
+          "train_acc": 67.38,
+          "val_top1": 69.78,
+          "val_top3": 96.19,
+          "val_loss": 1.0184,
+          "best_val_top1": 69.78,
+          "test_top1": 68.44,
+          "best_test_top1": 68.44
+        },
+        {
+          "step": 3000,
+          "train_acc": 71.88,
+          "val_top1": 69.12,
+          "val_top3": 96.13,
+          "val_loss": 1.0241,
+          "best_val_top1": 69.78,
+          "test_top1": 68.39,
+          "best_test_top1": 68.44
+        },
+        {
+          "step": 4000,
+          "train_acc": 70.31,
+          "val_top1": 69.61,
+          "val_top3": 96.1,
+          "val_loss": 1.0231,
+          "best_val_top1": 69.78,
+          "test_top1": 68.19,
+          "best_test_top1": 68.44
+        },
+        {
+          "step": 5000,
+          "train_acc": 73.63,
+          "val_top1": 70.16,
+          "val_top3": 96.19,
+          "val_loss": 1.0184,
+          "best_val_top1": 70.16,
+          "test_top1": 69.09,
+          "best_test_top1": 69.09
+        },
+        {
+          "step": 6000,
+          "train_acc": 73.24,
+          "val_top1": 69.38,
+          "val_top3": 96.02,
+          "val_loss": 1.0261,
+          "best_val_top1": 70.16,
+          "test_top1": 69.49,
+          "best_test_top1": 69.09
+        },
+        {
+          "step": 7000,
+          "train_acc": 77.93,
+          "val_top1": 69.15,
+          "val_top3": 95.84,
+          "val_loss": 1.0343,
+          "best_val_top1": 70.16,
+          "test_top1": 69.49,
+          "best_test_top1": 69.09
+        },
+        {
+          "step": 8000,
+          "train_acc": 75.59,
+          "val_top1": 69.09,
+          "val_top3": 95.82,
+          "val_loss": 1.0444,
+          "best_val_top1": 70.16,
+          "test_top1": 69.12,
+          "best_test_top1": 69.09
+        },
+        {
+          "step": 9000,
+          "train_acc": 77.73,
+          "val_top1": 68.92,
+          "val_top3": 95.87,
+          "val_loss": 1.0551,
+          "best_val_top1": 70.16,
+          "test_top1": 68.95,
+          "best_test_top1": 69.09
+        },
+        {
+          "step": 10000,
+          "train_acc": 76.37,
+          "val_top1": 68.89,
+          "val_top3": 95.84,
+          "val_loss": 1.0583,
+          "best_val_top1": 70.16,
+          "test_top1": 68.9,
+          "best_test_top1": 69.09
+        }
+      ],
+      "n_steps": 7
+    },
+    "n=8": {
+      "name": "Tree_n8",
+      "params": 59246,
+      "best_val_top1": 70.45,
+      "best_step": 5000,
+      "test_top1_at_best_val": 69.15,
+      "final_val_top1": 69.06,
+      "final_test_top1": 68.39,
+      "elapsed_s": 112.23,
+      "trajectory": [
+        {
+          "step": 0,
+          "train_acc": 0.09,
+          "val_top1": 0.09,
+          "val_top3": 5.54,
+          "val_loss": 2.5853,
+          "best_val_top1": 0.09,
+          "test_top1": 0.08,
+          "best_test_top1": 0.08
+        },
+        {
+          "step": 50,
+          "train_acc": 45.12,
+          "val_top1": 51.8,
+          "val_top3": 68.6,
+          "val_loss": 2.4525,
+          "best_val_top1": 51.8,
+          "test_top1": 46.57,
+          "best_test_top1": 46.57
+        },
+        {
+          "step": 100,
+          "train_acc": 52.93,
+          "val_top1": 55.76,
+          "val_top3": 81.15,
+          "val_loss": 1.6083,
+          "best_val_top1": 55.76,
+          "test_top1": 52.86,
+          "best_test_top1": 52.86
+        },
+        {
+          "step": 200,
+          "train_acc": 60.94,
+          "val_top1": 61.82,
+          "val_top3": 88.51,
+          "val_loss": 1.3237,
+          "best_val_top1": 61.82,
+          "test_top1": 59.09,
+          "best_test_top1": 59.09
+        },
+        {
+          "step": 400,
+          "train_acc": 62.5,
+          "val_top1": 66.58,
+          "val_top3": 94.2,
+          "val_loss": 1.1379,
+          "best_val_top1": 66.58,
+          "test_top1": 64.67,
+          "best_test_top1": 64.67
+        },
+        {
+          "step": 600,
+          "train_acc": 64.65,
+          "val_top1": 67.47,
+          "val_top3": 94.75,
+          "val_loss": 1.0912,
+          "best_val_top1": 67.47,
+          "test_top1": 65.84,
+          "best_test_top1": 65.84
+        },
+        {
+          "step": 800,
+          "train_acc": 65.04,
+          "val_top1": 67.76,
+          "val_top3": 95.35,
+          "val_loss": 1.07,
+          "best_val_top1": 67.76,
+          "test_top1": 66.01,
+          "best_test_top1": 66.01
+        },
+        {
+          "step": 1000,
+          "train_acc": 67.97,
+          "val_top1": 68.31,
+          "val_top3": 95.09,
+          "val_loss": 1.0623,
+          "best_val_top1": 68.31,
+          "test_top1": 66.23,
+          "best_test_top1": 66.23
+        },
+        {
+          "step": 1500,
+          "train_acc": 66.8,
+          "val_top1": 69.64,
+          "val_top3": 96.1,
+          "val_loss": 1.0293,
+          "best_val_top1": 69.64,
+          "test_top1": 68.16,
+          "best_test_top1": 68.16
+        },
+        {
+          "step": 2000,
+          "train_acc": 74.02,
+          "val_top1": 69.41,
+          "val_top3": 96.25,
+          "val_loss": 1.0231,
+          "best_val_top1": 69.64,
+          "test_top1": 68.33,
+          "best_test_top1": 68.16
+        },
+        {
+          "step": 2500,
+          "train_acc": 68.36,
+          "val_top1": 70.04,
+          "val_top3": 96.08,
+          "val_loss": 1.0133,
+          "best_val_top1": 70.04,
+          "test_top1": 68.44,
+          "best_test_top1": 68.44
+        },
+        {
+          "step": 3000,
+          "train_acc": 71.88,
+          "val_top1": 69.55,
+          "val_top3": 95.93,
+          "val_loss": 1.0247,
+          "best_val_top1": 70.04,
+          "test_top1": 68.47,
+          "best_test_top1": 68.44
+        },
+        {
+          "step": 4000,
+          "train_acc": 72.07,
+          "val_top1": 69.26,
+          "val_top3": 95.87,
+          "val_loss": 1.024,
+          "best_val_top1": 70.04,
+          "test_top1": 68.67,
+          "best_test_top1": 68.44
+        },
+        {
+          "step": 5000,
+          "train_acc": 73.83,
+          "val_top1": 70.45,
+          "val_top3": 96.22,
+          "val_loss": 1.017,
+          "best_val_top1": 70.45,
+          "test_top1": 69.15,
+          "best_test_top1": 69.15
+        },
+        {
+          "step": 6000,
+          "train_acc": 74.41,
+          "val_top1": 69.7,
+          "val_top3": 96.02,
+          "val_loss": 1.0228,
+          "best_val_top1": 70.45,
+          "test_top1": 68.98,
+          "best_test_top1": 69.15
+        },
+        {
+          "step": 7000,
+          "train_acc": 78.12,
+          "val_top1": 69.64,
+          "val_top3": 95.9,
+          "val_loss": 1.0354,
+          "best_val_top1": 70.45,
+          "test_top1": 68.36,
+          "best_test_top1": 69.15
+        },
+        {
+          "step": 8000,
+          "train_acc": 76.17,
+          "val_top1": 70.01,
+          "val_top3": 95.93,
+          "val_loss": 1.0432,
+          "best_val_top1": 70.45,
+          "test_top1": 68.39,
+          "best_test_top1": 69.15
+        },
+        {
+          "step": 9000,
+          "train_acc": 78.32,
+          "val_top1": 69.67,
+          "val_top3": 95.87,
+          "val_loss": 1.0537,
+          "best_val_top1": 70.45,
+          "test_top1": 68.19,
+          "best_test_top1": 69.15
+        },
+        {
+          "step": 10000,
+          "train_acc": 77.54,
+          "val_top1": 69.06,
+          "val_top3": 95.7,
+          "val_loss": 1.0592,
+          "best_val_top1": 70.45,
+          "test_top1": 68.39,
+          "best_test_top1": 69.15
+        }
+      ],
+      "n_steps": 8
+    },
+    "n=9": {
+      "name": "Tree_n9",
+      "params": 59262,
+      "best_val_top1": 70.07,
+      "best_step": 5000,
+      "test_top1_at_best_val": 68.81,
+      "final_val_top1": 68.74,
+      "final_test_top1": 67.39,
+      "elapsed_s": 130.55,
+      "trajectory": [
+        {
+          "step": 0,
+          "train_acc": 0.09,
+          "val_top1": 0.09,
+          "val_top3": 5.54,
+          "val_loss": 2.5853,
+          "best_val_top1": 0.09,
+          "test_top1": 0.08,
+          "best_test_top1": 0.08
+        },
+        {
+          "step": 50,
+          "train_acc": 50.0,
+          "val_top1": 55.35,
+          "val_top3": 69.73,
+          "val_loss": 2.4367,
+          "best_val_top1": 55.35,
+          "test_top1": 51.5,
+          "best_test_top1": 51.5
+        },
+        {
+          "step": 100,
+          "train_acc": 52.93,
+          "val_top1": 55.76,
+          "val_top3": 81.15,
+          "val_loss": 1.5992,
+          "best_val_top1": 55.76,
+          "test_top1": 52.86,
+          "best_test_top1": 52.86
+        },
+        {
+          "step": 200,
+          "train_acc": 61.72,
+          "val_top1": 62.02,
+          "val_top3": 88.98,
+          "val_loss": 1.3144,
+          "best_val_top1": 62.02,
+          "test_top1": 59.38,
+          "best_test_top1": 59.38
+        },
+        {
+          "step": 400,
+          "train_acc": 62.89,
+          "val_top1": 66.75,
+          "val_top3": 94.08,
+          "val_loss": 1.1355,
+          "best_val_top1": 66.75,
+          "test_top1": 64.62,
+          "best_test_top1": 64.62
+        },
+        {
+          "step": 600,
+          "train_acc": 64.84,
+          "val_top1": 67.42,
+          "val_top3": 94.75,
+          "val_loss": 1.0879,
+          "best_val_top1": 67.42,
+          "test_top1": 65.86,
+          "best_test_top1": 65.86
+        },
+        {
+          "step": 800,
+          "train_acc": 64.84,
+          "val_top1": 67.71,
+          "val_top3": 95.47,
+          "val_loss": 1.0658,
+          "best_val_top1": 67.71,
+          "test_top1": 66.06,
+          "best_test_top1": 66.06
+        },
+        {
+          "step": 1000,
+          "train_acc": 68.16,
+          "val_top1": 68.37,
+          "val_top3": 95.27,
+          "val_loss": 1.059,
+          "best_val_top1": 68.37,
+          "test_top1": 66.52,
+          "best_test_top1": 66.52
+        },
+        {
+          "step": 1500,
+          "train_acc": 66.6,
+          "val_top1": 68.95,
+          "val_top3": 95.93,
+          "val_loss": 1.0279,
+          "best_val_top1": 68.95,
+          "test_top1": 67.85,
+          "best_test_top1": 67.85
+        },
+        {
+          "step": 2000,
+          "train_acc": 73.63,
+          "val_top1": 69.67,
+          "val_top3": 96.22,
+          "val_loss": 1.0199,
+          "best_val_top1": 69.67,
+          "test_top1": 68.53,
+          "best_test_top1": 68.53
+        },
+        {
+          "step": 2500,
+          "train_acc": 68.75,
+          "val_top1": 69.84,
+          "val_top3": 96.25,
+          "val_loss": 1.0128,
+          "best_val_top1": 69.84,
+          "test_top1": 68.73,
+          "best_test_top1": 68.73
+        },
+        {
+          "step": 3000,
+          "train_acc": 72.27,
+          "val_top1": 69.21,
+          "val_top3": 95.99,
+          "val_loss": 1.027,
+          "best_val_top1": 69.84,
+          "test_top1": 68.39,
+          "best_test_top1": 68.73
+        },
+        {
+          "step": 4000,
+          "train_acc": 72.27,
+          "val_top1": 69.47,
+          "val_top3": 96.05,
+          "val_loss": 1.0229,
+          "best_val_top1": 69.84,
+          "test_top1": 68.41,
+          "best_test_top1": 68.73
+        },
+        {
+          "step": 5000,
+          "train_acc": 72.27,
+          "val_top1": 70.07,
+          "val_top3": 96.42,
+          "val_loss": 1.0203,
+          "best_val_top1": 70.07,
+          "test_top1": 68.81,
+          "best_test_top1": 68.81
+        },
+        {
+          "step": 6000,
+          "train_acc": 75.39,
+          "val_top1": 69.61,
+          "val_top3": 96.33,
+          "val_loss": 1.033,
+          "best_val_top1": 70.07,
+          "test_top1": 68.36,
+          "best_test_top1": 68.81
+        },
+        {
+          "step": 7000,
+          "train_acc": 77.54,
+          "val_top1": 69.58,
+          "val_top3": 96.02,
+          "val_loss": 1.0445,
+          "best_val_top1": 70.07,
+          "test_top1": 67.99,
+          "best_test_top1": 68.81
+        },
+        {
+          "step": 8000,
+          "train_acc": 76.37,
+          "val_top1": 68.92,
+          "val_top3": 95.99,
+          "val_loss": 1.0589,
+          "best_val_top1": 70.07,
+          "test_top1": 67.79,
+          "best_test_top1": 68.81
+        },
+        {
+          "step": 9000,
+          "train_acc": 76.37,
+          "val_top1": 68.69,
+          "val_top3": 95.87,
+          "val_loss": 1.0672,
+          "best_val_top1": 70.07,
+          "test_top1": 67.14,
+          "best_test_top1": 68.81
+        },
+        {
+          "step": 10000,
+          "train_acc": 76.76,
+          "val_top1": 68.74,
+          "val_top3": 95.76,
+          "val_loss": 1.0749,
+          "best_val_top1": 70.07,
+          "test_top1": 67.39,
+          "best_test_top1": 68.81
+        }
+      ],
+      "n_steps": 9
+    },
+    "n=10": {
+      "name": "Tree_n10",
+      "params": 59278,
+      "best_val_top1": 70.3,
+      "best_step": 5000,
+      "test_top1_at_best_val": 68.39,
+      "final_val_top1": 68.31,
+      "final_test_top1": 67.14,
+      "elapsed_s": 142.39,
+      "trajectory": [
+        {
+          "step": 0,
+          "train_acc": 0.09,
+          "val_top1": 0.09,
+          "val_top3": 5.54,
+          "val_loss": 2.5853,
+          "best_val_top1": 0.09,
+          "test_top1": 0.08,
+          "best_test_top1": 0.08
+        },
+        {
+          "step": 50,
+          "train_acc": 50.39,
+          "val_top1": 53.54,
+          "val_top3": 69.81,
+          "val_loss": 2.4207,
+          "best_val_top1": 53.54,
+          "test_top1": 50.37,
+          "best_test_top1": 50.37
+        },
+        {
+          "step": 100,
+          "train_acc": 52.93,
+          "val_top1": 55.76,
+          "val_top3": 81.15,
+          "val_loss": 1.5901,
+          "best_val_top1": 55.76,
+          "test_top1": 52.86,
+          "best_test_top1": 52.86
+        },
+        {
+          "step": 200,
+          "train_acc": 62.89,
+          "val_top1": 62.4,
+          "val_top3": 89.29,
+          "val_loss": 1.3032,
+          "best_val_top1": 62.4,
+          "test_top1": 60.48,
+          "best_test_top1": 60.48
+        },
+        {
+          "step": 400,
+          "train_acc": 62.89,
+          "val_top1": 66.55,
+          "val_top3": 94.2,
+          "val_loss": 1.1347,
+          "best_val_top1": 66.55,
+          "test_top1": 64.62,
+          "best_test_top1": 64.62
+        },
+        {
+          "step": 600,
+          "train_acc": 64.65,
+          "val_top1": 67.68,
+          "val_top3": 95.04,
+          "val_loss": 1.0847,
+          "best_val_top1": 67.68,
+          "test_top1": 66.2,
+          "best_test_top1": 66.2
+        },
+        {
+          "step": 800,
+          "train_acc": 65.43,
+          "val_top1": 68.05,
+          "val_top3": 95.56,
+          "val_loss": 1.0619,
+          "best_val_top1": 68.05,
+          "test_top1": 66.15,
+          "best_test_top1": 66.15
+        },
+        {
+          "step": 1000,
+          "train_acc": 69.53,
+          "val_top1": 68.8,
+          "val_top3": 95.35,
+          "val_loss": 1.0548,
+          "best_val_top1": 68.8,
+          "test_top1": 66.52,
+          "best_test_top1": 66.52
+        },
+        {
+          "step": 1500,
+          "train_acc": 66.21,
+          "val_top1": 69.24,
+          "val_top3": 96.05,
+          "val_loss": 1.0278,
+          "best_val_top1": 69.24,
+          "test_top1": 68.05,
+          "best_test_top1": 68.05
+        },
+        {
+          "step": 2000,
+          "train_acc": 74.8,
+          "val_top1": 69.38,
+          "val_top3": 96.33,
+          "val_loss": 1.0186,
+          "best_val_top1": 69.38,
+          "test_top1": 69.26,
+          "best_test_top1": 69.26
+        },
+        {
+          "step": 2500,
+          "train_acc": 68.75,
+          "val_top1": 69.67,
+          "val_top3": 96.51,
+          "val_loss": 1.0111,
+          "best_val_top1": 69.67,
+          "test_top1": 68.53,
+          "best_test_top1": 68.53
+        },
+        {
+          "step": 3000,
+          "train_acc": 73.44,
+          "val_top1": 69.18,
+          "val_top3": 96.08,
+          "val_loss": 1.0275,
+          "best_val_top1": 69.67,
+          "test_top1": 68.13,
+          "best_test_top1": 68.53
+        },
+        {
+          "step": 4000,
+          "train_acc": 70.9,
+          "val_top1": 69.44,
+          "val_top3": 96.19,
+          "val_loss": 1.024,
+          "best_val_top1": 69.67,
+          "test_top1": 67.99,
+          "best_test_top1": 68.53
+        },
+        {
+          "step": 5000,
+          "train_acc": 72.46,
+          "val_top1": 70.3,
+          "val_top3": 96.31,
+          "val_loss": 1.0287,
+          "best_val_top1": 70.3,
+          "test_top1": 68.39,
+          "best_test_top1": 68.39
+        },
+        {
+          "step": 6000,
+          "train_acc": 75.78,
+          "val_top1": 69.06,
+          "val_top3": 95.99,
+          "val_loss": 1.0394,
+          "best_val_top1": 70.3,
+          "test_top1": 68.47,
+          "best_test_top1": 68.39
+        },
+        {
+          "step": 7000,
+          "train_acc": 78.71,
+          "val_top1": 68.74,
+          "val_top3": 95.84,
+          "val_loss": 1.0624,
+          "best_val_top1": 70.3,
+          "test_top1": 67.28,
+          "best_test_top1": 68.39
+        },
+        {
+          "step": 8000,
+          "train_acc": 77.34,
+          "val_top1": 69.12,
+          "val_top3": 95.96,
+          "val_loss": 1.0717,
+          "best_val_top1": 70.3,
+          "test_top1": 66.88,
+          "best_test_top1": 68.39
+        },
+        {
+          "step": 9000,
+          "train_acc": 77.93,
+          "val_top1": 68.31,
+          "val_top3": 95.73,
+          "val_loss": 1.0878,
+          "best_val_top1": 70.3,
+          "test_top1": 66.15,
+          "best_test_top1": 68.39
+        },
+        {
+          "step": 10000,
+          "train_acc": 77.15,
+          "val_top1": 68.31,
+          "val_top3": 95.67,
+          "val_loss": 1.0903,
+          "best_val_top1": 70.3,
+          "test_top1": 67.14,
+          "best_test_top1": 68.39
+        }
+      ],
+      "n_steps": 10
+    }
+  },
+  "baselines": {
+    "Star_n4": {
+      "name": "Star_n4",
+      "params": 59182,
+      "best_val_top1": 70.71,
+      "best_step": 6000,
+      "test_top1_at_best_val": 68.22,
+      "final_val_top1": 69.55,
+      "final_test_top1": 68.84,
+      "elapsed_s": 65.04,
+      "trajectory": [
+        {
+          "step": 0,
+          "train_acc": 0.09,
+          "val_top1": 0.09,
+          "val_top3": 5.54,
+          "val_loss": 2.5853,
+          "best_val_top1": 0.09,
+          "test_top1": 0.08,
+          "best_test_top1": 0.08
+        },
+        {
+          "step": 50,
+          "train_acc": 12.5,
+          "val_top1": 13.68,
+          "val_top3": 65.43,
+          "val_loss": 2.4965,
+          "best_val_top1": 13.68,
+          "test_top1": 10.85,
+          "best_test_top1": 10.85
+        },
+        {
+          "step": 100,
+          "train_acc": 52.93,
+          "val_top1": 55.76,
+          "val_top3": 81.15,
+          "val_loss": 1.6203,
+          "best_val_top1": 55.76,
+          "test_top1": 52.86,
+          "best_test_top1": 52.86
+        },
+        {
+          "step": 200,
+          "train_acc": 56.45,
+          "val_top1": 60.55,
+          "val_top3": 87.62,
+          "val_loss": 1.3379,
+          "best_val_top1": 60.55,
+          "test_top1": 55.84,
+          "best_test_top1": 55.84
+        },
+        {
+          "step": 400,
+          "train_acc": 62.89,
+          "val_top1": 66.87,
+          "val_top3": 94.14,
+          "val_loss": 1.1182,
+          "best_val_top1": 66.87,
+          "test_top1": 65.16,
+          "best_test_top1": 65.16
+        },
+        {
+          "step": 600,
+          "train_acc": 66.02,
+          "val_top1": 67.24,
+          "val_top3": 95.32,
+          "val_loss": 1.0828,
+          "best_val_top1": 67.24,
+          "test_top1": 65.86,
+          "best_test_top1": 65.86
+        },
+        {
+          "step": 800,
+          "train_acc": 65.04,
+          "val_top1": 67.68,
+          "val_top3": 95.44,
+          "val_loss": 1.072,
+          "best_val_top1": 67.68,
+          "test_top1": 66.06,
+          "best_test_top1": 66.06
+        },
+        {
+          "step": 1000,
+          "train_acc": 66.99,
+          "val_top1": 68.48,
+          "val_top3": 95.12,
+          "val_loss": 1.0632,
+          "best_val_top1": 68.48,
+          "test_top1": 66.26,
+          "best_test_top1": 66.26
+        },
+        {
+          "step": 1500,
+          "train_acc": 66.99,
+          "val_top1": 69.24,
+          "val_top3": 95.73,
+          "val_loss": 1.0413,
+          "best_val_top1": 69.24,
+          "test_top1": 67.9,
+          "best_test_top1": 67.9
+        },
+        {
+          "step": 2000,
+          "train_acc": 74.41,
+          "val_top1": 69.49,
+          "val_top3": 95.96,
+          "val_loss": 1.0243,
+          "best_val_top1": 69.49,
+          "test_top1": 68.84,
+          "best_test_top1": 68.84
+        },
+        {
+          "step": 2500,
+          "train_acc": 67.97,
+          "val_top1": 69.49,
+          "val_top3": 96.31,
+          "val_loss": 1.0127,
+          "best_val_top1": 69.49,
+          "test_top1": 68.64,
+          "best_test_top1": 68.84
+        },
+        {
+          "step": 3000,
+          "train_acc": 71.29,
+          "val_top1": 69.47,
+          "val_top3": 96.28,
+          "val_loss": 1.0185,
+          "best_val_top1": 69.49,
+          "test_top1": 68.61,
+          "best_test_top1": 68.84
+        },
+        {
+          "step": 4000,
+          "train_acc": 70.31,
+          "val_top1": 70.59,
+          "val_top3": 96.31,
+          "val_loss": 0.9985,
+          "best_val_top1": 70.59,
+          "test_top1": 69.01,
+          "best_test_top1": 69.01
+        },
+        {
+          "step": 5000,
+          "train_acc": 72.46,
+          "val_top1": 70.19,
+          "val_top3": 96.59,
+          "val_loss": 1.0009,
+          "best_val_top1": 70.59,
+          "test_top1": 68.84,
+          "best_test_top1": 69.01
+        },
+        {
+          "step": 6000,
+          "train_acc": 72.46,
+          "val_top1": 70.71,
+          "val_top3": 96.39,
+          "val_loss": 1.0005,
+          "best_val_top1": 70.71,
+          "test_top1": 68.22,
+          "best_test_top1": 68.22
+        },
+        {
+          "step": 7000,
+          "train_acc": 77.54,
+          "val_top1": 69.99,
+          "val_top3": 96.28,
+          "val_loss": 1.007,
+          "best_val_top1": 70.71,
+          "test_top1": 69.04,
+          "best_test_top1": 68.22
+        },
+        {
+          "step": 8000,
+          "train_acc": 75.39,
+          "val_top1": 69.93,
+          "val_top3": 96.28,
+          "val_loss": 1.009,
+          "best_val_top1": 70.71,
+          "test_top1": 68.73,
+          "best_test_top1": 68.22
+        },
+        {
+          "step": 9000,
+          "train_acc": 73.63,
+          "val_top1": 69.58,
+          "val_top3": 96.22,
+          "val_loss": 1.0155,
+          "best_val_top1": 70.71,
+          "test_top1": 68.41,
+          "best_test_top1": 68.22
+        },
+        {
+          "step": 10000,
+          "train_acc": 78.52,
+          "val_top1": 69.55,
+          "val_top3": 96.31,
+          "val_loss": 1.0161,
+          "best_val_top1": 70.71,
+          "test_top1": 68.84,
+          "best_test_top1": 68.22
+        }
+      ]
+    },
+    "1D_n4": {
+      "name": "1D_n4",
+      "params": 59182,
+      "best_val_top1": 69.99,
+      "best_step": 3000,
+      "test_top1_at_best_val": 68.07,
+      "final_val_top1": 69.52,
+      "final_test_top1": 68.67,
+      "elapsed_s": 64.01,
+      "trajectory": [
+        {
+          "step": 0,
+          "train_acc": 0.09,
+          "val_top1": 0.09,
+          "val_top3": 5.54,
+          "val_loss": 2.5853,
+          "best_val_top1": 0.09,
+          "test_top1": 0.08,
+          "best_test_top1": 0.08
+        },
+        {
+          "step": 50,
+          "train_acc": 12.11,
+          "val_top1": 12.84,
+          "val_top3": 60.72,
+          "val_loss": 2.5215,
+          "best_val_top1": 12.84,
+          "test_top1": 10.06,
+          "best_test_top1": 10.06
+        },
+        {
+          "step": 100,
+          "train_acc": 52.93,
+          "val_top1": 55.76,
+          "val_top3": 81.15,
+          "val_loss": 1.6523,
+          "best_val_top1": 55.76,
+          "test_top1": 52.86,
+          "best_test_top1": 52.86
+        },
+        {
+          "step": 200,
+          "train_acc": 57.42,
+          "val_top1": 60.92,
+          "val_top3": 86.03,
+          "val_loss": 1.3622,
+          "best_val_top1": 60.92,
+          "test_top1": 56.57,
+          "best_test_top1": 56.57
+        },
+        {
+          "step": 400,
+          "train_acc": 63.48,
+          "val_top1": 66.58,
+          "val_top3": 93.45,
+          "val_loss": 1.1522,
+          "best_val_top1": 66.58,
+          "test_top1": 64.48,
+          "best_test_top1": 64.48
+        },
+        {
+          "step": 600,
+          "train_acc": 65.04,
+          "val_top1": 66.72,
+          "val_top3": 94.89,
+          "val_loss": 1.109,
+          "best_val_top1": 66.72,
+          "test_top1": 65.16,
+          "best_test_top1": 65.16
+        },
+        {
+          "step": 800,
+          "train_acc": 65.62,
+          "val_top1": 67.62,
+          "val_top3": 94.72,
+          "val_loss": 1.0843,
+          "best_val_top1": 67.62,
+          "test_top1": 65.27,
+          "best_test_top1": 65.27
+        },
+        {
+          "step": 1000,
+          "train_acc": 67.38,
+          "val_top1": 68.25,
+          "val_top3": 95.01,
+          "val_loss": 1.0742,
+          "best_val_top1": 68.25,
+          "test_top1": 65.55,
+          "best_test_top1": 65.55
+        },
+        {
+          "step": 1500,
+          "train_acc": 66.21,
+          "val_top1": 69.03,
+          "val_top3": 95.67,
+          "val_loss": 1.0489,
+          "best_val_top1": 69.03,
+          "test_top1": 67.22,
+          "best_test_top1": 67.22
+        },
+        {
+          "step": 2000,
+          "train_acc": 74.61,
+          "val_top1": 69.81,
+          "val_top3": 96.08,
+          "val_loss": 1.0363,
+          "best_val_top1": 69.81,
+          "test_top1": 67.45,
+          "best_test_top1": 67.45
+        },
+        {
+          "step": 2500,
+          "train_acc": 69.53,
+          "val_top1": 69.75,
+          "val_top3": 96.25,
+          "val_loss": 1.0242,
+          "best_val_top1": 69.81,
+          "test_top1": 68.67,
+          "best_test_top1": 67.45
+        },
+        {
+          "step": 3000,
+          "train_acc": 71.09,
+          "val_top1": 69.99,
+          "val_top3": 96.1,
+          "val_loss": 1.0276,
+          "best_val_top1": 69.99,
+          "test_top1": 68.07,
+          "best_test_top1": 68.07
+        },
+        {
+          "step": 4000,
+          "train_acc": 70.7,
+          "val_top1": 69.32,
+          "val_top3": 96.05,
+          "val_loss": 1.0281,
+          "best_val_top1": 69.99,
+          "test_top1": 68.53,
+          "best_test_top1": 68.07
+        },
+        {
+          "step": 5000,
+          "train_acc": 72.07,
+          "val_top1": 69.67,
+          "val_top3": 96.25,
+          "val_loss": 1.0298,
+          "best_val_top1": 69.99,
+          "test_top1": 68.92,
+          "best_test_top1": 68.07
+        },
+        {
+          "step": 6000,
+          "train_acc": 72.46,
+          "val_top1": 69.03,
+          "val_top3": 95.9,
+          "val_loss": 1.0376,
+          "best_val_top1": 69.99,
+          "test_top1": 69.04,
+          "best_test_top1": 68.07
+        },
+        {
+          "step": 7000,
+          "train_acc": 77.34,
+          "val_top1": 69.52,
+          "val_top3": 96.05,
+          "val_loss": 1.0365,
+          "best_val_top1": 69.99,
+          "test_top1": 68.7,
+          "best_test_top1": 68.07
+        },
+        {
+          "step": 8000,
+          "train_acc": 74.02,
+          "val_top1": 69.44,
+          "val_top3": 95.99,
+          "val_loss": 1.041,
+          "best_val_top1": 69.99,
+          "test_top1": 68.56,
+          "best_test_top1": 68.07
+        },
+        {
+          "step": 9000,
+          "train_acc": 76.37,
+          "val_top1": 69.55,
+          "val_top3": 95.93,
+          "val_loss": 1.0484,
+          "best_val_top1": 69.99,
+          "test_top1": 68.75,
+          "best_test_top1": 68.07
+        },
+        {
+          "step": 10000,
+          "train_acc": 76.37,
+          "val_top1": 69.52,
+          "val_top3": 95.93,
+          "val_loss": 1.0459,
+          "best_val_top1": 69.99,
+          "test_top1": 68.67,
+          "best_test_top1": 68.07
+        }
+      ]
+    },
+    "Meta_n4": {
+      "name": "Meta_n4",
+      "params": 59207,
+      "best_val_top1": 70.42,
+      "best_step": 5000,
+      "test_top1_at_best_val": 68.67,
+      "final_val_top1": 69.44,
+      "final_test_top1": 68.81,
+      "elapsed_s": 57.02,
+      "trajectory": [
+        {
+          "step": 0,
+          "train_acc": 0.09,
+          "val_top1": 0.09,
+          "val_top3": 5.54,
+          "val_loss": 2.5853,
+          "best_val_top1": 0.09,
+          "test_top1": 0.08,
+          "best_test_top1": 0.08
+        },
+        {
+          "step": 50,
+          "train_acc": 12.11,
+          "val_top1": 12.96,
+          "val_top3": 63.35,
+          "val_loss": 2.5133,
+          "best_val_top1": 12.96,
+          "test_top1": 10.11,
+          "best_test_top1": 10.11
+        },
+        {
+          "step": 100,
+          "train_acc": 52.93,
+          "val_top1": 55.76,
+          "val_top3": 81.15,
+          "val_loss": 1.6469,
+          "best_val_top1": 55.76,
+          "test_top1": 52.86,
+          "best_test_top1": 52.86
+        },
+        {
+          "step": 200,
+          "train_acc": 58.2,
+          "val_top1": 60.92,
+          "val_top3": 85.97,
+          "val_loss": 1.3642,
+          "best_val_top1": 60.92,
+          "test_top1": 56.83,
+          "best_test_top1": 56.83
+        },
+        {
+          "step": 400,
+          "train_acc": 62.7,
+          "val_top1": 66.84,
+          "val_top3": 93.45,
+          "val_loss": 1.1549,
+          "best_val_top1": 66.84,
+          "test_top1": 64.62,
+          "best_test_top1": 64.62
+        },
+        {
+          "step": 600,
+          "train_acc": 64.26,
+          "val_top1": 66.98,
+          "val_top3": 94.6,
+          "val_loss": 1.1037,
+          "best_val_top1": 66.98,
+          "test_top1": 66.09,
+          "best_test_top1": 66.09
+        },
+        {
+          "step": 800,
+          "train_acc": 64.26,
+          "val_top1": 67.73,
+          "val_top3": 95.01,
+          "val_loss": 1.0816,
+          "best_val_top1": 67.73,
+          "test_top1": 65.5,
+          "best_test_top1": 65.5
+        },
+        {
+          "step": 1000,
+          "train_acc": 67.19,
+          "val_top1": 67.94,
+          "val_top3": 94.89,
+          "val_loss": 1.0728,
+          "best_val_top1": 67.94,
+          "test_top1": 65.81,
+          "best_test_top1": 65.81
+        },
+        {
+          "step": 1500,
+          "train_acc": 65.04,
+          "val_top1": 68.57,
+          "val_top3": 96.08,
+          "val_loss": 1.033,
+          "best_val_top1": 68.57,
+          "test_top1": 67.34,
+          "best_test_top1": 67.34
+        },
+        {
+          "step": 2000,
+          "train_acc": 73.05,
+          "val_top1": 70.04,
+          "val_top3": 96.02,
+          "val_loss": 1.0228,
+          "best_val_top1": 70.04,
+          "test_top1": 68.07,
+          "best_test_top1": 68.07
+        },
+        {
+          "step": 2500,
+          "train_acc": 68.95,
+          "val_top1": 69.58,
+          "val_top3": 96.31,
+          "val_loss": 1.0138,
+          "best_val_top1": 70.04,
+          "test_top1": 67.71,
+          "best_test_top1": 68.07
+        },
+        {
+          "step": 3000,
+          "train_acc": 72.27,
+          "val_top1": 69.24,
+          "val_top3": 95.99,
+          "val_loss": 1.0251,
+          "best_val_top1": 70.04,
+          "test_top1": 68.3,
+          "best_test_top1": 68.07
+        },
+        {
+          "step": 4000,
+          "train_acc": 71.09,
+          "val_top1": 70.07,
+          "val_top3": 95.96,
+          "val_loss": 1.0142,
+          "best_val_top1": 70.07,
+          "test_top1": 68.24,
+          "best_test_top1": 68.24
+        },
+        {
+          "step": 5000,
+          "train_acc": 72.66,
+          "val_top1": 70.42,
+          "val_top3": 96.05,
+          "val_loss": 1.0185,
+          "best_val_top1": 70.42,
+          "test_top1": 68.67,
+          "best_test_top1": 68.67
+        },
+        {
+          "step": 6000,
+          "train_acc": 73.63,
+          "val_top1": 69.78,
+          "val_top3": 95.73,
+          "val_loss": 1.0215,
+          "best_val_top1": 70.42,
+          "test_top1": 68.87,
+          "best_test_top1": 68.67
+        },
+        {
+          "step": 7000,
+          "train_acc": 77.15,
+          "val_top1": 69.96,
+          "val_top3": 95.73,
+          "val_loss": 1.0279,
+          "best_val_top1": 70.42,
+          "test_top1": 68.75,
+          "best_test_top1": 68.67
+        },
+        {
+          "step": 8000,
+          "train_acc": 74.61,
+          "val_top1": 69.96,
+          "val_top3": 96.08,
+          "val_loss": 1.0337,
+          "best_val_top1": 70.42,
+          "test_top1": 69.21,
+          "best_test_top1": 68.67
+        },
+        {
+          "step": 9000,
+          "train_acc": 75.0,
+          "val_top1": 69.52,
+          "val_top3": 95.82,
+          "val_loss": 1.0412,
+          "best_val_top1": 70.42,
+          "test_top1": 68.56,
+          "best_test_top1": 68.67
+        },
+        {
+          "step": 10000,
+          "train_acc": 75.2,
+          "val_top1": 69.44,
+          "val_top3": 95.84,
+          "val_loss": 1.0445,
+          "best_val_top1": 70.42,
+          "test_top1": 68.81,
+          "best_test_top1": 68.67
+        }
+      ]
+    },
+    "Flat_MLP": {
+      "name": "Flat_MLP",
+      "params": 62713,
+      "best_val_top1": 70.01,
+      "best_step": 1000,
+      "test_top1_at_best_val": 68.58,
+      "final_val_top1": 67.82,
+      "final_test_top1": 67.2,
+      "elapsed_s": 8.58,
+      "trajectory": [
+        {
+          "step": 0,
+          "train_acc": 13.36,
+          "val_top1": 13.36,
+          "val_top3": 22.94,
+          "val_loss": 2.5387,
+          "best_val_top1": 13.36,
+          "test_top1": 10.62,
+          "best_test_top1": 10.62
+        },
+        {
+          "step": 50,
+          "train_acc": 50.2,
+          "val_top1": 56.59,
+          "val_top3": 80.95,
+          "val_loss": 1.9126,
+          "best_val_top1": 56.59,
+          "test_top1": 53.09,
+          "best_test_top1": 53.09
+        },
+        {
+          "step": 100,
+          "train_acc": 59.96,
+          "val_top1": 61.73,
+          "val_top3": 88.57,
+          "val_loss": 1.4197,
+          "best_val_top1": 61.73,
+          "test_top1": 59.63,
+          "best_test_top1": 59.63
+        },
+        {
+          "step": 200,
+          "train_acc": 66.02,
+          "val_top1": 66.84,
+          "val_top3": 94.89,
+          "val_loss": 1.1242,
+          "best_val_top1": 66.84,
+          "test_top1": 65.92,
+          "best_test_top1": 65.92
+        },
+        {
+          "step": 400,
+          "train_acc": 65.62,
+          "val_top1": 68.8,
+          "val_top3": 95.9,
+          "val_loss": 1.0405,
+          "best_val_top1": 68.8,
+          "test_top1": 67.17,
+          "best_test_top1": 67.17
+        },
+        {
+          "step": 600,
+          "train_acc": 68.95,
+          "val_top1": 69.73,
+          "val_top3": 96.22,
+          "val_loss": 1.0197,
+          "best_val_top1": 69.73,
+          "test_top1": 68.3,
+          "best_test_top1": 68.3
+        },
+        {
+          "step": 800,
+          "train_acc": 71.29,
+          "val_top1": 69.81,
+          "val_top3": 95.96,
+          "val_loss": 1.0235,
+          "best_val_top1": 69.81,
+          "test_top1": 68.27,
+          "best_test_top1": 68.27
+        },
+        {
+          "step": 1000,
+          "train_acc": 74.61,
+          "val_top1": 70.01,
+          "val_top3": 96.39,
+          "val_loss": 1.022,
+          "best_val_top1": 70.01,
+          "test_top1": 68.58,
+          "best_test_top1": 68.58
+        },
+        {
+          "step": 1500,
+          "train_acc": 72.85,
+          "val_top1": 69.44,
+          "val_top3": 96.33,
+          "val_loss": 1.028,
+          "best_val_top1": 70.01,
+          "test_top1": 69.24,
+          "best_test_top1": 68.58
+        },
+        {
+          "step": 2000,
+          "train_acc": 76.76,
+          "val_top1": 69.12,
+          "val_top3": 95.99,
+          "val_loss": 1.0459,
+          "best_val_top1": 70.01,
+          "test_top1": 69.04,
+          "best_test_top1": 68.58
+        },
+        {
+          "step": 2500,
+          "train_acc": 72.66,
+          "val_top1": 68.48,
+          "val_top3": 95.96,
+          "val_loss": 1.0461,
+          "best_val_top1": 70.01,
+          "test_top1": 67.88,
+          "best_test_top1": 68.58
+        },
+        {
+          "step": 3000,
+          "train_acc": 78.12,
+          "val_top1": 68.86,
+          "val_top3": 95.64,
+          "val_loss": 1.0706,
+          "best_val_top1": 70.01,
+          "test_top1": 68.39,
+          "best_test_top1": 68.58
+        },
+        {
+          "step": 4000,
+          "train_acc": 81.05,
+          "val_top1": 68.74,
+          "val_top3": 95.41,
+          "val_loss": 1.0864,
+          "best_val_top1": 70.01,
+          "test_top1": 67.71,
+          "best_test_top1": 68.58
+        },
+        {
+          "step": 5000,
+          "train_acc": 79.1,
+          "val_top1": 68.43,
+          "val_top3": 95.47,
+          "val_loss": 1.1121,
+          "best_val_top1": 70.01,
+          "test_top1": 68.36,
+          "best_test_top1": 68.58
+        },
+        {
+          "step": 6000,
+          "train_acc": 80.66,
+          "val_top1": 67.39,
+          "val_top3": 95.04,
+          "val_loss": 1.1343,
+          "best_val_top1": 70.01,
+          "test_top1": 66.91,
+          "best_test_top1": 68.58
+        },
+        {
+          "step": 7000,
+          "train_acc": 83.2,
+          "val_top1": 68.11,
+          "val_top3": 95.09,
+          "val_loss": 1.1486,
+          "best_val_top1": 70.01,
+          "test_top1": 67.56,
+          "best_test_top1": 68.58
+        },
+        {
+          "step": 8000,
+          "train_acc": 79.69,
+          "val_top1": 67.82,
+          "val_top3": 95.12,
+          "val_loss": 1.1626,
+          "best_val_top1": 70.01,
+          "test_top1": 67.25,
+          "best_test_top1": 68.58
+        },
+        {
+          "step": 9000,
+          "train_acc": 84.57,
+          "val_top1": 67.91,
+          "val_top3": 95.04,
+          "val_loss": 1.175,
+          "best_val_top1": 70.01,
+          "test_top1": 67.03,
+          "best_test_top1": 68.58
+        },
+        {
+          "step": 10000,
+          "train_acc": 84.96,
+          "val_top1": 67.82,
+          "val_top3": 95.04,
+          "val_loss": 1.1787,
+          "best_val_top1": 70.01,
+          "test_top1": 67.2,
+          "best_test_top1": 68.58
+        }
+      ]
+    }
+  }
+}

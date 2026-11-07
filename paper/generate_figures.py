@@ -120,51 +120,100 @@ def generate_fig1_arch():
     print("Saved fig1_arch_topology")
 
 def generate_fig2_learning_curves():
-    """Figure 2: Empirical Learning Curves over 200k Steps with Deep Tree grokking and baselines."""
-    fig, ax = plt.subplots(figsize=(3.4, 2.4), dpi=300)
-    
-    # Load real 200k ultra grokking run if present
-    ultra_path = os.path.join(ROOT_DIR, "stage0/stage0_results/ultra_grokking_results.json")
-    if os.path.isfile(ultra_path):
-        with open(ultra_path) as f:
-            d = json.load(f)
-        traj = d['trajectory']
-        steps_k = np.array([x['step'] / 1000.0 for x in traj])
-        val_top1 = np.array([x['val_top1'] / 100.0 for x in traj])
-        from scipy.ndimage import gaussian_filter1d
-        val_smooth = gaussian_filter1d(val_top1, sigma=2.0)
-    else:
-        steps_k = np.linspace(2, 200, 100)
-        val_smooth = 0.20 + 0.4947 * (1 - np.exp(-steps_k / 6.0)) - 0.05 * (steps_k / 200.0)
+    """Figure 2: Two-panel real empirical learning curves for n in {1..10} and depth/efficiency analysis."""
+    fig, (ax1, ax2) = plt.subplots(
+        1, 2, figsize=(6.9, 2.55), dpi=300, gridspec_kw={"width_ratios": [1.15, 1.0], "wspace": 0.28}
+    )
 
-    # Colors
-    c_deep = '#7B1FA2'   # Purple
-    c_star = '#1976D2'   # Blue
-    c_1d   = '#0288D1'   # Light blue
-    c_flat = '#F57C00'   # Orange
-    c_tree = '#388E3C'   # Green
-    c_gray = '#757575'   # Gray
+    n10_path = os.path.join(ROOT_DIR, "stage0/stage0_results/learning_curves_n1_10.json")
+    with open(n10_path) as f:
+        n10_data = json.load(f)
 
-    ax.plot(steps_k, val_smooth, label='Deep Tree NCA (K=8, Ours)', color=c_deep, lw=1.6)
-    ax.scatter([6.0], [0.6947], color=c_deep, s=28, zorder=5, marker='*')
+    cmap = plt.cm.plasma(np.linspace(0.12, 0.88, 10))
 
-    # Baselines across steps
-    s_grid = np.linspace(0, 200, 100)
-    ax.axhline(0.6947, label='HistGradBoost (70.6%)', color=c_tree, lw=1.1, ls=':')
-    ax.plot(s_grid, 0.20 + 0.4619 * (1 - np.exp(-s_grid / 10.0)), label='Star Topology (66.2%)', color=c_star, lw=1.3, ls='--')
-    ax.plot(s_grid, 0.20 + 0.4464 * (1 - np.exp(-s_grid / 8.0)), label='1D Lattice (64.6%)', color=c_1d, lw=1.2, ls='-.')
-    ax.plot(s_grid, 0.20 + 0.4071 * (1 - np.exp(-s_grid / 6.0)), label='Flat MLP (60.7%)', color=c_flat, lw=1.2, ls=':')
-    ax.axhline(0.5430, label='Majority (54.3%)', color=c_gray, lw=0.9, ls='-')
+    # Panel (a): Real step-by-step validation trajectories for n in {1..10} + real baselines
+    for n_idx in range(1, 11):
+        run = n10_data["n_runs"][f"n={n_idx}"]
+        traj = run["trajectory"]
+        steps_k = np.array([pt["step"] / 1000.0 for pt in traj])
+        val_acc = np.array([pt["val_top1"] for pt in traj])
+        if n_idx in (1, 4, 8, 10):
+            lw = 1.7 if n_idx == 8 else 1.25
+            alpha = 0.95
+            lbl = rf"Tree GNCA $n={n_idx}$ ({run['test_top1_at_best_val']:.2f}% test)"
+        else:
+            lw = 0.75
+            alpha = 0.38
+            lbl = None
+        ax1.plot(steps_k, val_acc, color=cmap[n_idx - 1], lw=lw, alpha=alpha, label=lbl)
 
-    ax.set_xlim(0, 200)
-    ax.set_ylim(0.40, 0.74)
-    ax.set_xlabel('Training Steps (k)', fontsize=8)
-    ax.set_ylabel('Validation Top-1 Accuracy', fontsize=8)
-    ax.tick_params(labelsize=7)
-    ax.grid(True, linestyle='--', alpha=0.4)
-    ax.spines[['top', 'right']].set_visible(False)
-    ax.legend(frameon=True, framealpha=0.9, loc='lower right', fontsize=5.8, borderpad=0.3, handlelength=1.4)
-    
+    # Plot real logged baseline trajectories (1D and Flat MLP)
+    for b_key, b_lbl, b_col, b_ls in [
+        ("1D_n4", "1D Lattice $n=4$ (68.07% test)", COLORS["blue"], "--"),
+        ("Flat_MLP", "Flat MLP (68.58% peak / 67.82% final)", COLORS["orange"], ":"),
+    ]:
+        b_traj = n10_data["baselines"][b_key]["trajectory"]
+        b_steps = np.array([pt["step"] / 1000.0 for pt in b_traj])
+        b_val = np.array([pt["val_top1"] for pt in b_traj])
+        ax1.plot(b_steps, b_val, color=b_col, lw=1.2, ls=b_ls, label=b_lbl)
+
+    ax1.axhline(70.58, color=COLORS["green"], lw=1.0, ls="-.", label="HistGradBoost (70.58% val)")
+    ax1.set_xlim(0, 10.0)
+    ax1.set_ylim(52.0, 71.8)
+    ax1.set_xlabel("Training Steps (k)", fontsize=8.5)
+    ax1.set_ylabel("Curated Validation Top-1 (%)", fontsize=8.5)
+    ax1.set_title(r"(a) Real Learning Curves ($n \in \{1..10\}$)", fontsize=8.5, weight="bold")
+    ax1.tick_params(labelsize=7.5)
+    ax1.grid(True, linestyle="--", alpha=0.35)
+    ax1.spines[["top", "right"]].set_visible(False)
+    ax1.legend(frameon=True, framealpha=0.92, loc="lower right", fontsize=5.8, borderpad=0.28, handlelength=1.4)
+
+    # Panel (b): Recurrence depth n in {1..10} test accuracy, parameter efficiency, and late-step decay
+    ns = np.arange(1, 11)
+    test_best = np.array([n10_data["n_runs"][f"n={i}"]["test_top1_at_best_val"] for i in ns])
+    val_best = np.array([n10_data["n_runs"][f"n={i}"]["best_val_top1"] for i in ns])
+    val_final = np.array([n10_data["n_runs"][f"n={i}"]["final_val_top1"] for i in ns])
+    params_k = np.array([n10_data["n_runs"][f"n={i}"]["params"] / 1000.0 for i in ns])
+    param_eff = test_best / params_k  # % Top-1 per 1k parameters
+
+    ax2.plot(ns, val_best, "o-", color=COLORS["blue"], lw=1.4, ms=4.0, label="Peak Val Top-1")
+    ax2.plot(ns, val_final, "s--", color=COLORS["sky"], lw=1.2, ms=3.6, label="Final 10k Val")
+    ax2.plot(ns, test_best, "D-", color="#7B1FA2", lw=1.6, ms=4.2, label="Test Top-1")
+    ax2.axvline(4, color=COLORS["gray"], ls=":", lw=0.9)
+    ax2.text(4.15, 67.82, r"Tree depth $n \geq 4$", fontsize=6.5, color="#444444")
+
+    ax2_eff = ax2.twinx()
+    ax2_eff.plot(ns, param_eff, "^:", color=COLORS["green"], lw=1.2, ms=3.6, label="Param Eff. (%/1k)")
+    ax2_eff.set_ylabel("Param Efficiency (% / 1k params)", fontsize=8.0, color=COLORS["green"])
+    ax2_eff.tick_params(axis="y", labelsize=7.0, colors=COLORS["green"])
+    ax2_eff.set_ylim(1.140, 1.182)
+    ax2_eff.spines["top"].set_visible(False)
+
+    ax2.set_xticks(ns)
+    ax2.set_xlim(0.7, 10.3)
+    ax2.set_ylim(67.6, 71.7)
+    ax2.set_xlabel(r"Cellular Recurrence Steps $n \in \{1,\dots,10\}$", fontsize=8.5)
+    ax2.set_ylabel("Accuracy (%)", fontsize=8.5)
+    ax2.set_title(r"(b) Depth Scaling & Parameter Efficiency", fontsize=8.5, weight="bold")
+    ax2.tick_params(labelsize=7.5)
+    ax2.grid(True, linestyle="--", alpha=0.35)
+    ax2.spines["top"].set_visible(False)
+
+    lines1, labels1 = ax2.get_legend_handles_labels()
+    lines2, labels2 = ax2_eff.get_legend_handles_labels()
+    ax2.legend(
+        lines1 + lines2,
+        labels1 + labels2,
+        frameon=True,
+        framealpha=0.92,
+        loc="upper left",
+        ncol=2,
+        fontsize=5.6,
+        borderpad=0.25,
+        columnspacing=0.8,
+        handlelength=1.3,
+    )
+
     fig.tight_layout()
     fig.savefig(os.path.join(OUT_DIR, "fig2_learning_curves.pdf"))
     fig.savefig(os.path.join(OUT_DIR, "fig2_learning_curves.png"))
