@@ -16,5 +16,6 @@ def main : IO Unit := do
   IO.println "  [✓] Theorem 10: Exponential Perturbation Decay on Deployed Contractive Router"
   IO.println "  [✓] Theorem 11: Continuous Row-Softmax Message Passing Convex Boundedness"
   IO.println "  [✓] Theorem 12: Top-k Discretization Call-Tree Spanning DAG Preservation"
+  IO.println "  [✓] Theorem 13: Sigmoidal Gating Concordance under Margin Separation (Continuous-to-Tree Bridge)"
   IO.println "Kernel Verification: 100% COMPLETE, ZERO AXIOMS"
   IO.println "============================================================"

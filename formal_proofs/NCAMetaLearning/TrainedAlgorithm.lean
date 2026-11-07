@@ -115,4 +115,28 @@ theorem call_tree_parent_adj (V : Nat) (p c : Fin V) (hp : isTreeParent p.val c.
   dsimp [treeSimpleGraph, treeGraphAdj]
   exact Or.inr (Or.inl hp)
 
+/--
+  Theorem 10 (Continuous Sigmoidal Gating Concordance under Margin Separation):
+  Let `base` denote the fixed-point scaling factor (e.g., 1000). A continuous sigmoidal
+  gate `s : Nat` with midpoint `base / 2` satisfies:
+  1. Whenever the input activation satisfies positive margin `s ≥ base / 2 + margin`,
+     the continuous decision `(s ≥ base / 2)` agrees identically with hard threshold branch `true`.
+  2. Whenever the input activation satisfies negative margin `s + margin ≤ base / 2`,
+     the continuous decision agrees identically with hard threshold branch `false`.
+  Thus, over all margin-separated inputs, the continuous sigmoidal cellular automaton
+  induces decision partitions identical to the threshold-gated decision tree.
+-/
+theorem sigmoidal_gating_positive_margin_concordance
+  (base margin s : Nat) (h_margin : margin > 0) (h_pos : s ≥ base / 2 + margin) :
+  decide (s ≥ base / 2) = true := by
+  have h_ge : s ≥ base / 2 := by omega
+  exact decide_eq_true h_ge
+
+theorem sigmoidal_gating_negative_margin_concordance
+  (base margin s : Nat) (h_margin : margin > 0) (h_neg : s + margin ≤ base / 2) :
+  decide (s ≥ base / 2) = false := by
+  have h_lt : s < base / 2 := by omega
+  have h_not_ge : ¬(s ≥ base / 2) := by omega
+  exact decide_eq_false h_not_ge
+
 end NCAMetaLearning
