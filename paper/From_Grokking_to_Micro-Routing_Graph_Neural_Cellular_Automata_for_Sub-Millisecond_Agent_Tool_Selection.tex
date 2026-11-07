@@ -317,7 +317,7 @@ Compiled with the Lean 4.35 kernel (16 verification jobs).
 \begin{table*}[tbp]
 \centering
 \small
-\setlength{\tabcolsep}{2.2pt}
+\setlength{\tabcolsep}{1.8pt}
 \caption{\textbf{Primary agent action routing benchmark across matched 10{,}000-step, 3-seed label-smoothed, and extended 200{,}000-step schedules.} All \textbf{Top-1/Top-3/Macro F1} columns evaluate on the \textbf{curated Hermes test split} (3{,}530 turns; 57{,}675 train / 3{,}465 val; session holdout) unless marked. \textbf{Eff.\ (\%/1k)} reports normalized parameter efficiency (Test Top-1 accuracy per $1{,}000$ trainable parameters). Default 10k graph, tabular, and linear rows report test top-1 as the mean over seeds $\{0,1,2\}$, $K{=}4$, SVD128 ($D{=}146$, 59.2k params; compact SVD64 with $D{=}82$ uses 35.3k params, Table~\ref{tab:param-derivation}), class-weighted cross-entropy (CW), CUDA training. $^a$Zero-shot grammar-constrained decoding on curated test. $^b$Offline 150k-step full-attention baseline on curated test across seeds $\{0,1,2\}$. $^c$Unweighted label-smoothed ($\epsilon{=}0.05$) Deep Tree ($K{=}8$) evaluated at its exact 10k-step snapshot and 200k grokking checkpoint. $^d$Multi-seed unweighted label-smoothed ($\epsilon{=}0.05$) Deep Tree ($K{=}8$, seeds $\{0,1,2\}$ mean $\pm$ SD: $68.92 \pm 0.47\%$ test top-1, $70.50 \pm 0.34\%$ val top-1; single-seed depth sweep peaks at $69.15\%$ test / $1.167\%/\text{1k}$ at $n{=}8$, Figure~\ref{fig:learning-curves}) on unified CUDA hardware. Inference is batch-1 CPU forward p50 (1 thread, Apple M1).}
 \label{tab:primary}
 \vspace{6pt}
