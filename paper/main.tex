@@ -153,6 +153,26 @@ Here $y_{\text{tool}} \in \mathcal{V}$ is the discrete tool identifier chosen fr
 \subsection{Beyond 1D: Graph Neural Cellular Automata}
 Standard 1D NCAs constrain message passing strictly to immediate sequence neighbors $\{i-1, i, i+1\}$, forcing contextual signals to crawl sequentially across $\Omega(V)$ steps. In agent workflows, however, the root goal and environmental diagnostics must directly modulate every historical turn, while recursive tool subtrees branch hierarchically.
 
+\begin{figure*}[tbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig1_topologies.pdf}
+\caption{\textbf{Visual comparison of information-flow topologies across all evaluated routing algorithms.}
+Top row (Graph NCA variants over $V{=}5$ cells: goal hub node $0$ and causal trajectory turns $t{-}4 \dots t{-}1$):
+\textbf{(a) 1D Lattice} (TextNCA baseline) restricts communication to sequence neighbors ($A_{i,i\pm 1}$), requiring $V{-}1{=}4$ hops for goal intent to reach the current action cell ($\Omega(V)$ diameter).
+\textbf{(b) Star GNCA} links node $0$ to every cell as a broadcast hub, achieving $1$-hop receptive field expansion ($O(1)$ diameter).
+\textbf{(c) Tree GNCA} structures message passing as a binary call-tree DAG ($\text{parent}(i) = \lfloor (i{-}1)/2 \rfloor$), grouping recent turns as siblings under $t{-}4$ with $O(\log V)$ diameter.
+\textbf{(d) Meta-Learned GNCA} optimizes continuous edge logits $\alpha \in \mathbb{R}^{5 \times 5}$ via bilevel relaxation, autonomously discovering a sparse directed hierarchy (seed 0 dominant edges shown).
+Bottom row (Baselines and receptive field analysis):
+\textbf{(e) Flat MLP} flattens all cells into a $730$-dimensional vector without graph structure or parameter sharing across positions ($62.7\text{k}$ parameters).
+\textbf{(f) Random Forest} trains deep decision trees on bootstrap samples ($18.2\text{M}$ parameters) voted in parallel.
+\textbf{(g) HistGradientBoosting} sums shallow trees sequentially, fitting gradient residuals.
+\textbf{(h) Goal Hop Distance Heatmap} summarizes the minimum steps required for goal intent to reach each causal turn, demonstrating the information-bottleneck separation between 1D lattices and graph topologies.}
+\label{fig:topologies}
+\end{figure*}
+
+\paragraph{Topology of Employed Algorithms.}
+Figure~\ref{fig:topologies} illustrates the spatial information-flow topology of each algorithm evaluated in this work. In 1D lattices (Figure~\ref{fig:topologies}a), messages crawl along a chain, creating an information bottleneck where the goal cell at index $0$ requires $V{-}1 = 4$ cellular steps to reach the most recent action turn $t{-}1$. In contrast, Star GNCA (Figure~\ref{fig:topologies}b) introduces a centralized broadcast hub, collapsing the goal-to-cell diameter to $1$ hop for all nodes. Tree GNCA (Figure~\ref{fig:topologies}c) organizes the causal history into a hierarchical call-tree DAG where recent execution turns ($t{-}2, t{-}1$) are siblings subordinate to earlier subtask actions ($t{-}4$), reflecting the branching structure of real agent execution trees. Meta-Learned GNCA (Figure~\ref{fig:topologies}d) treats edge weights as continuous differentiable parameters $\alpha \in \mathbb{R}^{5 \times 5}$, converging to a sparse directed tree backbone. In comparison, non-cellular baselines lack spatial recurrence: the Flat MLP (Figure~\ref{fig:topologies}e) flattens all cells into a monolithic $730$-dimensional vector, while Random Forest (Figure~\ref{fig:topologies}f) and HistGradientBoosting (Figure~\ref{fig:topologies}g) fit large ensembles of independent decision trees. As summarized in the hop-distance matrix (Figure~\ref{fig:topologies}h), Star and Tree topologies ensure rapid goal signal propagation across all cells within $1$--$2$ steps, enabling the weight-tied cellular rule to synthesize global context without parameter bloat.
+
 I map the operational context $\mathbf{s}_t$ to an expressive relational graph $\mathcal{G} = (\mathcal{V}_{\text{graph}}, \mathcal{E}, A)$ with $|\mathcal{V}_{\text{graph}}| = V = 5$ nodes over a causal window $L=5$.
 \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
   \item \textbf{Node $0$ (Intent \& Environment Hub).} Anchors the global intent $\mathbf{g}_{\text{intent}}$ concatenated with workspace diagnostic scalars $\mathbf{w}_{\text{env}}$.
