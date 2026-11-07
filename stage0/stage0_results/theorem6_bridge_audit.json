@@ -1,0 +1,44 @@
+{
+  "2": {
+    "depth": 2,
+    "test_acc": 55.78,
+    "gnca_agreement": 65.61,
+    "cohen_kappa": 0.2193
+  },
+  "3": {
+    "depth": 3,
+    "test_acc": 60.37,
+    "gnca_agreement": 72.12,
+    "cohen_kappa": 0.4158
+  },
+  "4": {
+    "depth": 4,
+    "test_acc": 63.43,
+    "gnca_agreement": 76.18,
+    "cohen_kappa": 0.5055
+  },
+  "6": {
+    "depth": 6,
+    "test_acc": 64.08,
+    "gnca_agreement": 76.86,
+    "cohen_kappa": 0.5217
+  },
+  "8": {
+    "depth": 8,
+    "test_acc": 65.81,
+    "gnca_agreement": 76.63,
+    "cohen_kappa": 0.5628
+  },
+  "10": {
+    "depth": 10,
+    "test_acc": 65.5,
+    "gnca_agreement": 76.37,
+    "cohen_kappa": 0.5581
+  },
+  "None": {
+    "depth": null,
+    "test_acc": 58.58,
+    "gnca_agreement": 64.42,
+    "cohen_kappa": 0.4354
+  }
+}
