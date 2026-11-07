@@ -1,6 +1,6 @@
 \documentclass[10pt,twocolumn,letterpaper]{article}
 
-\usepackage[margin=0.75in]{geometry}
+\usepackage[margin=0.70in,columnsep=0.35in]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
@@ -11,6 +11,7 @@
 \usepackage{hyperref}
 \usepackage{microtype}
 \usepackage{enumitem}
+\setlist{topsep=1pt, itemsep=0pt, parsep=1pt, partopsep=0pt}
 \usepackage{cite}
 \usepackage{listings}
 \usepackage{color}
@@ -23,6 +24,22 @@
 \setlength{\dblfloatsep}{10pt plus 2pt minus 2pt}
 \setlength{\abovecaptionskip}{8pt plus 2pt minus 1pt}
 \setlength{\belowcaptionskip}{8pt plus 2pt minus 1pt}
+
+\makeatletter
+\renewcommand{\@seccntformat}[1]{\csname the#1\endcsname.\ }
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+  {-1.8ex \@plus -0.4ex \@minus -.2ex}%
+  {0.4ex \@plus.1ex}%
+  {\normalfont\normalsize\bfseries}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-1.4ex\@plus -0.3ex \@minus -.2ex}%
+  {0.3ex \@plus .1ex}%
+  {\normalfont\normalsize\bfseries}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+  {-1.2ex\@plus -0.2ex \@minus -.2ex}%
+  {0.2ex \@plus .1ex}%
+  {\normalfont\normalsize\itshape}}
+\makeatother
 
 \hypersetup{
   colorlinks=true,
@@ -72,15 +89,20 @@
 \date{October 2026}
 
 \begin{document}
-\maketitle
-
-\begin{abstract}
-Selecting which tool to invoke in an autonomous agent is a micro-routing decision, yet current harnesses dispatch every turn through multi-billion-parameter LLMs. We introduce \textbf{Graph Neural Cellular Automata (GNCA)}, a $35.3\text{k}$--$59.2\text{k}$ parameter System-1 reflex router that selects tools via recurrent message passing on a relational trace graph. In \textbf{Lean 4}, we machine-check six structural properties of the discrete topology space with zero axioms, including star-vs-chain diameter separation ($O(1)$ vs $\Omega(V)$), conditional contractive stability, and a simulation-and-compression duality proving that $K$ cellular steps on a tree graph exact-simulate any depth-$K$ binary decision tree while compressing parameters by $307\times$ relative to the $18.2\text{M}$-parameter Hermes Random Forest. GNCA executes batch-1 CPU forward passes in $\mathbf{0.35}$--$\mathbf{0.66\text{ ms}}$ ($42.1\text{ ms}$ for local LLMs). Across four 3-seed benchmarks on unified CUDA hardware, GNCA achieves $\mathbf{87.09 \pm 1.57\%}$ test top-1 on \textbf{API-Bank} (outperforming API-Bank Random Forest at $80.13 \pm 0.55\%$, $p = 0.0002$, and HistGradientBoosting at $84.75 \pm 0.59\%$, $p = 0.0036$), $\mathbf{76.30 \pm 1.85\%}$ test top-1 on \textbf{ToolBench} (vs $74.33 \pm 1.12\%$ ToolBench Random Forest), and $\mathbf{76.83 \pm 0.60\%}$ test top-1 on \textbf{BFCL v4} (vs $74.18 \pm 0.96\%$ BFCL Random Forest, $p = 0.0022$). On \textbf{Hermes} ($3{,}530$ test turns), 10k-step class-weighted GNCA trades top-1 ($64.64\%$--$66.19\%$ curated test top-1) for $2.15\times$ higher rare-tool macro-F1 ($0.608$ vs $0.283$), while unweighted label-smoothed Tree GNCA reaches $67.37\%$ curated test top-1 at 10k steps, $68.07\%$ curated test top-1 over a 200k grokking progression, and $\mathbf{68.92 \pm 0.47\%}$ curated test top-1 across 3 seeds vs $67.88\%$ curated test top-1 for Random Forest and $69.47\%$ curated test top-1 for HistGradientBoosting.
-\end{abstract}
+\twocolumn[
+  \begin{@twocolumnfalse}
+    \maketitle
+    \begin{abstract}
+    \vspace{-0.6em}
+    \noindent Selecting which tool to invoke in an autonomous agent is a micro-routing decision, yet current harnesses dispatch every turn through multi-billion-parameter LLMs. We introduce \textbf{Graph Neural Cellular Automata (GNCA)}, a $35.3\text{k}$--$59.2\text{k}$ parameter System-1 reflex router that selects tools via recurrent message passing on a relational trace graph. In \textbf{Lean 4}, we machine-check six structural properties of the discrete topology space with zero axioms, including star-vs-chain diameter separation ($O(1)$ vs $\Omega(V)$), conditional contractive stability, and a simulation-and-compression duality proving that $K$ cellular steps on a tree graph exact-simulate any depth-$K$ binary decision tree while compressing parameters by $307\times$ relative to the $18.2\text{M}$-parameter Hermes Random Forest. GNCA executes batch-1 CPU forward passes in $\mathbf{0.35}$--$\mathbf{0.66\text{ ms}}$ ($42.1\text{ ms}$ for local LLMs). Across four 3-seed benchmarks on unified CUDA hardware, GNCA achieves $\mathbf{87.09 \pm 1.57\%}$ test top-1 on \textbf{API-Bank} (outperforming API-Bank Random Forest at $80.13 \pm 0.55\%$, $p = 0.0002$, and HistGradientBoosting at $84.75 \pm 0.59\%$, $p = 0.0036$), $\mathbf{76.30 \pm 1.85\%}$ test top-1 on \textbf{ToolBench} (vs $74.33 \pm 1.12\%$ ToolBench Random Forest), and $\mathbf{76.83 \pm 0.60\%}$ test top-1 on \textbf{BFCL v4} (vs $74.18 \pm 0.96\%$ BFCL Random Forest, $p = 0.0022$). On \textbf{Hermes} ($3{,}530$ test turns), 10k-step class-weighted GNCA trades top-1 ($64.64\%$--$66.19\%$ curated test top-1) for $2.15\times$ higher rare-tool macro-F1 ($0.608$ vs $0.283$), while unweighted label-smoothed Tree GNCA reaches $67.37\%$ curated test top-1 at 10k steps, $68.07\%$ curated test top-1 over a 200k grokking progression, and $\mathbf{68.92 \pm 0.47\%}$ curated test top-1 across 3 seeds vs $67.88\%$ curated test top-1 for Random Forest and $69.47\%$ curated test top-1 for HistGradientBoosting.
+    \end{abstract}
+    \vspace{1.2em}
+  \end{@twocolumnfalse}
+]
 
 \section{Introduction}
 Autonomous software agents operate as iterative closed-loop systems: observing environment feedback (compiler diagnostics, file diffs, test logs) and synthesizing next actions. In biological nervous systems, routine motor actions do not require deliberative processing in the cerebral cortex; a low-level reflex arc in the spinal cord coordinates rapid responses in milliseconds. In contrast, modern AI agents dispatch every mundane operation through massive, multi-billion-parameter autoregressive models. This design causes critical bottlenecks:
-\begin{enumerate}[leftmargin=1.5em, itemsep=0.1em]
+\begin{enumerate}[leftmargin=1.5em]
   \item \textbf{Latency and Memory Pressure.} Generating tokens sequentially causes high latency and heavy memory traffic, slowing down agent loops.
   \item \textbf{Context Window Bloat.} Intermediate steps fill context windows with repetitive JSON schema and syntax clutter.
   \item \textbf{Rigid 1D Assumptions.} Prior cellular models restrict computation to 1D lattices. Signals crawl one step at a time like a game of telephone, ignoring that agent execution traces form hierarchical trees.
@@ -89,7 +111,7 @@ Autonomous software agents operate as iterative closed-loop systems: observing e
 Neural Cellular Automata (NCAs)~\cite{mordvintsev2020growing} offer an alternative computational paradigm based on local, self-organizing update rules. Historically, NCAs were studied in continuous 2D grids for biological morphogenesis, texture generation, and self-repair. However, their core inductive biases (iterative spatial message passing across discrete cells governed by uniform update rules) align naturally with structured sequential decision processes. Like biological cells communicating with their immediate neighbors to form complex tissues, NCA cells update their local states in parallel without global bottlenecking. Recent investigations (e.g., Mittal et al.~\cite{mittal2026textnca}) probed token-level text NCAs, but their application to structured multi-action tool execution has remained limited to rigid sequential chains.
 
 \paragraph{Contributions.} In this paper, I extend Neural Cellular Automata beyond 1D topologies into a graph framework for hierarchical agent routing (fixed star and tree topologies plus optional continuous architecture search). My core contributions are fourfold.
-\begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+\begin{itemize}[leftmargin=1.5em]
   \item \textbf{Multi-Benchmark Graph Cellular Routing.} I formulate GNCA, replacing 1D convolutional stencils with relational graph message passing across a $59.2\text{k}$-parameter cellular update rule ($307\times$ smaller than an $18.2\text{M}$-parameter Hermes Random Forest). Across four multi-seed benchmarks, GNCA achieves $\mathbf{87.09 \pm 1.57\%}$ test top-1 on \textbf{API-Bank} ($+6.97\text{ pp}$ over API-Bank Random Forest, $p=0.0002$; $+2.35\text{ pp}$ over HistGradientBoosting, $p=0.0036$), $\mathbf{76.30 \pm 1.85\%}$ test top-1 on \textbf{ToolBench} ($+1.98\text{ pp}$ over ToolBench Random Forest), $\mathbf{76.83 \pm 0.60\%}$ test top-1 on \textbf{BFCL v4} ($+2.65\text{ pp}$ over BFCL Random Forest, $p=0.0022$), and $\mathbf{68.92 \pm 0.47\%}$ curated test top-1 in 3-seed unweighted label-smoothed evaluation on \textbf{Hermes} ($68.07\%$ curated test top-1 over the 200k grokking schedule; $66.19\%$ curated test top-1 and $2.15\times$ higher rare-tool macro-F1 under 10k class weighting).
   \item \textbf{Machine-Checked Structural Proofs, Tree--NCA Duality, \& Contractive Bridge.} In Lean 4, I formally verify 1D lattice subsumption, tree subsumption, permutation equivariance, and star-vs-chain diameter separation ($O(1)$ vs $\Omega(V)$) with zero unproven axioms. Furthermore, under the assumption of threshold-gated tree transitions, I formally prove a conditional simulation and parameter-compression duality between binary decision trees and tree cellular automata (Theorem~\ref{thm:tree-nca-duality}), explaining why tree ensembles and tree NCAs induce closely aligned partitions while weight-tied cellular rules achieve exponential $\mathcal{O}(M(2^K-1))$ parameter compression. I complement these structural proofs with a post-hoc top-$k=2$ discretization audit of meta-learned $\alpha$ matrices and a 3-seed spectrally normalized contractive training study enforcing Theorem~\ref{thm:contraction}'s conditional dyadic contraction premise ($\rho = 0.427 < 0.50$ on $100\%$ of test turns).
   \item \textbf{Dual-System Architecture \& Calibrated Risk-Coverage Routing.} I introduce a System-1/System-2 agent harness with risk-gated dynamic schema pruning, combining normalized prediction entropy with the node-mean root-mean-square cellular step norm. Across $3{,}530$ held-out test turns (3 seeds), the composite uncertainty score achieves $0.730 \pm 0.008$ error-detection AUROC and increases retained System-1 accuracy from $69.10\%$ to $90.48\%$ along the selective risk-coverage frontier.
