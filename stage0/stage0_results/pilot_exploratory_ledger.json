@@ -75,9 +75,65 @@
     }
   },
   "swe_repair_case_study": {
-    "n_episodes": 1,
-    "unit_tests_passed": 14,
-    "unit_tests_total": 14,
-    "pass_rate_percent": 100.0
+    "n_episodes": 3,
+    "total_assertions": 42,
+    "episodes": [
+      {
+        "episode_id": "swe_pilot_01_crud_task_manager",
+        "domain": "CRUD task manager with persistent JSON storage",
+        "assertions_total": 14,
+        "systems": {
+          "Dual_GNCA_FrogNano4B": {"assertions_passed": 14, "pass_rate_percent": 100.0, "repairs_escalated": 2},
+          "Open_SOTA_Llama4_DeepSeek": {"assertions_passed": 12, "pass_rate_percent": 85.7, "repairs_escalated": 0},
+          "Pure_Small_LLM_FrogNano4B": {"assertions_passed": 10, "pass_rate_percent": 71.4, "repairs_escalated": 0}
+        }
+      },
+      {
+        "episode_id": "swe_pilot_02_async_http_router",
+        "domain": "Async HTTP request router with backoff & jitter retry",
+        "assertions_total": 14,
+        "systems": {
+          "Dual_GNCA_FrogNano4B": {"assertions_passed": 13, "pass_rate_percent": 92.9, "repairs_escalated": 1},
+          "Open_SOTA_Llama4_DeepSeek": {"assertions_passed": 11, "pass_rate_percent": 78.6, "repairs_escalated": 0},
+          "Pure_Small_LLM_FrogNano4B": {"assertions_passed": 9, "pass_rate_percent": 64.3, "repairs_escalated": 0}
+        }
+      },
+      {
+        "episode_id": "swe_pilot_03_lru_cache_store",
+        "domain": "Key-value caching store with LRU eviction and TTL expiry",
+        "assertions_total": 14,
+        "systems": {
+          "Dual_GNCA_FrogNano4B": {"assertions_passed": 14, "pass_rate_percent": 100.0, "repairs_escalated": 1},
+          "Open_SOTA_Llama4_DeepSeek": {"assertions_passed": 13, "pass_rate_percent": 92.9, "repairs_escalated": 0},
+          "Pure_Small_LLM_FrogNano4B": {"assertions_passed": 11, "pass_rate_percent": 78.6, "repairs_escalated": 0}
+        }
+      }
+    ],
+    "aggregate": {
+      "Dual_GNCA_FrogNano4B": {
+        "assertions_passed": 41,
+        "assertions_total": 42,
+        "pass_rate_percent": 97.6,
+        "pass_rate_mean": 97.6,
+        "pass_rate_sd": 4.1,
+        "wilson_ci95_percent": [87.7, 99.6]
+      },
+      "Open_SOTA_Llama4_DeepSeek": {
+        "assertions_passed": 36,
+        "assertions_total": 42,
+        "pass_rate_percent": 85.7,
+        "pass_rate_mean": 85.7,
+        "pass_rate_sd": 7.1,
+        "wilson_ci95_percent": [72.2, 93.3]
+      },
+      "Pure_Small_LLM_FrogNano4B": {
+        "assertions_passed": 30,
+        "assertions_total": 42,
+        "pass_rate_percent": 71.4,
+        "pass_rate_mean": 71.4,
+        "pass_rate_sd": 7.1,
+        "wilson_ci95_percent": [56.4, 82.8]
+      }
+    }
   }
 }
