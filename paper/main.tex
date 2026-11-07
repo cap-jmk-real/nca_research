@@ -163,15 +163,14 @@ A shared 1$\times$1 convolution over the $3C$-channel perceived tensor computes 
 \end{equation}
 Here $W_1 \in \mathbb{R}^{D_{\mathrm{mid}} \times 3C}$, $b_1 \in \mathbb{R}^{D_{\mathrm{mid}}}$, $W_2 \in \mathbb{R}^{2H \times D_{\mathrm{mid}}}$, and $D_{\mathrm{mid}} = 96$. Per-cell observation width is $D = d_{\text{svd}} + 4 + |\mathcal{V}| + 1$. This combines the truncated TF-IDF goal embedding ($d_{\text{svd}} \in \{64, 128\}$), four structural scalars, a $|\mathcal{V}|$-way one-hot tool vector ($|\mathcal{V}|=13$), and an occupied bit. As derived in Table~\ref{tab:param-derivation}, the cellular update and readout sum to $288D + 16K + 17{,}070$ trainable parameters for fixed topologies ($+25$ for meta-learned $\alpha \in \mathbb{R}^{5 \times 5}$). Thus $D=146$ (SVD128) yields $59{,}182$ parameters for fixed topologies at $K=4$, $59{,}207$ for meta-learned topology, and $59{,}246$ for $K=8$ Deep Tree. The compact $D=82$ (SVD64) configuration yields $35{,}347$ ($35.3\text{k}$) parameters.
 
-\begin{table}[tbp]
+\begin{table*}[tbp]
 \centering
 \small
-\setlength{\tabcolsep}{2.5pt}
+\setlength{\tabcolsep}{3pt}
 \caption{\textbf{Exact layer-by-layer trainable parameter derivation for Graph NCA} ($V{=}5$, $H{=}16$, $|\mathcal{V}|{=}13$). Each cell concatenates its state $h_i$, low-pass aggregate $(Ah)_i$, and high-pass differential $((A-I)h)_i$ into $3H{=}48$ channels alongside $D$ input features.}
 \label{tab:param-derivation}
-\vspace{4pt}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}llccc@{}}
+\vspace{6pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llccc@{}}
 \toprule
 \textbf{Module} & \textbf{Tensor Shape / Formula} & \textbf{SVD64} & \textbf{SVD128} & \textbf{SVD128} \\
  & & ($D{=}82, K{=}4$) & ($D{=}146, K{=}4$) & ($D{=}146, K{=}8$) \\
@@ -183,13 +182,12 @@ Layer normalization & $2H = 32$ & $32$ & $32$ & $32$ \\
 Tool classifier ($W_{\text{tool}}, b_{\text{tool}}$) & $(5H \times 13) + 13 = 1{,}053$ & $1{,}053$ & $1{,}053$ & $1{,}053$ \\
 Argument head ($W_{\text{arg}}$) & $(H \times 512) + 512$ (or $16\times 176$) & $2{,}757$ & $8{,}160$ & $8{,}160$ \\
 Abstain gate ($w_{\text{abs}}, b_{\text{abs}}$) & $H + 1 = 17$ & $17$ & $17$ & $17$ \\
-Topology logits ($\alpha$, meta) & $V \times V = 25$ (0 if fixed) & $0$ ($+25$) & $0$ ($+25$) & $0$ \\
+Topology logits ($\alpha$, meta) & $V \times V = 25$ ($0$ if fixed) & $0$ ($+25$) & $0$ ($+25$) & $0$ \\
 \midrule
-\textbf{Total Parameters} & $288D + 16K + 17{,}070 (+25)$ & $\mathbf{35{,}347}$ & $\mathbf{59{,}182}$ ($59{,}207$) & $\mathbf{59{,}246}$ \\
+\textbf{Total Parameters} & $288D + 16K + 17{,}070 \; (+25)$ & $\mathbf{35{,}347}$ & $\mathbf{59{,}182}$ ($59{,}207$) & $\mathbf{59{,}246}$ \\
 \bottomrule
-\end{tabular}%
-}
-\end{table}
+\end{tabular*}
+\end{table*}
 
 \paragraph{Residual State Accumulation.}
 Updates are applied residually across $K=4$ cycles.
