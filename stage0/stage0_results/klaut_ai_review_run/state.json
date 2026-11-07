@@ -1,0 +1,71 @@
+{
+  "run_id": "20261107T100159-e2beaa",
+  "elapsed_s": 183.93,
+  "cost": {
+    "calls": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "eur": 0.0,
+    "budget_eur": 3.0,
+    "by_model": {}
+  },
+  "phase": "done",
+  "rounds": [
+    {
+      "round": 1,
+      "tasks": 11,
+      "raw": 0,
+      "new": 0,
+      "kept": 0,
+      "dropped": 0,
+      "conflicts": 0
+    }
+  ],
+  "plan": [
+    {
+      "agent": "number_consistency",
+      "question": "Work through your checklist for this paper: Abstract vs results vs tables vs captions: every number, rounding, N, replicates."
+    },
+    {
+      "agent": "claim_evidence",
+      "question": "Work through your checklist for this paper: Every claim has evidence of matching strength; no overclaiming."
+    },
+    {
+      "agent": "methods_results",
+      "question": "Work through your checklist for this paper: Everything in results is described in methods with identical parameters, datasets, splits."
+    },
+    {
+      "agent": "math_notation",
+      "question": "Work through your checklist for this paper: Symbols defined once and used consistently; derivations continuous; units/dimensions."
+    },
+    {
+      "agent": "statistics",
+      "question": "Work through your checklist for this paper: Tests, CIs, seeds, effect sizes, multiple comparisons, small-N scoping."
+    },
+    {
+      "agent": "ml_experiments",
+      "question": "Work through your checklist for this paper: Leakage, baselines, ablations, variance, compute parity, benchmark contamination."
+    },
+    {
+      "agent": "chemistry_domain",
+      "question": "Work through your checklist for this paper: Stoichiometry, formulas, masses, characterisation, conditions (only if chemistry content)."
+    },
+    {
+      "agent": "citations_novelty",
+      "question": "Work through your checklist for this paper: Citations support the claims; closest prior art cited and differentiated; missing key work."
+    },
+    {
+      "agent": "reproducibility",
+      "question": "Work through your checklist for this paper: Code/data availability, versions, hyperparameters, seeds, hardware, energy."
+    },
+    {
+      "agent": "figures_tables",
+      "question": "Work through your checklist for this paper: Captions self-contained, axes/units, values in figures match text, required plots present."
+    },
+    {
+      "agent": "readability",
+      "question": "Work through your checklist for this paper: Human and AI readability: narrative arc, signposting, chunk autonomy, jargon."
+    }
+  ],
+  "stop_reason": "no new verified findings"
+}

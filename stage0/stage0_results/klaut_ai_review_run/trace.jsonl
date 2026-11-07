@@ -1,0 +1,36 @@
+{"t": 0.0, "kind": "phase", "name": "facts"}
+{"t": 27.14, "kind": "deterministic", "findings": 1}
+{"t": 27.15, "kind": "phase", "name": "plan"}
+{"t": 58.04, "kind": "plan", "tasks": 11}
+{"t": 58.04, "kind": "phase", "name": "round1"}
+{"t": 64.98, "kind": "agent_final", "task": "r1t0", "agent": "number_consistency", "steps": 1, "findings": 0}
+{"t": 113.82, "kind": "agent_final", "task": "r1t3", "agent": "math_notation", "steps": 1, "findings": 0}
+{"t": 125.69, "kind": "agent_final", "task": "r1t2", "agent": "methods_results", "steps": 1, "findings": 0}
+{"t": 133.33, "kind": "agent_final", "task": "r1t1", "agent": "claim_evidence", "steps": 1, "findings": 0}
+{"t": 137.06, "kind": "agent_final", "task": "r1t4", "agent": "statistics", "steps": 1, "findings": 0}
+{"t": 144.23, "kind": "agent_final", "task": "r1t5", "agent": "ml_experiments", "steps": 1, "findings": 0}
+{"t": 150.48, "kind": "agent_final", "task": "r1t6", "agent": "chemistry_domain", "steps": 1, "findings": 0}
+{"t": 174.98, "kind": "agent_final", "task": "r1t7", "agent": "citations_novelty", "steps": 1, "findings": 0}
+{"t": 182.27, "kind": "agent_final", "task": "r1t8", "agent": "reproducibility", "steps": 1, "findings": 0}
+{"t": 191.05, "kind": "agent_final", "task": "r1t9", "agent": "figures_tables", "steps": 1, "findings": 0}
+{"t": 197.6, "kind": "agent_final", "task": "r1t10", "agent": "readability", "steps": 1, "findings": 0}
+{"t": 197.61, "kind": "phase", "name": "panel"}
+{"t": 206.52, "kind": "phase", "name": "done"}
+{"t": 0.0, "kind": "phase", "name": "facts"}
+{"t": 27.43, "kind": "deterministic", "findings": 1}
+{"t": 27.44, "kind": "phase", "name": "plan"}
+{"t": 60.28, "kind": "plan", "tasks": 11}
+{"t": 60.28, "kind": "phase", "name": "round1"}
+{"t": 66.65, "kind": "agent_final", "task": "r1t0", "agent": "number_consistency", "steps": 1, "findings": 0}
+{"t": 75.99, "kind": "agent_final", "task": "r1t2", "agent": "methods_results", "steps": 1, "findings": 0}
+{"t": 91.59, "kind": "agent_final", "task": "r1t1", "agent": "claim_evidence", "steps": 1, "findings": 0}
+{"t": 96.28, "kind": "agent_final", "task": "r1t3", "agent": "math_notation", "steps": 1, "findings": 0}
+{"t": 100.35, "kind": "agent_final", "task": "r1t4", "agent": "statistics", "steps": 1, "findings": 0}
+{"t": 110.33, "kind": "agent_final", "task": "r1t5", "agent": "ml_experiments", "steps": 1, "findings": 0}
+{"t": 117.84, "kind": "agent_final", "task": "r1t6", "agent": "chemistry_domain", "steps": 1, "findings": 0}
+{"t": 126.16, "kind": "agent_final", "task": "r1t7", "agent": "citations_novelty", "steps": 1, "findings": 0}
+{"t": 132.59, "kind": "agent_final", "task": "r1t8", "agent": "reproducibility", "steps": 1, "findings": 0}
+{"t": 136.18, "kind": "agent_final", "task": "r1t9", "agent": "figures_tables", "steps": 1, "findings": 0}
+{"t": 144.58, "kind": "agent_final", "task": "r1t10", "agent": "readability", "steps": 1, "findings": 0}
+{"t": 144.59, "kind": "phase", "name": "panel"}
+{"t": 183.93, "kind": "phase", "name": "done"}
