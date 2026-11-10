@@ -133,7 +133,7 @@ def draw_graph(ax, topo: str, title: str, subtitle: str) -> None:
             color="white" if k == 0 else "black", fontweight="bold" if k == 0 else "normal",
         )
 
-    ax.set_title(title, fontsize=7.8, fontweight="bold", pad=5)
+    ax.set_title(title, fontsize=6.8, fontweight="bold", pad=5)
     ax.text(
         0.5, -0.06, subtitle,
         transform=ax.transAxes, ha="center", va="top", fontsize=6.0,
@@ -194,7 +194,7 @@ def draw_mlp(ax):
     for a, b in [(1.8, 2.07), (2.63, 2.77), (3.33, 3.47)]:
         arrow(ax, (a, 0.78), (b, 0.78))
     _mb = json.loads((Path(__file__).resolve().parents[1] / "stage0/stage0_results/review_1110/multibench.json").read_text())
-    ax.set_title(f"(e) Flat MLP ({_mb['benchmarks']['curated']['models']['MLP']['n_params']/1e3:.1f}k params)", fontsize=7.8, fontweight="bold", pad=5)
+    ax.set_title(f"(e) MLP ({_mb['benchmarks']['curated']['models']['MLP']['n_params']/1e3:.1f}k params)", fontsize=6.8, fontweight="bold", pad=5)
     ax.text(
         0.5, -0.06,
         "No graph: all cells concatenated;\ncell identity is solely input offset",
@@ -214,7 +214,7 @@ def draw_rf(ax):
     ax.text(3.05, 0.95, "…", fontsize=9, ha="center")
     box(ax, 3.8, 0.55, 0.75, 0.55, "majority\nvote", fc="#FCE8D8", fs=4.9)
     _cc = json.loads((Path(__file__).resolve().parents[1] / "stage0/stage0_results/review_1110/cpu_cost.json").read_text())
-    ax.set_title(f"(f) Random Forest ({_cc['RandomForest']['n_tree_nodes']/1e3:.0f}k nodes)", fontsize=7.8, fontweight="bold", pad=5)
+    ax.set_title(f"(f) Random Forest ({_cc['RandomForest']['n_tree_nodes']/1e3:.0f}k nodes)", fontsize=6.8, fontweight="bold", pad=5)
     ax.text(
         0.5, -0.06,
         "Deep bootstrap trees voted in parallel;\neach split tests a single feature",
@@ -242,7 +242,7 @@ def draw_hgb(ax):
                 arrowprops=dict(arrowstyle="-|>", color=HGB_C, lw=0.7, connectionstyle="arc3,rad=-0.35"))
     ax.text(1.45, 1.42, "fit residual", fontsize=6.0, ha="center", va="center", color=HGB_C, fontweight="bold")
 
-    ax.set_title("(g) HistGradientBoosting", fontsize=7.8, fontweight="bold", pad=5)
+    ax.set_title("(g) HistGradientBoosting", fontsize=6.8, fontweight="bold", pad=5)
     ax.text(
         0.5, -0.06,
         "Shallow sequential additive trees;\neach tree fits prior pseudo-residuals",
@@ -264,7 +264,7 @@ def draw_hops(ax):
     ax.set_yticks(range(len(rows)))
     ax.set_yticklabels([r for r, _ in rows], fontsize=6.0)
     ax.tick_params(length=0)
-    ax.set_title("(h) Goal Hop Distance", fontsize=7.8, fontweight="bold", pad=5)
+    ax.set_title("(h) Goal Hop Distance", fontsize=6.8, fontweight="bold", pad=5)
     ax.text(
         0.5, -0.22,
         "Steps for goal intent to reach cell;\nStar & Tree achieve $O(1)$/$O(\\log V)$ hops",
