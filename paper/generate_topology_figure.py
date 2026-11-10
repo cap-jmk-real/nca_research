@@ -193,7 +193,8 @@ def draw_mlp(ax):
     box(ax, 3.75, 0.78, 0.55, 0.75, "13\ntools", fc="#FCE8D8", fs=4.8)
     for a, b in [(1.8, 2.07), (2.63, 2.77), (3.33, 3.47)]:
         arrow(ax, (a, 0.78), (b, 0.78))
-    ax.set_title("(e) Flat MLP (62.7k params)", fontsize=7.2, fontweight="bold", pad=5)
+    _mb = json.loads((Path(__file__).resolve().parents[1] / "stage0/stage0_results/review_1110/multibench.json").read_text())
+    ax.set_title(f"(e) Flat MLP ({_mb['benchmarks']['curated']['models']['MLP']['n_params']/1e3:.1f}k params)", fontsize=7.2, fontweight="bold", pad=5)
     ax.text(
         0.5, -0.06,
         "No graph: all cells concatenated;\ncell identity is solely input offset",
@@ -212,7 +213,8 @@ def draw_rf(ax):
         arrow(ax, (x, 0.15), (3.4, 0.55), lw=0.5)
     ax.text(3.05, 0.95, "…", fontsize=9, ha="center")
     box(ax, 3.8, 0.55, 0.75, 0.55, "majority\nvote", fc="#FCE8D8", fs=4.9)
-    ax.set_title("(f) Random Forest (18.2M nodes)", fontsize=7.2, fontweight="bold", pad=5)
+    _cc = json.loads((Path(__file__).resolve().parents[1] / "stage0/stage0_results/review_1110/cpu_cost.json").read_text())
+    ax.set_title(f"(f) Random Forest ({_cc['RandomForest']['n_tree_nodes']/1e3:.0f}k nodes)", fontsize=7.2, fontweight="bold", pad=5)
     ax.text(
         0.5, -0.06,
         "Deep bootstrap trees voted in parallel;\neach split tests a single feature",
