@@ -1,0 +1,11 @@
+{
+ "host": "engine (1x NVIDIA RTX 3060, 32 CPU threads)",
+ "code_commit": "a495882caa1f683db3f0eae880e0f97957a68c7f",
+ "segments": [
+  {"start": "2026-11-10T08:23:37+01:00", "last_log": "2026-11-10T09:28:21+01:00", "end": "host hang + reboot; in-flight trials curated/gnca_star#19 and curated/hgb_cell#2 rerun on resume"},
+  {"start": "2026-11-10T10:16:27+01:00", "end": "2026-11-10T10:57:19+01:00"}
+ ],
+ "wall_h": 1.76,
+ "threads": "CPU worker n_jobs=12, OMP_NUM_THREADS=12 in both segments; GPU worker OMP_NUM_THREADS=4",
+ "note": "wall_h = sum of the two segments (64.7 + 40.9 min)"
+}

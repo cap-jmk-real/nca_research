@@ -1,0 +1,12 @@
+{
+ "captured": "2026-11-10T11:37+01:00 from the engine virtualenv used for review_1110 and hpo_1110 (~/nca_venv)",
+ "python": "3.13.5",
+ "torch": "2.6.0+cu124",
+ "cuda": "12.4",
+ "scikit_learn": "1.9.1",
+ "numpy": "2.5.4",
+ "scipy": "1.18.1",
+ "gpu": "NVIDIA GeForce RTX 3060",
+ "nvidia_driver": "550.163.01",
+ "cpu": "AMD Ryzen 9 7950X 16-Core Processor"
+}

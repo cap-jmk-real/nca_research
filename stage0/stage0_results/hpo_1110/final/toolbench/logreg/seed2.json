@@ -1,0 +1,15 @@
+{
+ "seed": 2,
+ "best_trial": 8,
+ "config": {
+  "C": 61.11292967148628,
+  "class_weight": null,
+  "max_iter": 1000
+ },
+ "val_top1": 70.35,
+ "fit_s": 0.4,
+ "n_params": 1890,
+ "test_top1": 67.3,
+ "n_test": 422,
+ "wall_s": 1.4
+}

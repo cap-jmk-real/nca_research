@@ -1,0 +1,18 @@
+{
+ "seed": 1,
+ "best_trial": 9,
+ "config": {
+  "n_estimators": 200,
+  "max_depth": 15,
+  "min_samples_leaf": 4,
+  "max_features": 0.3,
+  "class_weight": null
+ },
+ "val_top1": 76.93,
+ "fit_s": 0.7,
+ "n_tree_nodes": 49616,
+ "n_params": 446544,
+ "test_top1": 74.86,
+ "n_test": 692,
+ "wall_s": 0.8
+}
