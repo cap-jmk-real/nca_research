@@ -1,6 +1,6 @@
 # Handoff: Next-Tool NCA Research & Paper
 
-**Working Title:** *Beyond 1D Grid Automata: Architecture Meta-Learning for Graph Neural Cellular Automata in Agent Execution Traces*  
+**Title:** *Micro-Routing with Graph Neural Cellular Automata for Sub-Millisecond Agent Tool Selection*  
 **Paper Location:** [`paper/main.tex`](paper/main.tex) (Compiled: [`paper/main.pdf`](paper/main.pdf))  
 **Status:** **Expanded to Graph NCAs, Architecture Meta-Learning, & Machine-Checked Lean 4 Proof Suite (Audit Score: 9.65 / 10.0)**. Embedded results from 21 registered experiments and 10,000 bootstrap resamples.
 

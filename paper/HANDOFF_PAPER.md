@@ -1,6 +1,6 @@
 # Research Handoff: Graph Neural Cellular Automata Paper
 
-**Working Title:** *Beyond 1D Grid Automata: Architecture Meta-Learning for Graph Neural Cellular Automata in Agent Execution Traces*  
+**Title:** *Micro-Routing with Graph Neural Cellular Automata for Sub-Millisecond Agent Tool Selection*  
 **Authors:** Julian M. Kleber (`0000-0001-5518-0932`)  
 **Target Venue:** *arXiv (cs.AI / cs.SE)* / *ICLR / NeurIPS Agentic Workshop*  
 **Current Status:** **Complete & Submission-Ready Draft**. 6-page manuscript (`main.pdf`), 4 publication-grade figures, formal proofs verified in Lean 4 (0 axioms), audited at **9.75 / 10.0**.
