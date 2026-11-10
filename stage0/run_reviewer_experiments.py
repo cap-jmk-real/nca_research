@@ -336,7 +336,16 @@ def summarize_across_seeds(seed_runs: list[dict]) -> dict:
     }
 
 
-def run_benchmark_split(split_name: str, seeds: tuple[int, ...] = (0, 1, 2), nca_steps_budget: int = 800) -> dict:
+def run_benchmark_split(
+    split_name: str,
+    seeds: tuple[int, ...] = (0, 1, 2),
+    nca_steps_budget: int = 800,
+    return_correct: bool = False,
+    keep_states: tuple[str, ...] = (),
+) -> dict:
+    """If return_correct, the result also holds per-seed per-example top-1 correctness
+    (key "correct_by_seed") so that paired tests can resample test examples with seeds
+    kept together; keep_states returns best_state dicts for the named neural models."""
     print(f"\n=== Running Multi-Seed Benchmark on {split_name} (seeds={seeds}, steps={nca_steps_budget}) ===", flush=True)
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     sp = {s: load_split(split_name, s) for s in ("train", "val", "test")}
@@ -345,6 +354,7 @@ def run_benchmark_split(split_name: str, seeds: tuple[int, ...] = (0, 1, 2), nca
 
     models_runs: dict[str, list[dict]] = {}
     paired_across_seeds: dict[str, list[np.ndarray]] = {}
+    kept_states: dict[str, list[dict]] = {}
 
     for seed in seeds:
         t0 = time.time()
@@ -457,6 +467,8 @@ def run_benchmark_split(split_name: str, seeds: tuple[int, ...] = (0, 1, 2), nca
                 seed=seed,
             )
             models_runs.setdefault(f"GraphNCA_{topo}_LS", []).append(r_ls)
+            if f"GraphNCA_{topo}_LS" in keep_states:
+                kept_states.setdefault(f"GraphNCA_{topo}_LS", []).append(r_ls["best_state"])
             paired_across_seeds.setdefault(f"GraphNCA_{topo}_LS", []).append(r_ls["correct"])
 
             m_cw = GraphNCA(
@@ -499,7 +511,7 @@ def run_benchmark_split(split_name: str, seeds: tuple[int, ...] = (0, 1, 2), nca
                 b_cat = np.concatenate(paired_across_seeds[base])
                 pooled_paired[f"{k}_minus_{base}"] = eu.paired_bootstrap(a_cat, b_cat, n_boot=5000, seed=0)
 
-    return {
+    result = {
         "split": split_name,
         "n": {s: len(sp[s]) for s in sp},
         "n_classes_active": len(labels_all),
@@ -508,6 +520,13 @@ def run_benchmark_split(split_name: str, seeds: tuple[int, ...] = (0, 1, 2), nca
         "models": summary_models,
         "paired_bootstrap": pooled_paired,
     }
+    if return_correct:
+        result["correct_by_seed"] = {
+            k: [np.asarray(c, dtype=np.int8).tolist() for c in v] for k, v in paired_across_seeds.items()
+        }
+    if keep_states:
+        result["_states"] = kept_states
+    return result
 
 
 def run_hermes_factorial_and_contractive(seeds: tuple[int, ...] = (0, 1, 2)) -> dict:
