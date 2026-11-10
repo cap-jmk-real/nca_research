@@ -119,7 +119,9 @@ def draw_graph(ax, topo: str, title: str, subtitle: str) -> None:
             dy = pos[dst][1] - pos[src][1]
             d = np.hypot(dx, dy)
             nx, ny = -dy / d, dx / d
-            off = 0.30 if {src, dst} == {0, 1} else 0.22
+            off = 0.40 if {src, dst} == {0, 1} else 0.34
+            if (src, dst) == (1, 3):
+                off = -off  # keep the t-4 -> t-2 label on the outer side of its arrow
             ax.text(
                 mx + off * nx, my + off * ny, f"{w:.2f}",
                 fontsize=6.0, ha="center", va="center", color="#222222",

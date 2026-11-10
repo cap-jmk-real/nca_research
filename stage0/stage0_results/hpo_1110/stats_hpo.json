@@ -1118,5 +1118,10 @@
     "wall_h": 1.76,
     "threads": "CPU worker n_jobs=12, OMP_NUM_THREADS=12 in both segments; GPU worker OMP_NUM_THREADS=4",
     "note": "wall_h = sum of the two segments (64.7 + 40.9 min)"
+  },
+  "ood_pilot": {
+    "best": "B_flat",
+    "n_above": "0",
+    "n_below": "1"
   }
 }
