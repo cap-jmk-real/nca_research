@@ -3,20 +3,20 @@
 \toprule
 Benchmark & Baseline & $\Delta$ (pp) & 95\% CI & $p$ & $p_{\text{Holm}}$ \\
 \midrule
-Hermes & Random Forest & +1.17 & [+0.22, +2.11] & 0.0155 & 0.1530 \\
-Hermes & HistGradientBoosting & +2.90 & [+1.96, +3.81] & 0.0001 & 0.0012 \\
-Hermes & MLP (76 hidden) & -0.81 & [-1.47, -0.17] & 0.0153 & 0.1530 \\
-BFCL (E1v2 split) & Random Forest & +2.22 & [+0.05, +4.43] & 0.0515 & 0.3605 \\
-BFCL (E1v2 split) & HistGradientBoosting & -1.78 & [-3.71, +0.14] & 0.0670 & 0.4020 \\
-BFCL (E1v2 split) & MLP (76 hidden) & -1.20 & [-2.84, +0.43] & 0.1505 & 0.7524 \\
-ToolBench & Random Forest & +1.97 & [-0.87, +4.74] & 0.1794 & 0.7524 \\
-ToolBench & HistGradientBoosting & +0.24 & [-2.21, +2.76] & 0.8812 & 1.0000 \\
-ToolBench & MLP (76 hidden) & +2.13 & [+0.24, +4.03] & 0.0307 & 0.2456 \\
-API-Bank & Random Forest & +5.87 & [+3.11, +8.70] & 0.0002 & 0.0022 \\
-API-Bank & HistGradientBoosting & +1.24 & [-0.69, +3.31] & 0.2246 & 0.7524 \\
-API-Bank & MLP (76 hidden) & -0.48 & [-2.07, +1.10] & 0.5507 & 1.0000 \\
-Pooled (random effects) & Random Forest & +2.55 & [+0.67, +4.43] & 0.0077 & -- \\
-Pooled (random effects) & HistGradientBoosting & +0.75 & [-1.50, +3.00] & 0.5132 & -- \\
-Pooled (random effects) & MLP (76 hidden) & -0.26 & [-1.43, +0.92] & 0.6686 & -- \\
+Hermes & RF & +1.17 & [+0.22, +2.11] & 0.0155 & 0.1530 \\
+Hermes & HGB & +2.90 & [+1.96, +3.81] & 0.0001 & 0.0012 \\
+Hermes & MLP & -0.81 & [-1.47, -0.17] & 0.0153 & 0.1530 \\
+BFCL & RF & +2.22 & [+0.05, +4.43] & 0.0515 & 0.3605 \\
+BFCL & HGB & -1.78 & [-3.71, +0.14] & 0.0670 & 0.4020 \\
+BFCL & MLP & -1.20 & [-2.84, +0.43] & 0.1505 & 0.7524 \\
+ToolBench & RF & +1.97 & [-0.87, +4.74] & 0.1794 & 0.7524 \\
+ToolBench & HGB & +0.24 & [-2.21, +2.76] & 0.8812 & 1.0000 \\
+ToolBench & MLP & +2.13 & [+0.24, +4.03] & 0.0307 & 0.2456 \\
+API-Bank & RF & +5.87 & [+3.11, +8.70] & 0.0002 & 0.0022 \\
+API-Bank & HGB & +1.24 & [-0.69, +3.31] & 0.2246 & 0.7524 \\
+API-Bank & MLP & -0.48 & [-2.07, +1.10] & 0.5507 & 1.0000 \\
+Pooled & RF & +2.55 & [+0.67, +4.43] & 0.0077 & -- \\
+Pooled & HGB & +0.75 & [-1.50, +3.00] & 0.5132 & -- \\
+Pooled & MLP & -0.26 & [-1.43, +0.92] & 0.6686 & -- \\
 \bottomrule
 \end{tabular}
