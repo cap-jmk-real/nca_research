@@ -84,6 +84,18 @@ def test_p3_locality_receptive_field():
                     assert changed == bool(D[i, j] <= k), (topo, i, j, k, int(D[i, j]))
 
 
+def test_p1_untied_parameter_count():
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "stage0"))
+    import run_rigour_1110 as RG
+    RG._ensure_torch_classes()
+    Dm, Dc = 96, OBS_C + H
+    n_upd = Dm * (3 * Dc + 1) + 2 * H * Dm
+    for K in (2, 4, 8):
+        tied = GraphNCA(obs_c=OBS_C, hidden_c=H, n_classes=NCLS, steps=K, seq_len=V, topology="tree")
+        untied = RG.UntiedGNN(obs_c=OBS_C, hidden_c=H, n_classes=NCLS, steps=K, seq_len=V, topology="tree")
+        assert n_params(untied) - n_params(tied) == (K - 1) * n_upd
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_"):

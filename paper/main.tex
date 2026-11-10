@@ -18,6 +18,8 @@
 \usepackage{color}
 \usepackage{orcidlink}
 \usepackage{nicefrac}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 \setlength{\textfloatsep}{14pt plus 3pt minus 2pt}
 \setlength{\floatsep}{10pt plus 2pt minus 2pt}
@@ -131,7 +133,30 @@ The headline is modest. The GNCA is a competitive small router. With default set
 \paragraph{Scope.} All claims concern turn-level next-tool accuracy on held-out splits. The primary model (tree GNCA, $K{=}4$, label smoothing) and the twelve primary comparisons are those coded in the analysis script; the tuned comparison reuses them. There is no pre-registration, and earlier exploratory runs on Hermes informed these choices, so the tests are not confirmatory in the strict sense. Code, splits, result files, the scripts that generate every number, table and figure, and the Lean proofs are public (MIT licence).
 
 \section{Related Work}\label{sec:related-work}
-\paragraph{Neural cellular automata.} Growing NCAs~\cite{mordvintsev2020growing} learn local update rules on image grids that self-organise and repair. Learning Graph Cellular Automata~\cite{grattarola2021learning} move the rule to arbitrary graphs and fit it to reproduce given dynamics (e.g.\ Voronoi or flocking rules); E($n$)-equivariant GNCAs~\cite{gala2023equivariant} add geometric equivariance for point clouds. NCAs have also been used for reasoning tasks~\cite{etcheverry2026reasoning}, brain-inspired wiring~\cite{pio2026brainca} and language modelling~\cite{mittal2026textnca,lee2026training}. Our cell rule is a standard GNCA update with the NCA perception stack (identity, neighbourhood average, Laplacian). What is specific here is the cell layout over an agent trace, the end-to-end classification objective on a fixed five-node graph whose nodes are trace events rather than points in space, and the evaluation.
+\paragraph{Neural cellular automata.} Growing NCAs~\cite{mordvintsev2020growing} learn local update rules on image grids that self-organise and repair. Learning Graph Cellular Automata~\cite{grattarola2021learning} move the rule to arbitrary graphs and fit it to reproduce given dynamics (e.g.\ Voronoi or flocking rules); E($n$)-equivariant GNCAs~\cite{gala2023equivariant} add geometric equivariance for point clouds. NCAs have also been used for reasoning tasks~\cite{etcheverry2026reasoning}, brain-inspired wiring~\cite{pio2026brainca} and language modelling~\cite{mittal2026textnca,lee2026training}. Our cell rule is a standard GNCA update with the NCA perception stack (identity, neighbourhood average, Laplacian).
+\paragraph{Weight-tied message passing.} Sharing one propagation function across steps is older than graph NCAs: gated graph neural networks (GGNN)~\cite{li2016ggnn} unroll a shared GRU update for a fixed number of steps, the message-passing framework~\cite{gilmer2017mpnn} covers tied and untied variants, and Universal Transformers~\cite{dehghani2019universal} and deep equilibrium models~\cite{bai2019deq} tie weights across depth in sequence models. The GNCA used here is a member of this family. It differs from GGNN in three concrete ways: the observation $o_i$ is re-read at every step instead of only initialising the state, the update is a gated residual that starts at the identity ($W_2{=}0$), and the perception is the NCA stack on a row-normalised operator. We test the weight tying directly with an untied GNN that is otherwise identical (Section~\ref{sec:results}).
+\paragraph{What is new.} Table~\ref{tab:delta} separates what we take from prior work from what this paper adds. To our knowledge no earlier work uses a graph NCA as an in-loop next-tool router. The algorithm is the combination in Algorithm~\ref{alg:router}: the agent trace as a five-cell graph (goal plus the last four steps, each with its result), the call-tree operator over those cells, $K$ weight-tied gated steps with the observation re-injected, a flat readout and an entropy hand-off. The building blocks are known; the contribution is this router, its exact structural properties (Proposition~\ref{prop:structure}, Theorem~\ref{thm:tree-nca-duality}) and a controlled comparison with mature baselines.
+
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Positioning: what the tree-GNCA router takes from prior work and what it adds. ``Tied'': one set of update weights for all steps.}
+\label{tab:delta}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.2cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+\toprule
+& Growing NCA~\cite{mordvintsev2020growing} & Graph NCAs~\cite{grattarola2021learning,gala2023equivariant} & GGNN / MPNN~\cite{li2016ggnn,gilmer2017mpnn} & Tree ensembles, neural trees~\cite{kontschieder2015deep,yang2018deep} & This work (Algorithm~\ref{alg:router}) \\
+\midrule
+Cells / nodes & Pixels on a grid & Graph nodes, points in space & Graph nodes & Input features & Goal + last four tool steps of an agent trace \\
+Graph & Fixed grid & Given graph & Given graph & -- & Fixed call tree (or chain, star, learned) over trace cells \\
+Update & Tied local rule, stochastic cell updates & Tied rule & GGNN: tied GRU; MPNN: tied or untied & Axis-aligned splits & Tied gated residual from identity; observation re-read every step \\
+Objective & Grow / regenerate a target image & Reproduce given dynamics; pattern formation & Graph or node labels & Labels & Next-tool classification with entropy hand-off \\
+Parameters vs.\ steps $K$ & Constant & Constant & GGNN constant & Grows with depth and trees & Constant except $KH$ step embeddings (Prop.~\ref{prop:structure}) \\
+Formal results & -- & Equivariance (E($n$)) & -- & -- & Lean: receptive fields, tree simulation; exact locality and automorphism equivariance (Prop.~\ref{prop:structure}) \\
+Taken from prior work & \multicolumn{5}{l}{Perception stack (identity, average, Laplacian); weight tying; gated residual updates; random-walk operator~\cite{chung1997spectral}; TF-IDF/SVD features} \\
+\bottomrule
+\end{tabularx}
+\end{table*}
 \paragraph{Neural and soft decision trees.} Deep neural decision forests~\cite{kontschieder2015deep}, distilled soft trees~\cite{frosst2017distilling} and deep neural decision trees (DNDT)~\cite{yang2018deep} make tree routing differentiable. DNDT builds leaves from Kronecker products of soft bins, so its size grows exponentially with the number of features. Our Lean result about trees (Theorem~\ref{thm:tree-nca-duality}) is a simulation statement in the same spirit: one shared cellular step on a tree evaluates any decision tree in depth-many steps.
 \paragraph{Routing in LLM systems.} FrugalGPT~\cite{chen2023frugalgpt} and RouteLLM~\cite{ong2024routellm} route a whole query between models of different cost. AgentWeave~\cite{singla2026agentweave} routes before reasoning in function calling, and recent work evaluates System-1 decision models for agent harnesses with paired, self-audited tests~\cite{li2026fastmodels}. Small function-calling models for edge devices (Octopus~v2~\cite{chen2024octopus}, TinyAgent~\cite{erdogan2024tinyagent}, Hammer~\cite{lin2024hammer}) generate the call itself, and tool retrievers rank tools by relevance to the query~\cite{qu2024colt}. We address a narrower problem: predicting the next tool from the trace inside the loop, with an optional hand-off to a larger model when the router is unsure.
 \paragraph{Verification of neural networks.} SMT- and bound-propagation verifiers such as Marabou~\cite{katz2019marabou} and Beta-CROWN~\cite{wang2021beta} certify input-output properties of trained feed-forward networks. Our Lean proofs are of a different kind: they establish properties of idealised graph automata, not of trained weights (Section~\ref{sec:formal}).
@@ -228,6 +253,27 @@ and escalate when $s_{\text{esc}} > \theta$. The evaluation code uses $\beta{=}1
 \end{equation}
 so $\mathbb{E}\,\bar s \approx \sigma$ independently of $H$ and $V$. The entropy term is unitless; the step term carries the units of $h$, and rescaling $h$ by $c>0$ is the same as replacing $\beta$ by $c\beta$. This normalization therefore removes the dependence on $H$ and $V$ but not on the scale of $h$, so $\beta$ has no natural value. Section~\ref{sec:results} tests the score on held-out turns.
 
+
+\begin{algorithm}[t]
+\caption{Tree-GNCA next-tool router (one turn). Training fits $\theta=(W_1,b_1,W_2,e_{1..K},W_{\text{tool}},b_{\text{tool}})$ by cross-entropy on the tool head; inference is deterministic.}
+\label{alg:router}
+\small
+\begin{algorithmic}[1]
+\Require goal $\mathbf g$, last four steps $(u_{t-k},r_{t-k})_{k=1}^{4}$; featuriser $\phi$ (TF-IDF/SVD fitted on training goals); tree operator $A_{\text{tree}}$ (Eq.~\eqref{eq:atree}); steps $K$; threshold $\theta$
+\State $o_0 \gets [\phi(\mathbf g);\ \text{4 trace scalars};\ \mathbf 0;\ 1]$ \Comment{goal cell}
+\For{$i=1,\dots,4$} \Comment{step cells, right-aligned: cell 4 is $t{-}1$}
+  \State $o_i \gets [\phi(u\,r);\ \text{position, }\log|r|\text{, error flag, active};\ \mathrm{onehot}(u);\ 1]$, or $\mathbf 0$ if the step does not exist
+\EndFor
+\State $h_i^{(0)} \gets \mathbf 0 \in\mathbb R^{H}$ for all cells
+\For{$n=0,\dots,K-1$} \Comment{the same $W_1,W_2$ at every step and cell}
+  \State $x_i \gets [o_i;\ h_i^{(n)}+e_n]$;\quad $p_i \gets [x_i,\ (A\mathbf x)_i,\ ((A-I)\mathbf x)_i]$
+  \State $[\delta_i; g_i] \gets W_2\,\mathrm{ReLU}(W_1 p_i + b_1)$;\quad $h_i^{(n+1)} \gets h_i^{(n)} + \sigma(g_i)\odot\delta_i$
+\EndFor
+\State $\hat y \gets \operatorname{softmax}(W_{\text{tool}}\operatorname{vec}(\mathbf h^{(K)}) + b_{\text{tool}})$
+\State \textbf{if} $\mathcal H(\hat y)/\ln|\mathcal C| > \theta$ \textbf{then} hand the turn to the large model \textbf{else return} $\arg\max \hat y$ \Comment{entropy only; Sec.~\ref{sec:results}}
+\end{algorithmic}
+\end{algorithm}
+
 \section{Structural Properties \& Formal Verification}\label{sec:formal}
 The Lean~4 development (\texttt{formal\_\allowbreak{}proofs/}, Lean~4.35.0, $\numLeanThms$ top-level theorems) builds with \texttt{lake build} and contains no \texttt{sorry}. \texttt{\#print axioms} shows that $\numLeanAxFree$ theorems use no axioms and the rest use only Lean's standard axioms (\texttt{propext}, \texttt{Quot.sound}, \texttt{Classical.choice}); none depends on \texttt{sorryAx} or a user-declared axiom (Appendix~\ref{app:lean}). Distances and weights in the Lean files are natural numbers, so the metric and contraction statements are about discrete abstractions of the real-valued model. Table~\ref{tab:theorem-scope} maps each group to what it does and does not say about the trained router; Appendix~\ref{app:lean} lists every theorem by name.
 
@@ -246,6 +292,18 @@ Let $T$ be a binary decision tree with gates $g_u:\mathcal{X}\to\{0,1\}$ at inte
 (i) By cases on the root. For a leaf, $\Phi_x$ is the identity. For a branch, $\mathrm{eval}(T,x)$ is by definition $\mathrm{eval}$ of the child selected by $g(x)$, which is $\Phi_x(T)$. (ii) Induction on $K$. For $K{=}0$, $\mathrm{depth}(T)\le0$ forces a leaf. For $K{+}1$, a leaf is fixed. A branch with $\mathrm{depth}\le K{+}1$ steps to a child of depth $\le K$, and the induction hypothesis together with (i) gives the leaf $\mathrm{eval}(T,x)$. (iii) $2^K \ge K+1$ by induction.
 \end{proof}
 This is a statement about an idealised discrete automaton: a tree-shaped cellular update \emph{can} represent any depth-$K$ decision tree with one shared rule, and $K$ steps are enough. It does not say that gradient training finds such a rule, and the five-cell graph of Section~\ref{sec:cells} is not the decision tree itself. A further theorem (\texttt{sigmoidal\_\allowbreak{}gating\_\allowbreak{}*\_\allowbreak{}margin\_\allowbreak{}concordance}) states an elementary fact. A threshold at $1/2$ on a sigmoid output agrees with the hard gate whenever the output is at least a margin $\delta>0$ away from $1/2$.
+
+\begin{proposition}[Exact structure of the implemented update]\label{prop:structure}
+Let $\mathbf h^{(k)}(\mathbf o)$ be the hidden states after $k$ steps of Eq.~\eqref{eq:update} on a fixed operator $A$ with self-loops, and $d_A(i,j)$ the hop distance in its pattern $S$.
+(i) \emph{Weight tying.} The number of parameters is $N_0 + KH$, where $N_0$ does not depend on $K$. An untied $K$-layer network with the same perception and update has $N_0 + KH + (K{-}1)N_{\text{upd}}$, where $N_{\text{upd}} = D_{\text{mid}}(3D_{\text{cell}}+1) + 2H D_{\text{mid}}$ is the size of one update network.
+(ii) \emph{Locality.} $h_i^{(k)}$ is a function of $\{o_j : d_A(i,j)\le k\}$ only.
+(iii) \emph{Automorphism equivariance.} If $P$ is a permutation with $PAP^{\top}=A$, then $\mathbf h^{(k)}(P\mathbf o) = P\,\mathbf h^{(k)}(\mathbf o)$ for every $k$ and every parameter value. On $A_{\text{tree}}$ the only non-trivial such $P$ swaps cells $3$ and $4$ ($t{-}2$ and $t{-}1$).
+(iv) \emph{Cost.} Up to element-wise terms, one turn costs $K V (6D_{\text{cell}}D_{\text{mid}} + 4HD_{\text{mid}}) + 2KV^2 D_{\text{cell}} + 2VH|\mathcal C|$ floating-point operations, linear in $K$, with inference memory independent of $K$.
+\end{proposition}
+\begin{proof}
+(i) $W_1,b_1,W_2$ and the tool head are shared across steps; only $e_n$ is per step. Untying adds one $(W_1,b_1,W_2)$ per extra step. (ii) Induction on $k$. $h^{(0)}=0$. Step $k{+}1$ of cell $i$ reads $x_i$ and $(A\mathbf x)_i$, i.e.\ cells $j$ with $S_{ij}=1$, whose states depend on observations within $k$ hops of $j$, hence within $k{+}1$ hops of $i$. (iii) $(A P\mathbf x) = P(A\mathbf x)$ when $PAP^{\top}=A$; the cell-wise network and $e_n$ are the same for every cell, so each step commutes with $P$, and so does the composition. For the tree, an automorphism must preserve degrees ($2,3,1,1,1$ for cells $0,\dots,4$) and adjacency, so it fixes cells 0 and 1 (unique degrees) and cell 2 (the only leaf adjacent to cell 0), and can only swap the two leaves under cell 1. (iv) Count the two $1\times1$ convolutions per cell and step, the aggregation $A\mathbf x$, and the readout.
+\end{proof}
+Parts (ii) and (iii) are exact for every parameter value, so they hold for the trained routers; \path{tests/test_gnca_properties_1110.py} checks (i)--(iii) numerically on the model code, including that $h_i^{(k)}$ \emph{does} change with $o_j$ whenever $d_A(i,j)\le k$. Part (iii) means that the order of the two most recent steps reaches the tool head only through the position channel and the position-specific readout $W_{\text{tool}}$. For the default configuration (iv) gives $\numFlopsGnca$ operations per turn.
 
 \begin{theorem}[Conditional contraction; \texttt{fixed\_\allowbreak{}point\_\allowbreak{}unique}, \texttt{trajectory\_\allowbreak{}decay}]\label{thm:contraction}
 Let $T$ be an operator on a metric space with $2\,d(T x, T y) \le d(x,y)$ for all $x,y$. Then $T$ has at most one fixed point, and $d(T^n x, T^n y) \le 2^{-n} d(x,y)$. The premise holds whenever $b\,d(Tx,Ty)\le(r+\ell)\,d(x,y)$ for natural numbers with $2(r+\ell)\le b$ (\texttt{trained\_\allowbreak{}damped\_\allowbreak{}recurrence\_\allowbreak{}is\_\allowbreak{}dyadic\_\allowbreak{}contraction}).
@@ -402,6 +460,13 @@ A $\numGncaParams$-parameter graph cellular automaton is a reasonable next-tool 
 \bibitem{pio2026brainca} L.~Pio-Lopez et~al. BraiNCA: brain-inspired neural cellular automata and applications to morphogenesis and motor control. arXiv:2604.01932, 2026.
 \bibitem{mittal2026textnca} A.~Mittal et~al. TextNCA: Neural cellular automata for language modeling via hierarchical local attention. arXiv:2608.02050, 2026.
 \bibitem{lee2026training} D.~Lee et~al. Training language models via neural cellular automata. arXiv:2603.10055, 2026.
+\bibitem{li2016ggnn} Y.~Li, D.~Tarlow, M.~Brockschmidt, and R.~Zemel. Gated graph sequence neural networks. In \emph{Proc.\ ICLR}, 2016. arXiv:1511.05493.
+\bibitem{gilmer2017mpnn} J.~Gilmer, S.~S.~Schoenholz, P.~F.~Riley, O.~Vinyals, and G.~E.~Dahl. Neural message passing for quantum chemistry. In \emph{Proc.\ ICML}, 2017. arXiv:1704.01212.
+\bibitem{dehghani2019universal} M.~Dehghani, S.~Gouws, O.~Vinyals, J.~Uszkoreit, and {\L}.~Kaiser. Universal transformers. In \emph{Proc.\ ICLR}, 2019. arXiv:1807.03819.
+\bibitem{bai2019deq} S.~Bai, J.~Z.~Kolter, and V.~Koltun. Deep equilibrium models. In \emph{NeurIPS}, 2019. arXiv:1909.01377.
+\bibitem{vaswani2017attention} A.~Vaswani et~al. Attention is all you need. In \emph{NeurIPS}, 2017. arXiv:1706.03762.
+\bibitem{cover1967nearest} T.~M.~Cover and P.~E.~Hart. Nearest neighbor pattern classification. \emph{IEEE Trans.\ Inf.\ Theory}, 13(1):21--27, 1967. \url{https://doi.org/10.1109/TIT.1967.1053964}
+\bibitem{geifman2017selective} Y.~Geifman and R.~El-Yaniv. Selective classification for deep neural networks. In \emph{NeurIPS}, 2017. arXiv:1705.08500.
 \bibitem{kontschieder2015deep} P.~Kontschieder, M.~Fiterau, A.~Criminisi, and S.~Rota~Bul\`o. Deep neural decision forests. In \emph{Proc.\ ICCV}, 2015. \url{https://doi.org/10.1109/ICCV.2015.172}
 \bibitem{frosst2017distilling} N.~Frosst and G.~Hinton. Distilling a neural network into a soft decision tree. arXiv:1711.09784, 2017.
 \bibitem{yang2018deep} Y.~Yang, I.~G.~Morillo, and T.~M.~Hospedales. Deep neural decision trees. arXiv:1806.06988, 2018.
