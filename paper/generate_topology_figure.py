@@ -274,10 +274,10 @@ def draw_hops(ax):
 
 def main() -> None:
     fig, axes = plt.subplots(2, 4, figsize=(7.2, 4.0), gridspec_kw={"hspace": 0.58, "wspace": 0.20})
-    draw_graph(axes[0, 0], "1d", "(a) 1D Lattice (TextNCA)", "Nearest-neighbor line: goal needs\n$V{-}1{=}4$ steps to reach latest call")
+    draw_graph(axes[0, 0], "1d", "(a) 1D Chain", "Nearest-neighbor line: goal needs\n$V{-}1{=}4$ steps to reach latest call")
     draw_graph(axes[0, 1], "star", "(b) Star GNCA", "Central hub: goal broadcasts to\nevery cell in exactly 1 step")
     draw_graph(axes[0, 2], "tree", "(c) Tree GNCA", "Binary call tree: recent calls are\nsiblings with $O(\\log V)$ diameter")
-    draw_graph(axes[0, 3], "meta", "(d) Meta-Learned GNCA", "Learned continuous edge weights;\nconverges to directed tree backbone")
+    draw_graph(axes[0, 3], "meta", "(d) Learned Topology", "Row-softmax edge weights initialised\nat the tree; largest weights, seed 0")
     draw_mlp(axes[1, 0])
     draw_rf(axes[1, 1])
     draw_hgb(axes[1, 2])
