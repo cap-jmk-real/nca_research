@@ -92,8 +92,14 @@
 }
 \date{November 2026}
 
+\setcounter{dbltopnumber}{2}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\dbltopfraction}{0.85}
+\renewcommand{\dblfloatpagefraction}{0.7}
 \input{generated/numbers.tex}
 \input{generated/numbers_v76c.tex}
+\input{generated/numbers_hpo.tex}
 
 \begin{document}
 \twocolumn[
@@ -102,7 +108,7 @@
     \vspace{-1.5em}
     \begin{abstract}
     \vspace{-1.0em}
-    \noindent Agent harnesses choose the next tool on every turn, usually with a multi-billion-parameter language model. We study a small learned ``System-1'' router for this decision. A Graph Neural Cellular Automaton (GNCA) holds the goal and the last four tool steps in five cells. It runs $K{=}4$ weight-tied message-passing steps over a fixed or learned graph and reads the next tool from the final cell states. We derive the update rule from random-walk diffusion on the trace graph, give its exact parameter count, and state which properties are proved. We test on four benchmarks (Hermes agent traces, BFCL, ToolBench, API-Bank; $\numNTotalTest$ held-out turns; 3 seeds). The $\numGncaParams$-parameter tree GNCA is ahead of a Random Forest by $\numPoolRf$\,pp (random-effects pooled estimate, 95\% CI ${[}\numPoolRfLo, \numPoolRfHi{]}$; $\numPoolRfp$\,pp when the forest sees the same cell features). It shows no significant difference from HistGradientBoosting ($\numPoolHgb$\,pp, CI ${[}\numPoolHgbLo, \numPoolHgbHi{]}$) or from a same-size MLP ($\numPoolMlp$\,pp). On one CPU core it predicts in $\numLatGnca$\,ms (median), against $\numLatHgb$\,ms and $\numLatRf$\,ms for the two tree ensembles. Lean~4 proofs ($\numLeanThms$ theorems, no \texttt{sorry}) cover receptive-field separation between graph topologies and the fact that $K$ gated steps on a tree evaluate any decision tree of depth at most $K$. They do not certify the trained network: its per-step Jacobian has spectral norm $\numJacMean$ on average, so the recurrence is not contractive. The entropy-plus-step-norm escalation score detects routing errors no better than entropy alone (AUROC $\numAurocComp$ vs.\ $\numAurocEnt$). Every number in the paper is generated from result files in the public repository.
+    \noindent Agent harnesses choose the next tool on every turn, usually with a multi-billion-parameter language model. As a small learned ``System-1'' router, a Graph Neural Cellular Automaton (GNCA) holds the goal and the last four tool steps in five cells, runs $K$ weight-tied message-passing steps over a fixed or learned graph and reads the next tool from the final cell states. We derive the update rule from random-walk diffusion on the trace graph. We test on four benchmarks (Hermes agent traces, BFCL, ToolBench, API-Bank; $\numNTotalTest$ held-out turns; 3 seeds). With default settings the $\numGncaParams$-parameter tree GNCA is ahead of a Random Forest by $\numPoolRf$\,pp (random-effects pooled estimate, 95\% CI ${[}\numPoolRfLo, \numPoolRfHi{]}$) and shows no significant difference from HistGradientBoosting ($\numPoolHgb$\,pp) or a same-size MLP ($\numPoolMlp$\,pp). After tuning every model on every benchmark with the same budget ($\numHpoTrials$ random-search trials, selected on validation), the tree ensembles gain more than the GNCA. The tuned GNCA then shows no significant pooled difference from any tuned baseline ($\numTPoolRf$\,pp against the Random Forest, CI ${[}\numTPoolRfLo, \numTPoolRfHi{]}$; $\numTPoolHgb$\,pp against HistGradientBoosting; $\numTPoolMlp$\,pp against the MLP). On one CPU core it predicts in $\numLatGnca$\,ms, against $\numLatHgb$\,ms and $\numLatRf$\,ms for the tree ensembles. Lean~4 proofs ($\numLeanThms$ theorems, no \texttt{sorry}) cover receptive-field separation between topologies and the simulation of depth-$K$ decision trees. They do not certify the trained network (mean per-step Jacobian norm $\numJacMean$). The escalation score detects routing errors no better than entropy alone (AUROC $\numAurocComp$ vs.\ $\numAurocEnt$). All numbers are generated from public result files.
     \end{abstract}
     \vspace{0.4em}
   \end{@twocolumnfalse}
@@ -117,12 +123,12 @@ A small supervised router trained on the harness's own traces is the obvious alt
 \begin{itemize}[leftmargin=1.2em, itemsep=0.1em]
   \item A GNCA next-tool router over five trace cells with chain, star, tree and learned topologies, with the update rule derived from random-walk diffusion, its spectrum and its exact parameter count (Section~\ref{sec:formulation}).
   \item Lean~4 formalisations of the structural facts behind the design, with an axiom audit and an explicit statement of what they do not cover; an empirical Jacobian check of the contraction hypothesis (Section~\ref{sec:formal}).
-  \item A four-benchmark, three-seed comparison against logistic regression, Random Forest, HistGradientBoosting (also on the same cell features as the GNCA) and a same-size MLP. Paired tests resample test turns with seeds kept together, use Holm correction and add a random-effects pooled estimate (Sections~\ref{sec:protocol}--\ref{sec:results}).
+  \item A four-benchmark, three-seed comparison against logistic regression, Random Forest, HistGradientBoosting (also on the same cell features as the GNCA) and a same-size MLP. Paired tests resample test turns with seeds kept together, use Holm correction and add a random-effects pooled estimate. All ten models are then tuned per benchmark with the same random-search budget, selected on validation only (Sections~\ref{sec:protocol}--\ref{sec:results}).
   \item Measured CPU latency and model size, a factorial study of depth, topology and loss, and a held-out test of the escalation score.
 \end{itemize}
-The headline is modest. The GNCA is a competitive small router. It is ahead of a Random Forest, shows no significant difference from gradient boosting or a same-size MLP (Table~\ref{tab:paired}), and on one CPU core it predicts faster than both tree ensembles (Section~\ref{sec:results}). Version~7.6 of this manuscript claimed more than the result files support; Appendix~\ref{app:ledger} lists what was removed or replaced.
+The headline is modest. The GNCA is a competitive small router. With default settings it is ahead of a Random Forest and shows no significant difference from gradient boosting or a same-size MLP (Table~\ref{tab:paired}). After every model is tuned with the same budget, it shows no significant pooled difference from any of them (Table~\ref{tab:hpo-paired}). On one CPU core it predicts faster than both tree ensembles (Section~\ref{sec:results}). Version~7.6 of this manuscript claimed more than the result files support; Appendix~\ref{app:ledger} lists what was removed or replaced.
 
-\paragraph{Scope.} All claims concern turn-level next-tool accuracy on held-out splits. The primary model (tree GNCA, $K{=}4$, label smoothing) and the twelve primary comparisons are those coded in the analysis script. There is no pre-registration, and earlier exploratory runs on Hermes informed these choices, so the tests are not confirmatory in the strict sense. Code, splits, result files, the scripts that generate every number, table and figure, and the Lean proofs are public (MIT licence).
+\paragraph{Scope.} All claims concern turn-level next-tool accuracy on held-out splits. The primary model (tree GNCA, $K{=}4$, label smoothing) and the twelve primary comparisons are those coded in the analysis script; the tuned comparison reuses them. There is no pre-registration, and earlier exploratory runs on Hermes informed these choices, so the tests are not confirmatory in the strict sense. Code, splits, result files, the scripts that generate every number, table and figure, and the Lean proofs are public (MIT licence).
 
 \section{Related Work}\label{sec:related-work}
 \paragraph{Neural cellular automata.} Growing NCAs~\cite{mordvintsev2020growing} learn local update rules on image grids that self-organise and repair. Learning Graph Cellular Automata~\cite{grattarola2021learning} move the rule to arbitrary graphs and fit it to reproduce given dynamics (e.g.\ Voronoi or flocking rules); E($n$)-equivariant GNCAs~\cite{gala2023equivariant} add geometric equivariance for point clouds. NCAs have also been used for reasoning tasks~\cite{etcheverry2026reasoning}, brain-inspired wiring~\cite{pio2026brainca} and language modelling~\cite{mittal2026textnca,lee2026training}. Our cell rule is a standard GNCA update with the NCA perception stack (identity, neighbourhood average, Laplacian). What is specific here is the cell layout over an agent trace, the end-to-end classification objective on a fixed five-node graph whose nodes are trace events rather than points in space, and the evaluation.
@@ -269,9 +275,10 @@ Aggregation, gating & 4 & Convex weights preserve bounds; sigmoid threshold matc
 
 \section{Experimental Protocol}\label{sec:protocol}
 \paragraph{Data.} Hermes: next-tool turns from public Hermes agent traces~\cite{hermestraces}, split by session into $\numNHerTrain$ training, $\numNHerVal$ validation and $\numNHerTest$ test turns. BFCL: all public BFCL v3 single-turn AST, live and irrelevance files~\cite{gorilla-bfcl}, with labels mapped heuristically onto the tool vocabulary. Rows with identical goal text stay in one split, stratified 60/20/20 by label ($\numNBfclTrain$/$\numNBfclVal$/$\numNBfclTest$). BFCL items are single-turn, so the history cells are mostly empty there. ToolBench~\cite{qin2023toolllm} and API-Bank~\cite{li2023apibank}: session-disjoint 60/20/20 splits ($\numNTbTrain$/$\numNTbVal$/$\numNTbTest$ and $\numNAbTrain$/$\numNAbVal$/$\numNAbTest$). Split manifests and preparation scripts are in the repository.
-\paragraph{Models.} We compare the majority class, logistic regression, a Random Forest (50 trees, maximum depth 15) and HistGradientBoosting (200 iterations, 31 leaves, learning rate 0.1). The MLP has two hidden layers of 76 units (LayerNorm, GELU, dropout 0.1) on the flattened $5\times146$ cell features ($\numMlpParams$ parameters). The GNCA uses chain, star, tree and learned topologies. The primary tree baselines receive $\numNTabFeat$ features: the goal embedding, a positional one-hot of the last four tools and four scalars, but not the per-step result embeddings. To remove this confound we also fit both tree models on exactly the $\numNCellFeat$ flattened cell features of the MLP and GNCA (RF$^\ast$, HGB$^\ast$). They use the same hyperparameters and seeds (source S1, $\numImtElapsed$\,s on CPU). These form a secondary comparison family. All hyperparameters are fixed defaults; no method received a hyperparameter search.
+\paragraph{Models.} We compare the majority class, logistic regression, a Random Forest (50 trees, maximum depth 15) and HistGradientBoosting (200 iterations, 31 leaves, learning rate 0.1). The MLP has two hidden layers of 76 units (LayerNorm, GELU, dropout 0.1) on the flattened $5\times146$ cell features ($\numMlpParams$ parameters). The GNCA uses chain, star, tree and learned topologies. The primary tree baselines receive $\numNTabFeat$ features: the goal embedding, a positional one-hot of the last four tools and four scalars, but not the per-step result embeddings. To remove this confound we also fit both tree models on exactly the $\numNCellFeat$ flattened cell features of the MLP and GNCA (RF$^\ast$, HGB$^\ast$). They use the same hyperparameters and seeds (source S1, $\numImtElapsed$\,s on CPU). These form a secondary comparison family. These are the default configurations; the next paragraph tunes all of them.
+\paragraph{Hyperparameter search.} Every learned model (logistic regression, RF, HGB, RF$^\ast$, HGB$^\ast$, MLP and the four GNCA topologies) is tuned separately on each benchmark with the same budget: $\numHpoTrials$ random-search trials per model and benchmark, $\numHpoNTrialsTotal$ in total (search code in the repository). Trial~0 is the default configuration; the other trials are drawn with a fixed random seed per benchmark and model. Appendix~\ref{app:hpo} lists the search spaces and the selected configurations. Each trial is fitted on the training split with seed~0 and scored by validation top-1. The test split is not used during the search: neural trials receive the validation split in its place. The configuration with the highest validation score (on equal scores, the lower trial number) is refitted with seeds 0--2 and evaluated once on test. Fitting time was $\numHpoCpuH$\,h for the CPU models and $\numHpoGpuH$\,h for the GPU models ($\numHpoWallH$\,h wall clock, two workers in parallel on one machine). A host reboot interrupted the run once; it resumed from the per-trial logs and reran the two trials in flight. Thread counts affect results only through floating-point nondeterminism. Trial~0 reproduces the seed-0 validation score of the default run to within $\numHpoRepro$\,pp. The exception is HistGradientBoosting on Hermes: the default run used scikit-learn's automatic early stopping (active above 10{,}000 training rows), while the search fixes early stopping off (difference up to $\numHpoReproHgbHer$\,pp). The default won the search in $\numHpoNDefault$ of the 40 model--benchmark pairs.
 \paragraph{Training.} Neural models use AdamW (learning rate $2\times10^{-3}$, weight decay 0.05, label smoothing 0.05, batch 512, cosine schedule) for 800 steps (3{,}000 on Hermes) and keep the checkpoint with the best validation top-1. Seeds 0, 1, 2 change the SVD fit, initialisation and batch order. All runs used one NVIDIA RTX~3060.
-\paragraph{Statistics.} The primary model is the tree GNCA with $K{=}4$ and label smoothing, compared with Random Forest, HistGradientBoosting and MLP on each benchmark (12 comparisons). For each comparison we average each test turn's correctness over the three seeds and bootstrap the mean paired difference over test turns (10{,}000 resamples). The resampling unit is thus the test turn, and $n$ is the number of test turns, not seeds $\times$ turns. $p$-values are Holm-adjusted within the primary family (12) and the secondary family (8). Pooled effects use a DerSimonian--Laird random-effects model over the four benchmarks. We test differences, not equivalence: a non-significant difference is reported as such.
+\paragraph{Statistics.} The primary model is the tree GNCA with $K{=}4$ and label smoothing, compared with Random Forest, HistGradientBoosting and MLP on each benchmark (12 comparisons). For each comparison we average each test turn's correctness over the three seeds and bootstrap the mean paired difference over test turns (10{,}000 resamples). The resampling unit is thus the test turn, and $n$ is the number of test turns, not seeds $\times$ turns. $p$-values are Holm-adjusted within the primary family (12) and the secondary family (8). Pooled effects use a DerSimonian--Laird random-effects model over the four benchmarks. Tuned models are compared in the same way, with three Holm families: tuned tree GNCA against tuned RF, HGB and MLP (12), against tuned RF$^\ast$ and HGB$^\ast$ (8), and tuned minus default for every model and benchmark (40). We test differences, not equivalence: a non-significant difference is reported as such.
 \paragraph{Hermes factorial.} A separate Hermes run (source S2, 3 seeds, its own feature packing) varies depth $K\in\{2,4,8\}$, topology, the loss (label smoothing vs.\ class weights), cross-turn state carry, learned halting and the contractive variant. It also holds the escalation evaluation on the $K{=}8$ tree model. There $\beta{=}1$ and the thresholds $\theta\in\{0.50,0.65,0.76,0.85,1.00\}$ are fixed in the script, not tuned on a validation split; we report the threshold-free AUROC and two operating points on held-out test turns.
 \paragraph{Latency.} Batch-1 prediction on one thread of an \numCpuName, after 100 warm-up calls, median over 1{,}000 calls on Hermes test inputs. Tree models are timed through scikit-learn's \texttt{predict\_\allowbreak{}proba} and the GNCA through a PyTorch forward pass, so both include framework overhead; featurisation is not included.
 
@@ -284,16 +291,7 @@ Aggregation, gating & 4 & Convex weights preserve bounds; sigmoid threshold matc
 \input{generated/tab_multibench.tex}
 \end{table*}
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=\textwidth]{figures/fig2_multibench_v76c.pdf}
-\caption{Test top-1 accuracy per benchmark (bars: mean over 3 seeds; whiskers: SD). Hatched bars: tree models fitted on the same cell features as the GNCA. Dotted lines: majority class.}
-\label{fig:multibench}
-\end{figure*}
-
-\paragraph{Accuracy.} Table~\ref{tab:multibench} and Figure~\ref{fig:multibench} give all models on all benchmarks. Every learned model is far above the majority class. The tree GNCA reaches $\numHerGnca\%$ on Hermes, $\numBfclGnca\%$ on BFCL, $\numTbGnca\%$ on ToolBench and $\numAbGnca\%$ on API-Bank. No model wins everywhere: HistGradientBoosting is best on BFCL ($\numBfclHgb\%$), the MLP on Hermes ($\numHerMlp\%$), and the star GNCA on API-Bank ($\numAbStar\%$). Choosing the GNCA topology on validation instead of fixing the tree would pick the \numVsHerModel{} on Hermes ($\numVsHerTest\%$ test) and the \numVsBfclModel{} on BFCL ($\numVsBfclTest\%$). It would pick the \numVsTbModel{} topology on ToolBench ($\numVsTbTest\%$) and the \numVsAbModel{} on API-Bank ($\numVsAbTest\%$). We keep the pre-specified tree for all tests.
-
-\begin{table}[t]
+\begin{table}[tb]
 \centering
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -304,14 +302,58 @@ Aggregation, gating & 4 & Convex weights preserve bounds; sigmoid threshold matc
 
 \begin{figure*}[t]
 \centering
+\includegraphics[width=\textwidth]{figures/fig2_multibench_v76c.pdf}
+\caption{Test top-1 accuracy per benchmark (bars: mean over 3 seeds; whiskers: SD). Hatched bars: tree models fitted on the same cell features as the GNCA. Dotted lines: majority class.}
+\label{fig:multibench}
+\end{figure*}
+
+\paragraph{Accuracy.} Table~\ref{tab:multibench} and Figure~\ref{fig:multibench} give all models on all benchmarks. Every learned model is far above the majority class. The tree GNCA reaches $\numHerGnca\%$ on Hermes, $\numBfclGnca\%$ on BFCL, $\numTbGnca\%$ on ToolBench and $\numAbGnca\%$ on API-Bank. No model wins everywhere: HistGradientBoosting is best on BFCL ($\numBfclHgb\%$), the MLP on Hermes ($\numHerMlp\%$), and the star GNCA on API-Bank ($\numAbStar\%$). Choosing the GNCA topology on validation instead of fixing the tree would pick the \numVsHerModel{} on Hermes ($\numVsHerTest\%$ test) and the \numVsBfclModel{} on BFCL ($\numVsBfclTest\%$). It would pick the \numVsTbModel{} topology on ToolBench ($\numVsTbTest\%$) and the \numVsAbModel{} on API-Bank ($\numVsAbTest\%$). We keep the pre-specified tree for all tests.
+
+
+
+\begin{figure*}[t]
+\centering
 \includegraphics[width=\textwidth]{figures/fig3_paired_forest.pdf}
 \caption{Paired differences from Table~\ref{tab:paired} with 95\% bootstrap CIs. Filled orange: Holm-adjusted $p<0.05$; open grey: not significant; blue diamonds: random-effects pooled estimate. Source S1.}
 \label{fig:forest}
 \end{figure*}
 
+
+
+
+
 \paragraph{Paired tests.} After Holm correction (Table~\ref{tab:paired}, Figure~\ref{fig:forest}) two of twelve primary comparisons are significant at 0.05. The tree GNCA beats HistGradientBoosting on Hermes ($\numHerDHgb$\,pp, $p_{\text{Holm}}=\numHerDHgbP$) and the Random Forest on API-Bank ($\numAbDRf$\,pp, $p_{\text{Holm}}=\numAbDRfP$). On BFCL its difference to HistGradientBoosting is $\numBfclDHgb$\,pp (CI $[\numBfclDHgbLo, \numBfclDHgbHi]$, not significant). Pooled over benchmarks, the GNCA is ahead of the Random Forest ($\numPoolRf$\,pp, CI $[\numPoolRfLo, \numPoolRfHi]$, $p=\numPoolRfP$). It shows no significant difference from HistGradientBoosting ($\numPoolHgb$\,pp, between-benchmark variance $\tau^2=\numPoolHgbTauSq$) or the MLP ($\numPoolMlp$\,pp, CI $[\numPoolMlpLo, \numPoolMlpHi]$).
 \paragraph{Input-matched tree models.} Given the same cell features (lower block), the Random Forest closes the gap on Hermes ($\numHerDRfp$\,pp, CI $[\numHerDRfpLo, \numHerDRfpHi]$) but remains below the GNCA on the other three benchmarks (significant after Holm on BFCL and API-Bank). Pooled, the GNCA is ahead by $\numPoolRfp$\,pp (CI $[\numPoolRfpLo, \numPoolRfpHi]$, $p=\numPoolRfpP$). Against HistGradientBoosting on cell features (Table~\ref{tab:paired}) the pooled difference is $\numPoolHgbp$\,pp (CI $[\numPoolHgbpLo, \numPoolHgbpHi]$). The GNCA is ahead on Hermes ($\numHerDHgbp$\,pp, $p_{\text{Holm}}=\numHerDHgbpP$), with no significant difference on the other three. On BFCL the history cells are mostly empty. HistGradientBoosting reaches the same accuracy with either feature set, while the Random Forest, which samples a random subset of features at each split, loses accuracy on the longer, mostly zero cell vector.
 \paragraph{Protocol sensitivity.} An earlier Hermes run used a different feature pipeline for the tree models (source S3). It gave HistGradientBoosting $\numFhHgb\%$, Random Forest $\numFhRf\%$ and the star and tree GNCA $\numFhStar\%$ and $\numFhTree\%$, the opposite ranking against gradient boosting. Which model wins on Hermes therefore depends on the features the tree models receive. On BFCL, training the GNCA for $\numEoneSteps$ steps instead of 800 (source S4) gives $\numEoneGncaLo$--$\numEoneGncaHi\%$ across topologies, still below HistGradientBoosting ($\numEoneHgb\%$).
+
+\paragraph{Tuned comparison.} Table~\ref{tab:hpo} and Figure~\ref{fig:hpo}a show what the search changed. Tuning helped logistic regression and the tree models more than the neural models. Pooled gains are $\numGPoolLr$\,pp for logistic regression, $\numGPoolRf$\,pp for the Random Forest and $\numGPoolHgb$\,pp for HistGradientBoosting (CI $[\numGPoolHgbLo, \numGPoolHgbHi]$), and $\numGPoolRfp$ and $\numGPoolHgbp$\,pp on cell features. The MLP changes by $\numGPoolMlp$\,pp and the tree GNCA by $\numGPoolGnca$\,pp (CI $[\numGPoolGncaLo, \numGPoolGncaHi]$). After Holm correction $\numGNSigPos$ of the 40 per-benchmark gains are significant, all positive and none for a neural model. With one seed and $\numHpoTrials$ trials, a configuration that wins on validation can still lose a little on test (Table~\ref{tab:hpo}); this happens for the MLP and for three GNCA variants on some benchmarks, never significantly.
+
+Between tuned models (Table~\ref{tab:hpo-paired}, Figure~\ref{fig:hpo}b), $\numTNSigPrimary$ of the 12 primary comparisons are significant after Holm. The tuned tree GNCA is ahead of the tuned Random Forest on API-Bank ($\numTAbDRf$\,pp, $p_{\text{Holm}}=\numTAbDRfP$). It is behind tuned HistGradientBoosting and the tuned MLP on BFCL ($\numTBfclDHgb$ and $\numTBfclDMlp$\,pp, $p_{\text{Holm}}=\numTBfclDHgbP$ and $\numTBfclDMlpP$). Pooled, its lead over the Random Forest shrinks from $\numPoolRf$ to $\numTPoolRf$\,pp and is no longer significant (CI $[\numTPoolRfLo, \numTPoolRfHi]$, $p=\numTPoolRfP$). Against HistGradientBoosting and the MLP the pooled differences are $\numTPoolHgb$\,pp (CI $[\numTPoolHgbLo, \numTPoolHgbHi]$) and $\numTPoolMlp$\,pp (CI $[\numTPoolMlpLo, \numTPoolMlpHi]$). In the secondary family, tuned HistGradientBoosting on cell features is ahead of the GNCA on Hermes ($\numTHerDHgbp$\,pp, $p_{\text{Holm}}=\numTHerDHgbpP$) and the tuned RF$^\ast$ is behind it on API-Bank ($\numTAbDRfp$\,pp, $p_{\text{Holm}}=\numTAbDRfpP$); the pooled differences are $\numTPoolRfp$ and $\numTPoolHgbp$\,pp. Choosing the tuned GNCA topology on validation would pick the \numTVsHerModel{} topology on Hermes ($\numTVsHerTest\%$ test), the \numTVsBfclModel{} on BFCL ($\numTVsBfclTest\%$), the \numTVsTbModel{} on ToolBench ($\numTVsTbTest\%$) and the \numTVsAbModel{} on API-Bank ($\numTVsAbTest\%$). The selected tree GNCAs have $\numTGncaParamsLo$ to $\numTGncaParamsHi$ parameters; the latency figures below are for the default configuration.
+
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\caption{Tuned models: test top-1 accuracy (\%, mean $\pm$ SD over seeds 0--2) after the per-benchmark search, and $\Delta_{\text{tune}}$, tuned minus default (pp, seed-clustered bootstrap; $^{\dagger}$: Holm-adjusted $p<0.05$ over 40). Pooled: random-effects estimate over the four benchmarks. Source S6 (Table~\ref{tab:sources}).}
+\label{tab:hpo}
+\input{generated/tab_hpo.tex}
+\end{table*}
+
+\begin{table}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Paired comparisons after tuning, tuned tree GNCA minus tuned baseline (pp). Same tests and families as Table~\ref{tab:paired}. Source S6.}
+\label{tab:hpo-paired}
+\input{generated/tab_hpo_paired.tex}
+\end{table}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig4_hpo.pdf}
+\caption{(a) Tuned minus default test top-1 per model: markers per benchmark (filled: Holm-adjusted $p<0.05$ over 40), diamonds: random-effects pooled estimate with 95\% CI. (b) Tuned tree GNCA minus tuned baselines with 95\% bootstrap CIs (filled: Holm $p<0.05$ within the family of Table~\ref{tab:hpo-paired}); diamonds: pooled estimate. Source S6.}
+\label{fig:hpo}
+\end{figure*}
 
 \begin{table}[t]
 \centering
@@ -328,11 +370,11 @@ Aggregation, gating & 4 & Convex weights preserve bounds; sigmoid threshold matc
 \paragraph{Escalation score.} On the Hermes test split ($K{=}8$ tree model, 3 seeds) $s_{\text{esc}}$ separates wrong from correct routing decisions with AUROC $\numAurocComp \pm \numAurocCompSd$. Entropy alone gives $\numAurocEnt \pm \numAurocEntSd$ and the step-norm term alone $\numAurocStep \pm \numAurocStepSd$, below chance: larger final updates go with \emph{correct} predictions. At $\theta{=}0.76$ the router escalates $\numEscSevenSixRate\%$ of turns and is $\numEscSevenSixRet\%$ accurate on the turns it keeps; at $\theta{=}0.50$ it escalates $\numEscFiveZeroRate\%$ and is $\numEscFiveZeroRet\%$ accurate on the rest. The step-norm term adds nothing, and predictive entropy should be used on its own.
 
 \section{Discussion and Limitations}\label{sec:discussion}
-\paragraph{Where the GNCA fits.} The GNCA is not more accurate than a same-size MLP on the same inputs, and it shows no significant difference from gradient boosting (Table~\ref{tab:paired}). Its practical case is cost: a single $\numSizeGnca$\,kB rule runs in under half a millisecond on one core, is ahead of a $\numSizeRfMB$\,MB Random Forest when pooled, and is differentiable end to end. Its distinguishing parts (topology, weight-tied recurrence, step-norm uncertainty) did not translate into accuracy or better error detection in our runs.
+\paragraph{Where the GNCA fits.} The GNCA is not more accurate than a same-size MLP on the same inputs, and it shows no significant pooled difference from gradient boosting, with or without tuning (Tables~\ref{tab:paired} and~\ref{tab:hpo-paired}). Its pooled lead over the Random Forest holds with default settings but is not significant once both are tuned. Its practical case is cost: a single $\numSizeGnca$\,kB rule runs in under half a millisecond on one core and is differentiable end to end. Its distinguishing parts (topology, weight-tied recurrence, step-norm uncertainty) did not translate into accuracy or better error detection in our runs.
 \paragraph{Limitations.}
 \begin{itemize}[leftmargin=1.2em, itemsep=0.1em]
   \item \textbf{Novelty.} The cell rule is a standard GNCA update; the contribution is its use as a next-tool router and a careful evaluation, not a new primitive.
-  \item \textbf{No hyperparameter search.} All models use fixed configurations; a tuned baseline could change the ranking, as the protocol-sensitivity result already shows for Hermes.
+  \item \textbf{Small search budget.} Each model received $\numHpoTrials$ random-search trials per benchmark, scored on one seed. A larger budget or multi-seed selection could change the ranking. The HistGradientBoosting search did not include early stopping. Tuned model sizes are no longer matched, and latency and size were measured only for the default configurations.
   \item \textbf{Primary tree baselines see fewer features.} The input-matched secondary family changes the Hermes Random Forest result but not the overall picture.
   \item \textbf{Three seeds, small test sets.} ToolBench, API-Bank and BFCL have 422--692 test turns; their primary CIs in Table~\ref{tab:paired} are between 3 and 6\,pp wide.
   \item \textbf{Weak LLM baselines.} The two local LLMs ran zero-shot without tool-specific prompting or fine-tuning; they show cost, not the best LLM accuracy.
@@ -344,9 +386,9 @@ Aggregation, gating & 4 & Convex weights preserve bounds; sigmoid threshold matc
 \paragraph{Broader impact.} A cheap router reduces the energy spent on routine turns, but faster loops can also propagate agent errors faster. Harnesses should keep permission sandboxes and human approval for irreversible actions regardless of the router.
 
 \section{Conclusion}\label{sec:conclusion}
-A $\numGncaParams$-parameter graph cellular automaton is a reasonable next-tool router. On four benchmarks it is ahead of a Random Forest and shows no significant difference from gradient boosting or a same-size MLP (Table~\ref{tab:paired}; we did not test equivalence). It runs in well under a millisecond on one CPU core. The diffusion view explains the update rule and its spectrum; the Lean results describe what the architecture can represent, not what the trained model does. Useful next steps are per-benchmark tuning for all models, more seeds, and an agent-level evaluation large enough to measure task success.
+A $\numGncaParams$-parameter graph cellular automaton is a reasonable next-tool router. On four benchmarks with default settings it is ahead of a Random Forest and shows no significant difference from gradient boosting or a same-size MLP (Table~\ref{tab:paired}). After an equal-budget search for every model it shows no significant pooled difference from any tuned baseline (Table~\ref{tab:hpo-paired}); we did not test equivalence. It runs in well under a millisecond on one CPU core. The diffusion view explains the update rule and its spectrum; the Lean results describe what the architecture can represent, not what the trained model does. Useful next steps are larger, multi-seed hyperparameter searches, more seeds, and an agent-level evaluation large enough to measure task success.
 
-\paragraph{Data and code availability.}\sloppy Code, split manifests, result files, the table and figure generators and the Lean proofs: \url{https://github.com/cap-jmk-real/nca_research} (MIT licence). Every number in this paper is a macro written by the two table generators in \path{scripts/} from the result files listed in Table~\ref{tab:sources}. Checkpoints too large for git are listed with SHA-256 hashes in the artifact manifest in \path{stage0/stage0_results/e1v2/}.
+\paragraph{Data and code availability.}\sloppy Code, split manifests, result files, the table and figure generators and the Lean proofs: \url{https://github.com/cap-jmk-real/nca_research} (MIT licence). Every number in this paper is a macro written by the three table generators in \path{scripts/} from the result files listed in Table~\ref{tab:sources}. Checkpoints too large for git are listed with SHA-256 hashes in the artifact manifest in \path{stage0/stage0_results/e1v2/}.
 \paragraph{Use of AI tools.} AI coding and writing assistants were used to write code, run experiments and draft text. The author checked the result files and is responsible for the content.
 \paragraph{Competing interests and funding.} None.
 
@@ -397,6 +439,27 @@ Unrolling gives $e_t \le \tilde L^t e_0 + \varepsilon\sum_{s=0}^{t-1}\tilde L^s$
 \end{proof}
 For the GNCA, $T$ is one step of Eq.~\eqref{eq:update}. The bound would apply if a contractive surrogate $\tilde T$ were found within $\varepsilon$ of the trained step. Section~\ref{sec:formal} shows that the trained step itself has Jacobian norm above one at every sampled state; we know of no such surrogate and do not claim one.
 
+\section{Hyperparameter Search}\label{app:hpo}
+Search spaces (log-uniform ranges are marked log):
+\begin{itemize}[leftmargin=1.2em, itemsep=0.05em]
+  \item \textbf{Logistic regression:} $C\in[10^{-3},10^{2}]$ (log); class weights none or balanced; 1{,}000 iterations (default: $C{=}1$, 300 iterations).
+  \item \textbf{Random Forest (RF, RF$^\ast$):} 50, 100, 200 or 300 trees; maximum depth 10, 15, 20, 30 or none; minimum leaf size 1, 2, 4 or 8; features per split $\sqrt{d}$, $\log_2 d$, 10\% or 30\%; class weights none or balanced subsample.
+  \item \textbf{HistGradientBoosting (HGB, HGB$^\ast$):} learning rate $[0.02,0.3]$ (log); 100, 200 or 400 iterations; 15, 31, 63 or 127 leaves; minimum leaf size 5, 20 or 50; $\ell_2$ penalty 0, $10^{-3}$, 0.1, 1 or 10; class weights none or balanced; no early stopping.
+  \item \textbf{Neural models (shared):} learning rate $[3\times10^{-4},6\times10^{-3}]$ (log); weight decay $[10^{-3},0.2]$ (log); label smoothing 0, 0.05 or 0.1; batch 256, 512 or 1{,}024; 1{,}500, 3{,}000 or 6{,}000 steps on Hermes and 400, 800 or 1{,}600 elsewhere; best-validation checkpoint as in Section~\ref{sec:protocol}.
+  \item \textbf{MLP:} hidden width 38, 76, 152 or 304; dropout 0, 0.1 or 0.3.
+  \item \textbf{GNCA (all topologies):} $K\in\{2,4,6,8\}$; hidden channels $H\in\{8,16,32\}$; update-MLP width 48, 96 or 192.
+\end{itemize}
+Table~\ref{tab:hpo-configs} lists the configuration selected for each model and benchmark.
+
+\begin{table*}[p]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Selected configurations (source S6). cw: class weights; it.: iterations; st.: training steps; hid.: hidden width; upd: update-MLP width.}
+\label{tab:hpo-configs}
+\input{generated/tab_hpo_configs.tex}
+\end{table*}
+
 \section{Result Sources and Changes from Version 7.6}\label{app:ledger}
 Table~\ref{tab:sources} names the result sources used in this paper. Version~7.6 contained claims that no result file supports, or that the code contradicts. Table~\ref{tab:ledger} lists what was removed or replaced. The repository file \path{paper/LEDGER_V76C_1110.md} gives the exact file and key for every entry.
 
@@ -415,6 +478,7 @@ S2 & top level & Hermes factorial run (reviewer suite): depth, topology, loss, c
 S3 & top level & Earlier full-history Hermes run with a different tree-model feature pipeline \\
 S4 & \path{e1v2/run/} & BFCL long-training run ($\numEoneSteps$ steps) \\
 S5 & \path{baselines_}\allowbreak\path{20261026/} & Local LLM routing baselines (Qwen3.5-9B, Gemma-4-12B) \\
+S6 & \path{hpo_1110/} & Hyperparameter search: per-trial logs, selected configurations, tuned refits (3 seeds), per-turn correctness, paired statistics \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -432,7 +496,7 @@ Title ``From Grokking to \ldots'' & Removed & Gradual learning curve, $\numCurve
 Headline $K{=}8$ GNCA ($68.92\%$) and ``statistically non-inferior'' to HistGradientBoosting (TOST) & Removed & Pre-specified $K{=}4$ tree; difference tests only (Table~\ref{tab:paired}, S1) \\
 Per-turn bootstrap over seeds $\times$ turns, Cohen's $d$/$h$, power $0.94$, linear mixed-effects $+3.16$\,pp & Replaced & Seed-clustered paired bootstrap, Holm, DerSimonian--Laird (S1) \\
 ``Pre-registered'' confirmatory claims & Removed & No pre-registration exists; primary family stated in Section~\ref{sec:protocol} \\
-50-trial Hyperband tuning of all models & Removed & Fixed defaults in the scripts; no search was run \\
+50-trial Hyperband tuning of all models & Replaced & No Hyperband code or result exists; equal-budget random search, $\numHpoTrials$ trials per model and benchmark (Section~\ref{sec:protocol}, Appendix~\ref{app:hpo}, S6) \\
 Escalation weight $\beta{=}0.5$, ``calibrated'' score with range $[0,1.50]$, 10-bin reliability audit & Replaced & $\beta{=}1$ as in the evaluation script; AUROC and two operating points (S2); no calibration result exists \\
 Damped update with $\alpha_d$, $\gamma$ and Bernoulli($p{=}0.8$) cell masks & Replaced & Update rule of the model code (Eq.~\eqref{eq:update}) \\
 Causal lower-triangular adjacency & Replaced & Undirected row-normalised \texttt{build\_adjacency} (Section~\ref{sec:topologies}) \\
