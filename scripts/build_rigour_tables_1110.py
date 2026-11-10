@@ -35,7 +35,7 @@ PRIMARY = "gnca_tree"
 FAMILIES = {"primary": ["rf", "hgb", "mlp"], "secondary": ["rf_cell", "hgb_cell"], "new": ["transformer", "gnn_untied", "knn"]}
 SEEDS = [0, 1, 2, 3, 4]
 ABL = {"sym": "symmetric normalisation", "no_lap": "no $(A{-}I)x$ block", "no_gate": "no gate", "untied": "untied weights"}
-SESSION_BENCH = ["curated", "toolbench", "apibank"]  # BFCL is single-turn
+SESSION_BENCH = ["curated"]  # ToolBench/API-Bank test splits have one turn per session, BFCL is single-turn
 B = 10000
 
 
@@ -60,8 +60,9 @@ def collect(raw: Path):
         meta = json.loads((raw / "meta" / f"{b}.json").read_text())
         arr[f"{b}/y_test"] = np.array(meta["y_test"], np.int16)
         arr[f"{b}/test_session"] = np.unique(meta["test_session"], return_inverse=True)[1].astype(np.int32)
-        if "y_ood" in meta:
-            arr[f"{b}/y_ood"] = np.array(meta["y_ood"], np.int16)
+        if "y_ood" in meta:  # private sessions: store only whether each turn's label is the majority tool, not the labels
+            maj = int(np.bincount(np.array(meta["y_test"])).argmax())
+            arr[f"{b}/ood_is_majority"] = (np.array(meta["y_ood"]) == maj).astype(np.int8)
             arr[f"{b}/ood_session"] = np.unique(meta["ood_session"], return_inverse=True)[1].astype(np.int32)
         sb = {}
         for m in MODELS:
@@ -99,7 +100,11 @@ def collect(raw: Path):
                               "correct": np.stack([np.load(fd / f"seed{s}.npz")["test_correct"] for s in SEEDS])}
     np.savez_compressed(RG / "ablation_correct.npz", **{k: v["correct"] for k, v in ab.items()})
     (RG / "ablation_summary.json").write_text(json.dumps({k: v["runs"] for k, v in ab.items()}, indent=1) + "\n")
-    shutil.copy(raw / "latency.json", RG / "latency.json")
+    if (raw / "latency.json").exists() and json.loads((raw / "latency.json").read_text())["models"]:
+        shutil.copy(raw / "latency.json", RG / "latency.json")
+    for extra in ("artifacts/refit_check.jsonl",):
+        if (raw / extra).exists():
+            (RG / "artifacts").mkdir(exist_ok=True); shutil.copy(raw / extra, RG / extra)
     for sub in ("select",):
         shutil.copytree(raw / sub, RG / sub, dirs_exist_ok=True)
     for b, *_ in BENCH:
@@ -211,9 +216,9 @@ def main():
     put("FlopsGncaTunedHer", f(flops(tc["K"], tc["hidden_c"], tc["update_hidden"]) / 1e6, 2) + "\\,M")
 
     # (b) OOD on held-out private Hermes sessions
-    yo = Z["curated/y_ood"]; so = Z["curated/ood_session"]
-    maj = int(np.bincount(Z["curated/y_test"]).argmax())  # majority of the in-distribution test split as a constant predictor
-    floor = (yo == maj).astype(float)
+    so = Z["curated/ood_session"]
+    floor = Z["curated/ood_is_majority"].astype(float)  # constant predictor: majority tool of the in-distribution test split
+    yo = floor
     ood = {"n_rows": int(len(yo)), "n_sessions": int(len(np.unique(so))), "floor": session_boot(floor, so, rng), "models": {}}
     for m in MODELS:
         c = C("curated", m, "ood"); v = c.mean(0)
@@ -232,6 +237,10 @@ def main():
             put(f"ROodD{mm}", sgn(oo[m]["mean"])); put(f"ROodD{mm}Lo", sgn(oo[m]["ci95"][0])); put(f"ROodD{mm}Hi", sgn(oo[m]["ci95"][1])); put(f"ROodD{mm}P", f(oo[m]["p_holm"], 3))
     put("ROodNSig", str(sum(v["p_holm"] < 0.05 for v in oo.values())))
     put("ROodNAboveFloor", str(sum(o["vs_floor"]["ci95"][0] > 0 for o in ood["models"].values())))
+    drops = [o["id_test"] - o["mean"] for o in ood["models"].values()]
+    put("ROodDropLo", f(min(drops))); put("ROodDropHi", f(max(drops)))
+    put("ROodMaxAbsDNs", f(max(abs(v["mean"]) for v in oo.values() if v["p_holm"] >= 0.05)))
+    put("ROodLo", f(min(o["mean"] for o in ood["models"].values())))
     bo = max(MODELS, key=lambda m: ood["models"][m]["mean"]); put("ROodBest", MODELS[bo][1]); put("ROodBestAcc", f(ood["models"][bo]["mean"]))
 
     # (d) escalation / selective prediction on the primary tuned model, all benchmarks, 5 seeds
@@ -258,11 +267,11 @@ def main():
         put(f"REsc{sh}AucComp", f(g["auroc_composite"]["mean"], 3)); put(f"REsc{sh}AucStep", f(g["auroc_step"]["mean"], 3))
         put(f"REsc{sh}Ece", f(g["ece"]["mean"], 1)); put(f"REsc{sh}Aurc", f(g["aurc"]["mean"], 1))
         for cv in covs:
-            put(f"REsc{sh}Sel{int(cv * 100)}", f(g[f"selacc_{int(cv * 100)}"]["mean"]))
+            put(f"REsc{sh}Sel{ {90: 'Ninety', 80: 'Eighty', 70: 'Seventy'}[int(round(cv * 100))]}", f(g[f"selacc_{int(cv * 100)}"]["mean"]))
         put(f"REsc{sh}Full", f(acc[b][PRIMARY]["mean"]))
         for m in ("hgb", "mlp"):
             put(f"REsc{sh}AucEnt{MODELS[m][0]}", f(e[m]["auroc_entropy"]["mean"], 3)); put(f"REsc{sh}Ece{MODELS[m][0]}", f(e[m]["ece"]["mean"], 1))
-            put(f"REsc{sh}Sel80{MODELS[m][0]}", f(e[m]["selacc_80"]["mean"]))
+            put(f"REsc{sh}SelEighty{MODELS[m][0]}", f(e[m]["selacc_80"]["mean"]))
     st["escalation"] = esc
     put("REscNStepBelowHalf", str(sum(esc[b][PRIMARY]["auroc_step"]["mean"] < 0.5 for b, *_ in BENCH)))
     put("REscNCompWorse", str(sum(esc[b][PRIMARY]["auroc_composite"]["mean"] < esc[b][PRIMARY]["auroc_entropy"]["mean"] for b, *_ in BENCH)))
@@ -280,14 +289,22 @@ def main():
                     "all_kept_correct_cov80": 100 * float(kept.mean()), "turn_acc": 100 * float(c.mean())}
         ses[b] = r
     st["session"] = ses
-    shs = {"curated": "Her", "toolbench": "Tb", "apibank": "Ab", "curated_ood": "Ood"}
+    shs = {"curated": "Her", "curated_ood": "Ood"}
+    put("RSesHerTurns", f(len(Z["curated/test_session"]) / ses["curated"]["n_sessions"], 1)); put("RSesOodTurns", f(len(Z["curated/ood_session"]) / ses["curated_ood"]["n_sessions"], 1))
+    put("RSesTbOne", str(int(len(np.unique(Z["toolbench/test_session"])) == len(Z["toolbench/test_session"]) and len(np.unique(Z["apibank/test_session"])) == len(Z["apibank/test_session"]))))
     for b, sh in shs.items():
         put(f"RSes{sh}N", str(ses[b]["n_sessions"]))
         for m, (mm, _) in MODELS.items():
             put(f"RSes{sh}{mm}", f(ses[b][m]["all_correct"], 1)); put(f"RSes{sh}{mm}Esc", f(ses[b][m]["all_kept_correct_cov80"], 1))
+        put(f"RSes{sh}Lo", f(min(ses[b][m]["all_correct"] for m in MODELS), 1)); put(f"RSes{sh}Hi", f(max(ses[b][m]["all_correct"] for m in MODELS), 1))
+        put(f"RSes{sh}EscLo", f(min(ses[b][m]["all_kept_correct_cov80"] for m in MODELS), 1)); put(f"RSes{sh}EscHi", f(max(ses[b][m]["all_kept_correct_cov80"] for m in MODELS), 1))
 
     # (c) latency
-    L = json.loads((RG / "latency.json").read_text()); lat = {}
+    if not (RG / "latency.json").exists():  # only while the latency job is still running; the paper build asserts it exists
+        print("WARNING: latency.json missing -- latency columns are NaN"); L = {"n_turns": 0, "models": {m: {"seed0": {k: {"median": float("nan"), "p95": float("nan")} for k in ("featurise_ms", "predict_ms", "total_ms")} | {"size_bytes": 0}} for m in MODELS}}
+    else:
+        L = json.loads((RG / "latency.json").read_text())
+    lat = {}
     for m, (mm, _) in MODELS.items():
         sd = L["models"][m]
         g = lambda key, q: float(np.mean([sd[s][key][q] for s in sd]))
@@ -296,7 +313,17 @@ def main():
         put(f"RLat{mm}", f(lat[m]["tot_med"])); put(f"RLat{mm}Pred", f(lat[m]["pred_med"], 3)); put(f"RLat{mm}Feat", f(lat[m]["feat_med"]))
         put(f"RLat{mm}PNF", f(lat[m]["tot_p95"])); put(f"RSize{mm}", f(lat[m]["size_kb"], 0) if lat[m]["size_kb"] >= 10 else f(lat[m]["size_kb"], 1))
     st["latency"] = lat; put("RLatN", thou(L["n_turns"]))
+    put("RLatFeatLo", f(min(v["feat_med"] for v in lat.values()))); put("RLatFeatHi", f(max(v["feat_med"] for v in lat.values())))
+    put("RLatPredLo", f(min(v["pred_med"] for v in lat.values()), 3)); put("RLatPredHi", f(max(v["pred_med"] for v in lat.values()), 2))
+    put("RLatTotLo", f(min(v["tot_med"] for v in lat.values()))); put("RLatTotHi", f(max(v["tot_med"] for v in lat.values())))
     put("RLatFeatShareGnca", f(100 * lat[PRIMARY]["feat_med"] / lat[PRIMARY]["tot_med"], 0))
+
+    # refit check (resume-only artifact refits vs. the reported finals; Hermes, seeds 0-2)
+    rc = [json.loads(l) for l in (RG / "artifacts/refit_check.jsonl").read_text().splitlines() if l.strip()]
+    dd = [abs(r["refit_test_top1"] - r["final_test_top1"]) for r in rc]
+    st["refit_check"] = rc
+    put("RRefitN", str(len(rc))); put("RRefitNExact", str(sum(d < 0.005 for d in dd))); put("RRefitMaxDiff", f(max(dd)))
+    put("RRefitMaxModel", MODELS[max(rc, key=lambda r: abs(r["refit_test_top1"] - r["final_test_top1"]))["model"]][1])
 
     # ablation
     AZ = np.load(RG / "ablation_correct.npz"); abl = {}
@@ -377,23 +404,35 @@ def main():
     # ---------------- figure: accuracy vs latency (Hermes) + OOD ----------------
     import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
     plt.rcParams.update({"font.size": 7, "pdf.fonttype": 42})
-    fig, ax = plt.subplots(1, 2, figsize=(7.0, 2.5))
-    cols = {"gnca": "#1b9e77", "tree": "#d95f02", "nn": "#7570b3", "other": "#666666"}
+    from matplotlib.lines import Line2D
+    from matplotlib.ticker import FixedLocator, NullLocator, FixedFormatter
+    fig, ax = plt.subplots(1, 2, figsize=(7.0, 2.9), gridspec_kw={"width_ratios": [1.0, 1.1]})
+    cols = {"gnca": "#009E73", "tree": "#D55E00", "nn": "#0072B2", "other": "#555555"}  # Okabe-Ito
+    marks = {"gnca": "o", "tree": "s", "nn": "^", "other": "D"}
+    def fam(m):
+        return "gnca" if m.startswith("gnca") else "tree" if m.startswith(("rf", "hgb")) else "nn" if m in ("mlp", "transformer", "gnn_untied") else "other"
     def col(m):
-        return cols["gnca"] if m.startswith("gnca") else cols["tree"] if m.startswith(("rf", "hgb")) else cols["nn"] if m in ("mlp", "transformer", "gnn_untied") else cols["other"]
+        return cols[fam(m)]
+    short = lambda m: MODELS[m][1].replace("$^\\ast$", "*").replace("$k$", "k").replace(" (primary)", "").replace("HistGradientBoosting", "HGB").replace("Random Forest", "RF").replace("Logistic regression", "LogReg").replace(" (untied steps)", " untied")
+    label_these = {PRIMARY: (4, -9), "hgb_cell": (4, 2), "hgb": (4, -3), "rf": (-14, -9), "knn": (-34, 5), "logreg": (4, 2), "mlp": (-22, 4)}
     for m in order:
-        ax[0].scatter(lat[m]["tot_med"], acc["curated"][m]["mean"], s=18, color=col(m), zorder=3)
-        ax[0].annotate(MODELS[m][1].replace("$^\\ast$", "*").replace("$k$", "k").replace(" (primary)", ""), (lat[m]["tot_med"], acc["curated"][m]["mean"]), fontsize=5.6, xytext=(2, 2), textcoords="offset points")
-    ax[0].set_xscale("log"); ax[0].set_xlabel("End-to-end CPU latency per turn, 1 thread (ms, median)"); ax[0].set_ylabel("Hermes test top-1 (%)")
-    ax[0].set_title("(a) Accuracy vs. end-to-end latency (Hermes, tuned)")
+        x, y = lat[m]["tot_med"], acc["curated"][m]["mean"]
+        ax[0].scatter(x, y, s=16, color=col(m), marker=marks[fam(m)], zorder=3, edgecolor="k" if m == PRIMARY else "none", linewidth=0.6)
+        if m in label_these:
+            ax[0].annotate(short(m), (x, y), fontsize=5.6, xytext=label_these[m], textcoords="offset points")
+    ax[0].set_xscale("log"); ax[0].xaxis.set_major_locator(FixedLocator([3, 5, 10, 20, 50])); ax[0].xaxis.set_major_formatter(FixedFormatter(["3", "5", "10", "20", "50"])); ax[0].xaxis.set_minor_locator(NullLocator())
+    ax[0].set_xlabel("End-to-end CPU latency per turn (ms, median, 1 thread)"); ax[0].set_ylabel("Hermes test top-1 (%)")
+    ax[0].set_title("(a) Accuracy vs. end-to-end latency")
+    ax[0].legend(handles=[Line2D([], [], ls="", marker=marks[k], color=cols[k], label=l, ms=4) for k, l in (("gnca", "GNCA"), ("tree", "tree ensembles"), ("nn", "MLP/Transformer/GNN"), ("other", "LogReg, k-NN"))], fontsize=5.4, loc="lower right", frameon=False)
     ys = np.arange(len(order))
     for i, m in enumerate(order):
         o = ood["models"][m]
-        ax[1].errorbar(o["mean"], i, xerr=[[o["mean"] - o["ci95"][0]], [o["ci95"][1] - o["mean"]]], fmt="o", ms=3, color=col(m), capsize=1.5)
+        ax[1].errorbar(o["mean"], i, xerr=[[o["mean"] - o["ci95"][0]], [o["ci95"][1] - o["mean"]]], fmt=marks[fam(m)], ms=3, color=col(m), capsize=1.5, lw=0.8)
         ax[1].scatter(acc["curated"][m]["mean"], i, marker="|", s=30, color="k")
     ax[1].axvline(ood["floor"]["mean"], ls=":", color="grey", lw=0.8)
-    ax[1].set_yticks(ys); ax[1].set_yticklabels([MODELS[m][1].replace("$^\\ast$", "*").replace("$k$", "k").replace(" (primary)", "") for m in order], fontsize=5.6)
-    ax[1].set_xlabel("Top-1 (%): OOD sessions (dots, 95% session CI); in-distribution test (bars)"); ax[1].set_title("(b) Held-out private sessions (OOD)")
+    ax[1].set_yticks(ys); ax[1].set_yticklabels([short(m) for m in order], fontsize=5.6)
+    ax[1].legend(handles=[Line2D([], [], ls="", marker="o", color="#555555", ms=3, label="OOD top-1, 95% session CI"), Line2D([], [], ls="", marker="|", color="k", ms=6, label="in-distribution test"), Line2D([], [], ls=":", color="grey", label="OOD majority class")], fontsize=5.4, loc="upper center", bbox_to_anchor=(0.45, -0.17), ncol=3, frameon=False)
+    ax[1].set_xlabel("Top-1 (%)", labelpad=1); ax[1].set_title("(b) Held-out private sessions")
     fig.tight_layout(); FIG.mkdir(exist_ok=True)
     fig.savefig(FIG / "fig5_rig.pdf"); fig.savefig(FIG / "fig5_rig.png", dpi=200)
     print("ok", len(M), "macros")
