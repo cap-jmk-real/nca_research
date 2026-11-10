@@ -1,0 +1,29 @@
+'NCAMetaLearning.fixed_point_unique' depends on axioms: [propext, Classical.choice, Quot.sound]
+'NCAMetaLearning.trajectory_decay' depends on axioms: [propext, Quot.sound]
+'NCAMetaLearning.cellularTreeStep_preserves_eval' does not depend on any axioms
+'NCAMetaLearning.iterate_cellular_tree_preserves_eval' does not depend on any axioms
+'NCAMetaLearning.cellular_tree_converges_in_depth' depends on axioms: [propext, Classical.choice, Quot.sound]
+'NCAMetaLearning.tree_automaton_edges_in_gnca' does not depend on any axioms
+'NCAMetaLearning.powTwo_ge_succ' depends on axioms: [propext, Quot.sound]
+'NCAMetaLearning.decision_tree_cellular_duality' depends on axioms: [propext, Classical.choice, Quot.sound]
+'NCAMetaLearning.permuteAdj_symm' does not depend on any axioms
+'NCAMetaLearning.neighborhood_equivariance' does not depend on any axioms
+'NCAMetaLearning.path_equivariance' does not depend on any axioms
+'NCAMetaLearning.lineGraphAdj_symm' does not depend on any axioms
+'NCAMetaLearning.starGraphAdj_symm' does not depend on any axioms
+'NCAMetaLearning.theorem_subsumption_1d' does not depend on any axioms
+'NCAMetaLearning.star_graph_diameter_two' does not depend on any axioms
+'NCAMetaLearning.line_graph_distance_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'NCAMetaLearning.theorem_receptive_field_separation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'NCAMetaLearning.treeGraphAdj_symm' does not depend on any axioms
+'NCAMetaLearning.theorem_tree_subsumption' does not depend on any axioms
+'NCAMetaLearning.dyadic_of_scaled_lip' depends on axioms: [propext]
+'NCAMetaLearning.trained_damped_recurrence_is_dyadic_contraction' depends on axioms: [propext]
+'NCAMetaLearning.trained_damped_recurrence_perturbation_decay' depends on axioms: [propext, Quot.sound]
+'NCAMetaLearning.weighted_sum_bounded_two' depends on axioms: [propext]
+'NCAMetaLearning.weighted_sum_bounded_three' depends on axioms: [propext, Quot.sound]
+'NCAMetaLearning.call_tree_parent_is_ancestor' depends on axioms: [propext, Quot.sound]
+'NCAMetaLearning.call_tree_parent_adj' does not depend on any axioms
+'NCAMetaLearning.sigmoidal_gating_positive_margin_concordance' depends on axioms: [propext, Quot.sound]
+'NCAMetaLearning.sigmoidal_gating_negative_margin_concordance' depends on axioms: [propext, Quot.sound]
+Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)

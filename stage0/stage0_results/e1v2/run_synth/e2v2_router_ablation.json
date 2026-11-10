@@ -1,0 +1,828 @@
+{
+  "experiment": "E2v2",
+  "split_holdout": "bfcl_e1v2/test",
+  "n_test": 692,
+  "irrelevance_n": 223,
+  "actuator_topology": "star",
+  "routers": {
+    "Majority": [
+      {
+        "seed": 0,
+        "top1": 56.07,
+        "macro_f1_gold": 10.26,
+        "macro_f1_all": 10.26,
+        "macro_f1_gold_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "macro_f1_all_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "boot_mean": 56.08,
+        "boot_sd": 1.87,
+        "ci95": [
+          52.457,
+          59.682
+        ],
+        "predictions_sha256": "ff10490f38d2f59ad7cd90e869cb47334227c964f147b6ff41c219582b9e2a5e"
+      },
+      {
+        "seed": 1,
+        "top1": 56.07,
+        "macro_f1_gold": 10.26,
+        "macro_f1_all": 10.26,
+        "macro_f1_gold_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "macro_f1_all_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "boot_mean": 56.044,
+        "boot_sd": 1.877,
+        "ci95": [
+          52.312,
+          59.682
+        ],
+        "predictions_sha256": "ff10490f38d2f59ad7cd90e869cb47334227c964f147b6ff41c219582b9e2a5e"
+      },
+      {
+        "seed": 2,
+        "top1": 56.07,
+        "macro_f1_gold": 10.26,
+        "macro_f1_all": 10.26,
+        "macro_f1_gold_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "macro_f1_all_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "boot_mean": 56.06,
+        "boot_sd": 1.89,
+        "ci95": [
+          52.312,
+          59.682
+        ],
+        "predictions_sha256": "ff10490f38d2f59ad7cd90e869cb47334227c964f147b6ff41c219582b9e2a5e"
+      }
+    ],
+    "random": [
+      {
+        "seed": 0,
+        "top1": 70.95,
+        "macro_f1_gold": 53.2,
+        "macro_f1_all": 53.2,
+        "macro_f1_gold_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "macro_f1_all_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "boot_mean": 70.97,
+        "boot_sd": 1.696,
+        "ci95": [
+          67.63,
+          74.277
+        ],
+        "router_top1": 7.66,
+        "irrelevance_triage_correct": 16,
+        "irrelevance_triage_percent": 7.17,
+        "irrelevance_wilson_ci95": [
+          4.46,
+          11.34
+        ],
+        "predictions_sha256": "2a500ed031f6dadc7b2f6cc9c2c39dd8334c2e921c5dc1f28dec5caef2c94e2e"
+      },
+      {
+        "seed": 1,
+        "top1": 72.83,
+        "macro_f1_gold": 59.09,
+        "macro_f1_all": 59.09,
+        "macro_f1_gold_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "macro_f1_all_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "boot_mean": 72.832,
+        "boot_sd": 1.67,
+        "ci95": [
+          69.509,
+          76.012
+        ],
+        "router_top1": 8.82,
+        "irrelevance_triage_correct": 18,
+        "irrelevance_triage_percent": 8.07,
+        "irrelevance_wilson_ci95": [
+          5.17,
+          12.4
+        ],
+        "predictions_sha256": "ce8db976803c928957aa6824e0403ba131157d9f2b8b59521c2f14cf557c8030"
+      },
+      {
+        "seed": 2,
+        "top1": 72.54,
+        "macro_f1_gold": 58.05,
+        "macro_f1_all": 58.05,
+        "macro_f1_gold_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "macro_f1_all_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "boot_mean": 72.527,
+        "boot_sd": 1.694,
+        "ci95": [
+          69.075,
+          75.867
+        ],
+        "router_top1": 8.24,
+        "irrelevance_triage_correct": 23,
+        "irrelevance_triage_percent": 10.31,
+        "irrelevance_wilson_ci95": [
+          6.97,
+          15.0
+        ],
+        "predictions_sha256": "60e2dd6bbe67d950e2e22b62d0ee363f299447955713d744bbb4570835b7be64"
+      }
+    ],
+    "nca1d": [
+      {
+        "seed": 0,
+        "top1": 73.12,
+        "macro_f1_gold": 59.55,
+        "macro_f1_all": 59.55,
+        "macro_f1_gold_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "macro_f1_all_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "boot_mean": 73.135,
+        "boot_sd": 1.669,
+        "ci95": [
+          69.798,
+          76.301
+        ],
+        "router_top1": 74.71,
+        "irrelevance_triage_correct": 151,
+        "irrelevance_triage_percent": 67.71,
+        "irrelevance_wilson_ci95": [
+          61.32,
+          73.51
+        ],
+        "predictions_sha256": "64183817ff02829e061fc1c2cd615e01b9eb5a04b6fb049913ebb28b1b4f6f3b"
+      },
+      {
+        "seed": 1,
+        "top1": 75.43,
+        "macro_f1_gold": 58.86,
+        "macro_f1_all": 58.86,
+        "macro_f1_gold_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "macro_f1_all_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "boot_mean": 75.437,
+        "boot_sd": 1.626,
+        "ci95": [
+          72.254,
+          78.613
+        ],
+        "router_top1": 76.45,
+        "irrelevance_triage_correct": 158,
+        "irrelevance_triage_percent": 70.85,
+        "irrelevance_wilson_ci95": [
+          64.57,
+          76.42
+        ],
+        "predictions_sha256": "8faf3fefbdb190711093965442aad53a9971178e6590fa5afaae00a7043ab384"
+      },
+      {
+        "seed": 2,
+        "top1": 76.45,
+        "macro_f1_gold": 60.76,
+        "macro_f1_all": 60.76,
+        "macro_f1_gold_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "macro_f1_all_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "boot_mean": 76.421,
+        "boot_sd": 1.599,
+        "ci95": [
+          73.266,
+          79.48
+        ],
+        "router_top1": 74.42,
+        "irrelevance_triage_correct": 150,
+        "irrelevance_triage_percent": 67.26,
+        "irrelevance_wilson_ci95": [
+          60.86,
+          73.09
+        ],
+        "predictions_sha256": "5568d51077d2a710d7537423f3bb41566927e53537ba08f1eda438cdea1d4465"
+      }
+    ],
+    "none": [
+      {
+        "seed": 0,
+        "top1": 74.86,
+        "macro_f1_gold": 57.4,
+        "macro_f1_all": 57.4,
+        "macro_f1_gold_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "macro_f1_all_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "boot_mean": 74.872,
+        "boot_sd": 1.633,
+        "ci95": [
+          71.676,
+          78.035
+        ],
+        "router_top1": 74.86,
+        "irrelevance_triage_correct": 154,
+        "irrelevance_triage_percent": 69.06,
+        "irrelevance_wilson_ci95": [
+          62.71,
+          74.76
+        ],
+        "predictions_sha256": "739b1201efd71332238452934a1d78ce780a98f96773f7d33a3aba40605ff180"
+      },
+      {
+        "seed": 1,
+        "top1": 75.43,
+        "macro_f1_gold": 58.68,
+        "macro_f1_all": 58.68,
+        "macro_f1_gold_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "macro_f1_all_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "boot_mean": 75.436,
+        "boot_sd": 1.621,
+        "ci95": [
+          72.254,
+          78.613
+        ],
+        "router_top1": 75.43,
+        "irrelevance_triage_correct": 166,
+        "irrelevance_triage_percent": 74.44,
+        "irrelevance_wilson_ci95": [
+          68.33,
+          79.72
+        ],
+        "predictions_sha256": "67b9265d761638f757dad8b020bc6061b3d11e414e31da2572aead2bd70c1762"
+      },
+      {
+        "seed": 2,
+        "top1": 75.43,
+        "macro_f1_gold": 60.0,
+        "macro_f1_all": 60.0,
+        "macro_f1_gold_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "macro_f1_all_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "boot_mean": 75.418,
+        "boot_sd": 1.636,
+        "ci95": [
+          72.11,
+          78.472
+        ],
+        "router_top1": 75.43,
+        "irrelevance_triage_correct": 150,
+        "irrelevance_triage_percent": 67.26,
+        "irrelevance_wilson_ci95": [
+          60.86,
+          73.09
+        ],
+        "predictions_sha256": "e8484814c5c811b7a76883c00cab7c2f384492187542810b7182e1a844bc193d"
+      }
+    ],
+    "learned": [
+      {
+        "seed": 0,
+        "top1": 74.86,
+        "macro_f1_gold": 61.3,
+        "macro_f1_all": 61.3,
+        "macro_f1_gold_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "macro_f1_all_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "boot_mean": 74.862,
+        "boot_sd": 1.641,
+        "ci95": [
+          71.532,
+          78.035
+        ],
+        "router_top1": 76.88,
+        "irrelevance_triage_correct": 151,
+        "irrelevance_triage_percent": 67.71,
+        "irrelevance_wilson_ci95": [
+          61.32,
+          73.51
+        ],
+        "predictions_sha256": "3962957312ac67a995eb1ec89a91f91020bfdfab28e50693b04100234146d557"
+      },
+      {
+        "seed": 1,
+        "top1": 74.13,
+        "macro_f1_gold": 58.18,
+        "macro_f1_all": 58.18,
+        "macro_f1_gold_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "macro_f1_all_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "boot_mean": 74.144,
+        "boot_sd": 1.648,
+        "ci95": [
+          70.809,
+          77.312
+        ],
+        "router_top1": 73.41,
+        "irrelevance_triage_correct": 138,
+        "irrelevance_triage_percent": 61.88,
+        "irrelevance_wilson_ci95": [
+          55.36,
+          68.01
+        ],
+        "predictions_sha256": "01f6c622502d54dd7100eb36bbf4878d72c4096d2cea97f2a4ea81f4767f2f32"
+      },
+      {
+        "seed": 2,
+        "top1": 73.7,
+        "macro_f1_gold": 64.21,
+        "macro_f1_all": 64.21,
+        "macro_f1_gold_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "macro_f1_all_labels": [
+          1,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12
+        ],
+        "boot_mean": 73.693,
+        "boot_sd": 1.677,
+        "ci95": [
+          70.376,
+          77.023
+        ],
+        "router_top1": 73.27,
+        "irrelevance_triage_correct": 152,
+        "irrelevance_triage_percent": 68.16,
+        "irrelevance_wilson_ci95": [
+          61.78,
+          73.92
+        ],
+        "predictions_sha256": "ed1157948130974a1ad4e831722bcf75fee825eaf55d921ecec59eaa27dde18e"
+      }
+    ]
+  },
+  "paired": {
+    "seed0": {
+      "random_minus_none": {
+        "diff_pp": -3.902,
+        "ci95": [
+          -5.636,
+          -2.168
+        ],
+        "p_two_sided": 0.0001,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 6,
+        "b_only_correct": 33
+      },
+      "nca1d_minus_none": {
+        "diff_pp": -1.734,
+        "ci95": [
+          -3.613,
+          0.145
+        ],
+        "p_two_sided": 0.08119,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 16,
+        "b_only_correct": 28
+      },
+      "learned_minus_none": {
+        "diff_pp": 0.0,
+        "ci95": [
+          -1.59,
+          1.59
+        ],
+        "p_two_sided": 1.0,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 16,
+        "b_only_correct": 16
+      },
+      "random_minus_Majority": {
+        "diff_pp": 14.884,
+        "ci95": [
+          10.26,
+          19.509
+        ],
+        "p_two_sided": 0.0001,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 196,
+        "b_only_correct": 93
+      },
+      "nca1d_minus_Majority": {
+        "diff_pp": 17.052,
+        "ci95": [
+          12.428,
+          21.676
+        ],
+        "p_two_sided": 0.0001,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 205,
+        "b_only_correct": 87
+      },
+      "none_minus_Majority": {
+        "diff_pp": 18.786,
+        "ci95": [
+          14.451,
+          23.121
+        ],
+        "p_two_sided": 0.0001,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 192,
+        "b_only_correct": 62
+      },
+      "learned_minus_Majority": {
+        "diff_pp": 18.786,
+        "ci95": [
+          14.162,
+          23.266
+        ],
+        "p_two_sided": 0.0001,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 208,
+        "b_only_correct": 78
+      }
+    },
+    "seed1": {
+      "random_minus_none": {
+        "diff_pp": -2.601,
+        "ci95": [
+          -4.046,
+          -1.156
+        ],
+        "p_two_sided": 0.001,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 5,
+        "b_only_correct": 23
+      },
+      "nca1d_minus_none": {
+        "diff_pp": 0.0,
+        "ci95": [
+          -1.301,
+          1.445
+        ],
+        "p_two_sided": 1.0,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 12,
+        "b_only_correct": 12
+      },
+      "learned_minus_none": {
+        "diff_pp": -1.301,
+        "ci95": [
+          -2.746,
+          0.0
+        ],
+        "p_two_sided": 0.07139,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 7,
+        "b_only_correct": 16
+      },
+      "random_minus_Majority": {
+        "diff_pp": 16.763,
+        "ci95": [
+          11.85,
+          21.821
+        ],
+        "p_two_sided": 0.0001,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 224,
+        "b_only_correct": 108
+      },
+      "nca1d_minus_Majority": {
+        "diff_pp": 19.364,
+        "ci95": [
+          14.451,
+          24.277
+        ],
+        "p_two_sided": 0.0001,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 232,
+        "b_only_correct": 98
+      },
+      "none_minus_Majority": {
+        "diff_pp": 19.364,
+        "ci95": [
+          14.595,
+          24.133
+        ],
+        "p_two_sided": 0.0001,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 221,
+        "b_only_correct": 87
+      },
+      "learned_minus_Majority": {
+        "diff_pp": 18.064,
+        "ci95": [
+          13.15,
+          23.121
+        ],
+        "p_two_sided": 0.0001,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 226,
+        "b_only_correct": 101
+      }
+    },
+    "seed2": {
+      "random_minus_none": {
+        "diff_pp": -2.89,
+        "ci95": [
+          -4.624,
+          -1.301
+        ],
+        "p_two_sided": 0.0011,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 7,
+        "b_only_correct": 27
+      },
+      "nca1d_minus_none": {
+        "diff_pp": 1.012,
+        "ci95": [
+          -0.723,
+          2.746
+        ],
+        "p_two_sided": 0.29527,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 23,
+        "b_only_correct": 16
+      },
+      "learned_minus_none": {
+        "diff_pp": -1.734,
+        "ci95": [
+          -3.757,
+          0.145
+        ],
+        "p_two_sided": 0.09629,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 19,
+        "b_only_correct": 31
+      },
+      "random_minus_Majority": {
+        "diff_pp": 16.474,
+        "ci95": [
+          11.561,
+          21.243
+        ],
+        "p_two_sided": 0.0001,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 209,
+        "b_only_correct": 95
+      },
+      "nca1d_minus_Majority": {
+        "diff_pp": 20.376,
+        "ci95": [
+          15.607,
+          25.145
+        ],
+        "p_two_sided": 0.0001,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 226,
+        "b_only_correct": 85
+      },
+      "none_minus_Majority": {
+        "diff_pp": 19.364,
+        "ci95": [
+          14.884,
+          23.844
+        ],
+        "p_two_sided": 0.0001,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 205,
+        "b_only_correct": 71
+      },
+      "learned_minus_Majority": {
+        "diff_pp": 17.63,
+        "ci95": [
+          12.858,
+          22.399
+        ],
+        "p_two_sided": 0.0001,
+        "n": 692,
+        "n_boot": 10000,
+        "a_only_correct": 220,
+        "b_only_correct": 98
+      }
+    }
+  }
+}
