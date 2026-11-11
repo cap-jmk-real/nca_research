@@ -1,0 +1,81 @@
+{
+  "hermes_headline_reconciliation": [
+    {
+      "config": "Primary pre-specified (3-seed LS, K=8, SVD128, 3k steps/seed)",
+      "split": "curated test (3530)",
+      "top1": "68.92 \u00b1 0.47%",
+      "source": "reviewer_suite_summary factorial 3000-step checkpoint",
+      "primary": true
+    },
+    {
+      "config": "Statistical parity K=4 (3-seed LS)",
+      "split": "curated test",
+      "top1": "68.90 \u00b1 0.21%",
+      "source": "paper Table tab:ablations",
+      "primary": false
+    },
+    {
+      "config": "200k grokking (single schedule, LS)",
+      "split": "curated test",
+      "top1": "68.07%",
+      "source": "paper Table tab:primary",
+      "primary": false
+    },
+    {
+      "config": "10k LS deep tree snapshot",
+      "split": "curated test",
+      "top1": "67.37%",
+      "source": "paper Table tab:primary",
+      "primary": false
+    },
+    {
+      "config": "10k CW star (rare-tool focus)",
+      "split": "curated test",
+      "top1": "66.19%",
+      "source": "paper Table tab:primary",
+      "primary": false
+    },
+    {
+      "config": "Certified damped Eq. (14) only",
+      "split": "curated test",
+      "top1": "61.99 \u00b1 0.14%",
+      "source": "contractive_audit_3seed",
+      "primary": false
+    }
+  ],
+  "compression_reference_baseline": {
+    "reference_model": "Random Forest (Hermes tuned, 100 estimators, unpruned)",
+    "n_params": 18200000,
+    "gnca_headline_params": 59182,
+    "ratio_307x_note": "59.2k vs 18.2M in abstract; per-benchmark RF node counts differ (Table baseline-unified)."
+  },
+  "per_benchmark_rf_params_from_reviewer_suite": {
+    "toolbench": 241488,
+    "apibank": 284352,
+    "bfcl_e1v2": 200052
+  },
+  "deployed_residual_eq7_lipschitz_audit": {
+    "equation": "residual-update Eq. (7)",
+    "metric": "mean hidden step ratio ||h^{t+1}-h^t||/||h^t|| on escalation audit",
+    "mean_across_seeds": 1.2011,
+    "per_seed": [
+      1.1994,
+      1.2065,
+      1.1974
+    ],
+    "dyadic_contractive": false,
+    "note": "Values >1 indicate non-contraction; Theorems 4/7 apply only to damped Eq. (14)."
+  },
+  "damped_eq14_rho": {
+    "mean_across_seeds": 0.4268,
+    "per_seed": [
+      0.4262,
+      0.427,
+      0.4272
+    ]
+  },
+  "bfcl_official_manifest_summary": {
+    "n_scoring_entries": 4696,
+    "bfcl_eval_version": "2026.3.23"
+  }
+}

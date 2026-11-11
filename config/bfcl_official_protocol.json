@@ -1,0 +1,46 @@
+{
+  "protocol": "BFCL_v4_leaderboard_all_scoring",
+  "gorilla_repo": "https://github.com/ShishirPatil/gorilla",
+  "gorilla_commit_pin": "6ea57973c7a6097fd7c5915698c54c17c5b1b6c8",
+  "bfcl_eval_pypi": "bfcl-eval",
+  "bfcl_eval_version_pin": "2026.3.23",
+  "test_collection": "all_scoring",
+  "version_prefix": "BFCL_v4",
+  "actuator_primary": {
+    "name": "qwen3.5:9b",
+    "host": "engine (192.168.10.29)",
+    "backend": "ollama",
+    "notes": "Default engine Ollama actuator for official bfcl-eval. FrogNano-4B remains available for exploratory Dual-System pilots. No cloud API keys."
+  },
+  "actuator_baseline_ablation": {
+    "name": "qwen3.5:9b",
+    "condition": "no_gnca_router",
+    "notes": "Identical prompts and bfcl-eval handler; full tool registry in context."
+  },
+  "gnca_router_role": {
+    "role": "system1_schema_pruner",
+    "checkpoint": "cap-jmk/micro-routing-gnca (Tree K=8 LS headline)",
+    "does_not_emit": "BFCL AST function-call JSON with arguments",
+    "official_score_requires": "End-to-end actuator generations scored by bfcl evaluate"
+  },
+  "routing_eval_split": {
+    "name": "bfcl_e1v2",
+    "manifest": "stage0/data_manifests/bfcl_e1v2.json",
+    "n_train": 2767,
+    "n_val": 698,
+    "n_test": 692,
+    "not_comparable_to": "Public BFCL v4 Overall Acc on leaderboard"
+  },
+  "engine_commands": [
+    "export BFCL_PROJECT_ROOT=/Volumes/Extreme%20SSD/nca_research/results/bfcl_official",
+    "pip install 'bfcl-eval==2026.3.23'",
+    "bash scripts/run_bfcl_official_eval.sh --smoke",
+    "bash scripts/run_bfcl_official_eval.sh --full"
+  ],
+  "blockers_on_cloud_vm": [
+    "No Ollama/GPU checkpoints for FrogNano-4B or qwen3.5:9b",
+    "No BFCL_PROJECT_ROOT on external SSD",
+    "Web-search category needs SERPAPI_KEY (optional; exclude with --test-category all_scoring minus web_search if undesired)",
+    "Full generate+evaluate is multi-hour on engine"
+  ]
+}
