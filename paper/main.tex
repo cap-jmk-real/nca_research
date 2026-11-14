@@ -577,23 +577,76 @@ API-Bank & $284\text{k}$ & $59.2\text{k}$ \\
 \end{tabular}
 \end{table}
 
+\begin{table*}[tbp]
+\centering
+\small
+\caption{\textbf{Official BFCL v4 end-to-end evaluation across all 22 scoring categories (\texttt{bfcl-eval==2026.3.23}, Gorilla \texttt{6ea57973}).} Actuator: local Ollama \texttt{qwen3.5:9b} (\texttt{num\_ctx=32768}, \texttt{reasoning\_effort=none}, \texttt{temperature=0.001}, \texttt{presence\_penalty=0}, \texttt{BFCL\_OLLAMA\_PARSE\_FALLBACK=1}), \texttt{web\_search} via local SearXNG (\texttt{bing,mwmbl,wikipedia,wiby}). The Hermes-trained GNCA \texttt{respond} gate preserves single-turn AST and relevance/irrelevance detection, but \emph{underperforms} the ungated baseline on multi-turn, memory, and web search because out-of-distribution \texttt{respond} predictions withhold tool schemas on turns that require additional tool calls (the gate is cheap, not more accurate).}
+\label{tab:bfcl-official}
+\vspace{4pt}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{BFCL v4 Category / Summary} & \textbf{Baseline (no gate)} & \textbf{+ GNCA gate (Hermes)} & $\Delta$ \textbf{(pp)} \\
+\midrule
+\textbf{Overall Official Acc} & \textbf{45.88\%} & 35.70\% & $-10.18$ \\
+\midrule
+\textbf{Non-Live AST Acc} & 85.85\% & \textbf{85.92\%} & $+0.07$ \\
+\quad Non-Live Simple AST & \textbf{71.92\%} & 71.67\% & $-0.25$ \\
+\quad \quad Python Simple AST & \textbf{93.75\%} & 93.00\% & $-0.75$ \\
+\quad \quad Java Simple AST & 64.00\% & 64.00\% & $0.00$ \\
+\quad \quad JavaScript Simple AST & 58.00\% & 58.00\% & $0.00$ \\
+\quad Non-Live Multiple AST & 92.50\% & \textbf{93.00\%} & $+0.50$ \\
+\quad Non-Live Parallel AST & 88.50\% & 88.50\% & $0.00$ \\
+\quad Non-Live Parallel Multiple AST & 90.50\% & 90.50\% & $0.00$ \\
+\quad Non-Live Irrelevance Detection & 82.50\% & 82.50\% & $0.00$ \\
+\midrule
+\textbf{Live Acc} & \textbf{76.91\%} & 75.50\% & $-1.41$ \\
+\quad Live Simple AST & \textbf{76.74\%} & 75.58\% & $-1.16$ \\
+\quad Live Multiple AST & \textbf{77.40\%} & 75.97\% & $-1.43$ \\
+\quad Live Parallel AST & \textbf{75.00\%} & 68.75\% & $-6.25$ \\
+\quad Live Parallel Multiple AST & 58.33\% & 58.33\% & $0.00$ \\
+\quad Live Irrelevance Detection & 76.70\% & \textbf{76.92\%} & $+0.22$ \\
+\quad Relevance Detection & 87.50\% & \textbf{93.75\%} & $+6.25$ \\
+\quad Overall Irrelevance Detection & 79.60\% & \textbf{79.71\%} & $+0.11$ \\
+\midrule
+\textbf{Multi-Turn Acc} & \textbf{28.88\%} & 11.88\% & $-17.00$ \\
+\quad Multi-Turn Base & \textbf{49.50\%} & 19.50\% & $-30.00$ \\
+\quad Multi-Turn Miss Func & \textbf{8.00\%} & 2.50\% & $-5.50$ \\
+\quad Multi-Turn Miss Param & \textbf{27.00\%} & 12.00\% & $-15.00$ \\
+\quad Multi-Turn Long Context & \textbf{31.00\%} & 13.50\% & $-17.50$ \\
+\midrule
+\textbf{Web Search Acc} & \textbf{13.50\%} & 11.50\% & $-2.00$ \\
+\quad Web Search Base & \textbf{17.00\%} & 11.00\% & $-6.00$ \\
+\quad Web Search No Snippet & 10.00\% & \textbf{12.00\%} & $+2.00$ \\
+\midrule
+\textbf{Memory Acc} & \textbf{51.40\%} & 28.60\% & $-22.80$ \\
+\quad Memory KV & \textbf{30.32\%} & 11.61\% & $-18.71$ \\
+\quad Memory Vector & \textbf{67.10\%} & 34.19\% & $-32.91$ \\
+\quad Memory Recursive Summarization & \textbf{56.77\%} & 40.00\% & $-16.77$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\paragraph{Plain Accounting of the Official BFCL v4 Gate Loss \& Disjoint BFCL Domain Adaptation.}
+Table~\ref{tab:bfcl-official} shows that the Hermes-trained GNCA gate is \emph{cheap, not more accurate}: while it preserves Non-Live AST ($85.92\%$ vs.\ $85.85\%$) and improves Live Relevance Detection ($93.75\%$ vs.\ $87.50\%$), it drops Multi-Turn Acc from $28.88\%$ to $11.88\%$ ($-17.00$\,pp), Memory Acc from $51.40\%$ to $28.60\%$ ($-22.80$\,pp), and Web Search Acc from $13.50\%$ to $11.50\%$ ($-2.00$\,pp), lowering overall accuracy from $45.88\%$ to $35.70\%$. Because the router was trained only on Hermes traces, it misclassifies BFCL multi-turn and memory states as \texttt{respond}, withholding tool schemas on steps that still require tool calls. To test whether in-domain BFCL supervision fixes this routing mismatch without leaking evaluation entries, we construct a deterministic entry-ID-hashed 50/50 split across 18 BFCL v4 categories (\texttt{scripts/bfcl\_gnca\_split.json}), train a $59.2\text{k}$-parameter Tree GraphNCA strictly on the disjoint \texttt{train} IDs ($5{,}109$ train / $775$ val turns, $5{,}000$ steps, $49.7$\,s on CUDA), and evaluate on $5{,}718$ held-out turns (\texttt{scripts/train\_bfcl\_gnca.py}; Table~\ref{tab:bfcl-gate-adaptation}). Domain adaptation raises held-out router top-1 from $19.53\%$ to $\mathbf{75.48\%}$ and binary gate accuracy from $59.78\%$ to $\mathbf{81.09\%}$ (\texttt{respond} recall $11.82\% \to 75.01\%$, irrelevance $1.23\% \to 60.42\%$, multi-turn top-1 $27.97\% \to 80.41\%$), though $14.83\%$ of tool-calling turns remain gated (\texttt{tool\_pass\_rate} $= 85.17\%$), confirming that a hard binary \texttt{respond} gate still trades actuator tool recall for schema savings.
+
 \begin{table}[tbp]
 \centering
 \small
-\caption{\textbf{Official BFCL v4 protocol (actuator + optional GNCA pruner).} Counts from \texttt{scripts/bfcl\_official\_manifest.py} at \texttt{bfcl-eval==2026.3.23} (Gorilla \texttt{6ea57973}). Full run on \textbf{engine}: \texttt{bash scripts/run\_bfcl\_official\_engine.sh}. Scores are \textbf{pending} until generation completes; do not substitute the $76.83\%$ routing figure.}
-\label{tab:bfcl-official}
+\caption{\textbf{Held-out BFCL v4 routing \& gate accuracy ($N{=}5{,}718$ disjoint held-out turns, \texttt{scripts/bfcl\_gnca\_split.json}).} Separate condition comparing the Hermes-trained checkpoint used in Table~\ref{tab:bfcl-official} against a Tree GraphNCA trained strictly on disjoint BFCL \texttt{train} IDs.}
+\label{tab:bfcl-gate-adaptation}
 \vspace{4pt}
-\begin{tabular}{ll}
+\begin{tabular}{lrrrr}
 \toprule
-\textbf{Field} & \textbf{Value} \\
+\textbf{Checkpoint / Subset} & \textbf{Top-1} & \textbf{Gate Acc} & \textbf{Resp. Rec.} & \textbf{Tool Pass} \\
 \midrule
-Task & End-to-end function calling (not router top-1) \\
-Actuator & Ollama \texttt{qwen3.5:9b} (engine default) \\
-Test collection & \texttt{all\_scoring} ($N{=}4{,}696$ entries) \\
-GNCA role & System-1 schema / tool pruning \\
-Artifacts & \texttt{\$BFCL\_PROJECT\_ROOT/score/data\_overall.csv} \\
-Overall Acc (baseline) & pending (engine run) \\
-Overall Acc (GNCA-pruned) & pending (engine run) \\
+Hermes-trained (overall, $5{,}718$) & 19.53\% & 59.78\% & 11.82\% & \textbf{91.88\%} \\
+\quad Multi-turn ($3{,}900$) & 27.97\% & 55.87\% & 15.34\% & \textbf{87.88\%} \\
+\quad Irrelevance ($571$) & 1.23\% & 1.23\% & 1.23\% & --- \\
+\midrule
+\textbf{BFCL-split-trained (overall, $5{,}718$)} & \textbf{75.48\%} & \textbf{81.09\%} & \textbf{75.01\%} & 85.17\% \\
+\quad Multi-turn ($3{,}900$) & \textbf{80.41\%} & \textbf{83.15\%} & \textbf{79.84\%} & 85.77\% \\
+\quad Irrelevance ($571$) & \textbf{60.42\%} & \textbf{60.42\%} & \textbf{60.42\%} & --- \\
+\quad Single-turn AST ($1{,}240$) & \textbf{66.94\%} & 84.11\% & 100.00\% & 84.10\% \\
 \bottomrule
 \end{tabular}
 \end{table}
