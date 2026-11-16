@@ -1,0 +1,87 @@
+{
+  "n_train": 5109,
+  "n_val": 775,
+  "n_heldout": 5718,
+  "models": {
+    "hermes_grokking": {
+      "checkpoint": "/home/s4il0r/nca_data/stage0_results/checkpoints/best_graph_nca_grokking.pt",
+      "overall_heldout": {
+        "n": 5718,
+        "top1": 19.53,
+        "gate_acc": 59.78,
+        "respond_recall": 11.82,
+        "tool_pass_rate": 91.88
+      },
+      "by_group": {
+        "single_turn_ast": {
+          "n": 1240,
+          "top1": 1.53,
+          "gate_acc": 98.79,
+          "tool_pass_rate": 98.87,
+          "respond_recall": 0.0
+        },
+        "irrelevance": {
+          "n": 571,
+          "top1": 1.23,
+          "gate_acc": 1.23,
+          "tool_pass_rate": null,
+          "respond_recall": 1.23
+        },
+        "live_relevance": {
+          "n": 7,
+          "top1": 0.0,
+          "gate_acc": 100.0,
+          "tool_pass_rate": 100.0,
+          "respond_recall": null
+        },
+        "multi_turn": {
+          "n": 3900,
+          "top1": 27.97,
+          "gate_acc": 55.87,
+          "tool_pass_rate": 87.88,
+          "respond_recall": 15.34
+        }
+      }
+    },
+    "bfcl_split_trained": {
+      "checkpoint": "/home/s4il0r/nca_data/stage0_results/checkpoints/best_graph_nca_bfcl_split.pt",
+      "overall_heldout": {
+        "n": 5718,
+        "top1": 75.48,
+        "gate_acc": 81.09,
+        "respond_recall": 75.01,
+        "tool_pass_rate": 85.17
+      },
+      "by_group": {
+        "single_turn_ast": {
+          "n": 1240,
+          "top1": 66.94,
+          "gate_acc": 84.11,
+          "tool_pass_rate": 84.1,
+          "respond_recall": 100.0
+        },
+        "irrelevance": {
+          "n": 571,
+          "top1": 60.42,
+          "gate_acc": 60.42,
+          "tool_pass_rate": null,
+          "respond_recall": 60.42
+        },
+        "live_relevance": {
+          "n": 7,
+          "top1": 71.43,
+          "gate_acc": 85.71,
+          "tool_pass_rate": 85.71,
+          "respond_recall": null
+        },
+        "multi_turn": {
+          "n": 3900,
+          "top1": 80.41,
+          "gate_acc": 83.15,
+          "tool_pass_rate": 85.77,
+          "respond_recall": 79.84
+        }
+      }
+    }
+  }
+}
