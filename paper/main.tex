@@ -651,6 +651,28 @@ Hermes-trained (overall, $5{,}718$) & 19.53\% & 59.78\% & 11.82\% & \textbf{91.8
 \end{tabular}
 \end{table}
 
+\begin{table}[tbp]
+\centering
+\small
+\caption{\textbf{End-to-end BFCL v4 actuator evaluation on the disjoint held-out split ($N{=}2{,}426$ entries across 20 non-web-search categories, \texttt{scripts/bfcl\_gnca\_split.json}).} While BFCL domain adaptation improves Irrelevance Detection ($80.97\% \to \mathbf{88.44\%}$) and lowers mean latency ($5.50\,\text{s} \to \mathbf{4.03\,\text{s}}$), withholding tools on $44.2\%$ of actuator queries ($2{,}586 / 5{,}852$) compounds across multi-turn episodes ($29.05\% \to 1.03\%$).}
+\label{tab:bfcl-heldout-e2e}
+\vspace{4pt}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Held-Out BFCL v4 Metric} & \textbf{Baseline} & \textbf{Hermes GNCA} & \textbf{BFCL GNCA} \\
+\midrule
+Overall Acc (20-cat held-out) & \textbf{42.84\%} & 32.29\% & 27.40\% \\
+Non-Live AST Acc & 87.72\% & \textbf{87.91\%} & 79.65\% \\
+Live Acc & \textbf{74.81\%} & 72.88\% & 59.91\% \\
+Multi-Turn Acc & \textbf{29.05\%} & 10.04\% & 1.03\% \\
+Memory Acc & \textbf{48.86\%} & 25.57\% & 21.46\% \\
+Relevance Detection & \textbf{100.00\%} & \textbf{100.00\%} & 85.71\% \\
+Irrelevance Detection & 80.97\% & 80.85\% & \textbf{88.44\%} \\
+Latency Mean (s) & 5.50 & 6.01 & \textbf{4.03} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \section{Results}
 
 \subsection{Primary Benchmark Evaluation}
