@@ -1,0 +1,10 @@
+{"trial": 9, "seed": 1, "val_top1": 71.02, "wall_s": 39.5}
+{"trial": 18, "seed": 1, "val_top1": 71.89, "wall_s": 26.7}
+{"trial": 4, "seed": 1, "val_top1": 71.49, "wall_s": 52.8}
+{"trial": 6, "seed": 1, "val_top1": 70.88, "wall_s": 14.9}
+{"trial": 12, "seed": 1, "val_top1": 71.17, "wall_s": 57.0}
+{"trial": 9, "seed": 2, "val_top1": 71.57, "wall_s": 39.9}
+{"trial": 18, "seed": 2, "val_top1": 71.69, "wall_s": 27.0}
+{"trial": 4, "seed": 2, "val_top1": 71.28, "wall_s": 54.3}
+{"trial": 6, "seed": 2, "val_top1": 70.76, "wall_s": 15.3}
+{"trial": 12, "seed": 2, "val_top1": 71.4, "wall_s": 58.4}
