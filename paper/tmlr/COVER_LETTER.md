@@ -14,7 +14,7 @@ I submit "Micro-Routing with Graph Neural Cellular Automata for Sub-Millisecond 
 
 **Prior versions and originality.** [Pending Julian's OK, final wording after the arXiv upload.] A preprint of this work is public under my name (aiXiv now, arXiv planned before submission). Preprint servers are not archival peer-reviewed venues, and TMLR's policy accepts overlap with them. Earlier preprint versions made stronger claims than the result files support. The submitted manuscript is a re-analysis and rewrite that removes them. To keep the review double-blind I do not link the preprint here. The work is not under review and has not been published at any other venue.
 
-**AI tools.** [Pending Julian's OK.] AI assistants were used for code and text, disclosed in a footnote on the first page as the TMLR FAQ asks. I checked all numbers and citations and I am responsible for the content.
+**AI tools.** AI assistants (Cursor, Grok Bot, Hermes Agent, Antigravity and SciSpace) were used for code, literature search and text, as disclosed in a first-page footnote. I checked all numbers and citations and I am responsible for the content.
 
 **Code and data.** The code, result files, table and figure generators, the official BFCL run scripts and the Lean proofs are public under the MIT licence. For review they are provided as an anonymized mirror and as the supplementary ZIP. The named repository link is added at camera-ready.
 

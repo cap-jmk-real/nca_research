@@ -72,18 +72,18 @@ body = body.replace(" Version~7.6 of this manuscript claimed more than the resul
 body = body.replace("\\cite{", "\\citep{")
 LABELS = {
  "mordvintsev2020growing": "Mordvintsev et~al.(2020)", "grattarola2021learning": "Grattarola et~al.(2021)",
- "gala2023equivariant": "Gala et~al.(2023)", "etcheverry2026reasoning": "Etcheverry et~al.(2026)",
+ "gala2023equivariant": "Gala et~al.(2024)", "etcheverry2026reasoning": "Etcheverry et~al.(2026)",
  "pio2026brainca": "Pio-Lopez et~al.(2026)", "mittal2026textnca": "Mittal et~al.(2026)",
  "lee2026training": "Lee et~al.(2026)", "li2016ggnn": "Li et~al.(2016)", "gilmer2017mpnn": "Gilmer et~al.(2017)",
  "dehghani2019universal": "Dehghani et~al.(2019)", "bai2019deq": "Bai et~al.(2019)",
  "vaswani2017attention": "Vaswani et~al.(2017)", "cover1967nearest": "Cover and Hart(1967)",
  "geifman2017selective": "Geifman and El-Yaniv(2017)", "kontschieder2015deep": "Kontschieder et~al.(2015)",
  "frosst2017distilling": "Frosst and Hinton(2017)", "yang2018deep": "Yang et~al.(2018)",
- "chen2023frugalgpt": "Chen et~al.(2023)", "ong2024routellm": "Ong et~al.(2024)",
+ "chen2023frugalgpt": "Chen et~al.(2024)", "ong2024routellm": "Ong et~al.(2025)",
  "singla2026agentweave": "Singla et~al.(2026)", "li2026fastmodels": "Li(2026)",
  "chen2024octopus": "Chen and Li(2024)", "erdogan2024tinyagent": "Erdogan et~al.(2024)",
- "lin2024hammer": "Lin et~al.(2024)", "chen2026oats": "Chen et~al.(2026)", "qu2024colt": "Qu et~al.(2024)",
- "patil2023gorilla": "Patil et~al.(2023)", "gorilla-bfcl": "Patil et~al.(2024)", "qin2023toolllm": "Qin et~al.(2024)",
+ "lin2024hammer": "Lin et~al.(2025)", "chen2026oats": "Chen et~al.(2026)", "qu2024colt": "Qu et~al.(2024)",
+ "patil2023gorilla": "Patil et~al.(2024)", "gorilla-bfcl": "Patil et~al.(2025)", "qin2023toolllm": "Qin et~al.(2024)",
  "li2023apibank": "Li et~al.(2023)", "hermestraces": "{Hermes traces}(2026)", "chung1997spectral": "Chung(1997)",
  "katz2019marabou": "Katz et~al.(2019)", "wang2021beta": "Wang et~al.(2021)",
 }
@@ -95,14 +95,8 @@ items.sort(key=lambda kv: re.sub(r"[^a-z0-9]", "", LABELS[kv[0]].lower()))
 new_bib = "".join("\\bibitem[%s]{%s}%s\n" % (LABELS[k], k, t.rstrip("\n")) for k, t in items)
 body = body[:bib_m.start(2)] + new_bib + body[bib_m.end(2):]
 
-# ---- LLM-use footnote on the first page (TMLR FAQ). Wording pending Julian's OK. ----
-AI_NOTE_NAMED = ("The author used AI coding and writing assistants (Cursor and other LLM-based tools) to write code, "
-           "run experiments and draft and edit text. The research questions, study design and conclusions are the "
-           "author's. The author checked every number against the released result files and every citation against "
-           "its source, and takes full responsibility for the content.")
-AI_NOTE_ANON = (AI_NOTE_NAMED.replace("The author used", "The authors used").replace("the author's", "the authors'")
-                .replace("The author checked", "The authors checked").replace("takes full", "take full"))
-AI_NOTE = "\\ifdefined\\NONANON " + AI_NOTE_NAMED + "\\else " + AI_NOTE_ANON + "\\fi"
+# ---- LLM-use footnote on the first page (TMLR FAQ). Wording approved by Julian (2026-11-18, 09:01); keep verbatim. ----
+AI_NOTE = ("The author used AI coding, research and writing assistants (Cursor, Grok Bot, Hermes Agent, Antigravity and SciSpace) to write code, run experiments, search and read literature, and draft and edit text. The research questions, study design and conclusions are the author's. The author checked every number against the released result files and every citation against its source, and takes full responsibility for the content.")
 # the footnote replaces the body paragraph "Use of AI tools" in the TMLR builds (no duplicate statement)
 body, n_ai = re.subn(r"\\paragraph\{Use of AI tools\.\}[^\n]*\n", "", body)
 assert n_ai == 1, "AI-use paragraph not found"
