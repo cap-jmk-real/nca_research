@@ -72,18 +72,18 @@ body = body.replace(" Version~7.6 of this manuscript claimed more than the resul
 body = body.replace("\\cite{", "\\citep{")
 LABELS = {
  "mordvintsev2020growing": "Mordvintsev et~al.(2020)", "grattarola2021learning": "Grattarola et~al.(2021)",
- "gala2023equivariant": "Gala et~al.(2023)", "etcheverry2026reasoning": "Etcheverry et~al.(2026)",
+ "gala2023equivariant": "Gala et~al.(2024)", "etcheverry2026reasoning": "Etcheverry et~al.(2026)",
  "pio2026brainca": "Pio-Lopez et~al.(2026)", "mittal2026textnca": "Mittal et~al.(2026)",
  "lee2026training": "Lee et~al.(2026)", "li2016ggnn": "Li et~al.(2016)", "gilmer2017mpnn": "Gilmer et~al.(2017)",
  "dehghani2019universal": "Dehghani et~al.(2019)", "bai2019deq": "Bai et~al.(2019)",
  "vaswani2017attention": "Vaswani et~al.(2017)", "cover1967nearest": "Cover and Hart(1967)",
  "geifman2017selective": "Geifman and El-Yaniv(2017)", "kontschieder2015deep": "Kontschieder et~al.(2015)",
  "frosst2017distilling": "Frosst and Hinton(2017)", "yang2018deep": "Yang et~al.(2018)",
- "chen2023frugalgpt": "Chen et~al.(2023)", "ong2024routellm": "Ong et~al.(2024)",
+ "chen2023frugalgpt": "Chen et~al.(2024)", "ong2024routellm": "Ong et~al.(2025)",
  "singla2026agentweave": "Singla et~al.(2026)", "li2026fastmodels": "Li(2026)",
  "chen2024octopus": "Chen and Li(2024)", "erdogan2024tinyagent": "Erdogan et~al.(2024)",
- "lin2024hammer": "Lin et~al.(2024)", "chen2026oats": "Chen et~al.(2026)", "qu2024colt": "Qu et~al.(2024)",
- "patil2023gorilla": "Patil et~al.(2023)", "gorilla-bfcl": "Patil et~al.(2024)", "qin2023toolllm": "Qin et~al.(2024)",
+ "lin2024hammer": "Lin et~al.(2025)", "chen2026oats": "Chen et~al.(2026)", "qu2024colt": "Qu et~al.(2024)",
+ "patil2023gorilla": "Patil et~al.(2024)", "gorilla-bfcl": "Patil et~al.(2025)", "qin2023toolllm": "Qin et~al.(2024)",
  "li2023apibank": "Li et~al.(2023)", "hermestraces": "{Hermes traces}(2026)", "chung1997spectral": "Chung(1997)",
  "katz2019marabou": "Katz et~al.(2019)", "wang2021beta": "Wang et~al.(2021)",
 }
