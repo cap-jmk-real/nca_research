@@ -104,6 +104,7 @@
 \input{generated/numbers_hpo.tex}
 \input{generated/numbers_rig.tex}
 \input{generated/numbers_bfcl_official.tex}
+\input{generated/numbers_efficiency_1118.tex}
 
 \begin{document}
 \twocolumn[
@@ -393,6 +394,16 @@ With matched tuning and five seeds the tree GNCA is a competitive small router, 
 \paragraph{Inference latency.} On one CPU thread the tuned tree GNCA's inference takes $\numRLatGncaPred$\,ms per turn (95th percentile $\numRLatPredGncaPNF$\,ms; Table~\ref{tab:rig-deploy}, Figure~\ref{fig:rig}a). The neural models take $\numRLatPredNeurLo$--$\numRLatPredNeurHi$\,ms: the MLP $\numRLatMlpPred$, the untied GNN $\numRLatGnnPred$ and the Transformer $\numRLatTfPred$\,ms. Logistic regression is fastest ($\numRLatLrPred$\,ms) and least accurate. The tree ensembles take $\numRLatRfPred$\,ms (Random Forest) and $\numRLatHgbPred$\,ms (HistGradientBoosting), and $k$-NN retrieval, which searches the whole training set, $\numRLatKnnPred$\,ms. Every model's inference is far below the $\numLlmQwenLat$ and $\numLlmGemmaLat$\,ms per decision of the local LLMs in Section~\ref{sec:intro}.
 
 \paragraph{Featurisation cost.} Before inference, every model needs its input features. In our unoptimised Python pipeline this preprocessing takes $\numRLatFeatTabLo$--$\numRLatFeatTabHi$\,ms per turn for the tabular features of logistic regression and the primary tree models, and $\numRLatFeatCellLo$--$\numRLatFeatCellHi$\,ms for the cell features used by the GNCA, the MLP, the Transformer, the untied GNN, RF$^\ast$, HGB$^\ast$ and $k$-NN ($\numRLatGncaFeat$\,ms for the tree GNCA). It is shared by every feature-based model and is not part of the router. Including it, a routing decision takes $\numRLatGnca$\,ms for the tree GNCA, $\numRLatRf$\,ms for the Random Forest and $\numRLatHgb$\,ms for HistGradientBoosting, so in this pipeline the featuriser, not the model, sets the per-turn cost.
+
+\begin{table*}[t]
+\centering
+\scriptsize
+\caption{Head-to-head CPU efficiency across all four benchmarks and all thirteen models (five seeds, median over seeds). All models were refitted on CPU at their selected configurations; Train$_8$ is wall-clock training time on 8 physical cores (1-thread training in the released summary file), Infer is 1-thread batch-1 model forward/predict time (1{,}000 turns after 50 warm-up turns; featurisation excluded).}
+\label{tab:efficiency-1118}
+\input{generated/tab_efficiency_1118.tex}
+\end{table*}
+
+\paragraph{Cross-benchmark training time, parameter count and inference.} Table~\ref{tab:efficiency-1118} extends the CPU efficiency comparison across all four benchmarks and all five seeds. The tuned tree GNCA uses $\numEffGncaParamsLo$--$\numEffGncaParamsHi$ parameters ($365$--$589$\,kB serialised across GNCA variants), trains on 8 CPU threads in $\numEffGncaTrainEightLo$--$\numEffGncaTrainEightHi$\,s ($\numEffGncaTrainOneLo$--$\numEffGncaTrainOneHi$\,s on 1 thread) and runs 1-thread model inference in $\numEffGncaPredLo$--$\numEffGncaPredHi$\,ms per turn, compared with $\numEffHgbPredLo$--$\numEffHgbPredHi$\,ms for HistGradientBoosting and $\numEffRfPredLo$--$\numEffRfPredHi$\,ms for Random Forest (whose serialised models reach $24.9$--$150.6$\,MB on Hermes).
 
 \subsection{Component ablations and escalation}\label{sec:ablation}
 \begin{table*}[t]
