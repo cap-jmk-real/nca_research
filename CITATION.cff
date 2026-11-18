@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it using the metadata in this file."
+title: "Micro-Routing with Graph Neural Cellular Automata for Sub-Millisecond Agent Tool Selection"
+type: article
+authors:
+  - family-names: Kleber
+    given-names: Julian M.
+    orcid: "https://orcid.org/0000-0001-5518-0932"
+    email: julian.kleber@sail.black
+    affiliation: Independent Researcher
+date-released: "2026-11-01"
+year: 2026
+license: MIT
+url: "https://github.com/cap-jmk-real/nca_research"
+repository-code: "https://github.com/cap-jmk-real/nca_research"
+identifiers:
+  - type: url
+    value: "https://aixiv.science/abs/aixiv.261101.000002"
+    description: "aiXiv preprint aixiv.261101.000002"
+preferred-citation:
+  type: article
+  title: "Micro-Routing with Graph Neural Cellular Automata for Sub-Millisecond Agent Tool Selection"
+  authors:
+    - family-names: Kleber
+      given-names: Julian M.
+      orcid: "https://orcid.org/0000-0001-5518-0932"
+  year: 2026
+  month: 11
+  journal: "aiXiv"
+  url: "https://aixiv.science/abs/aixiv.261101.000002"
+  notes: "Preprint. Identifier: aixiv.261101.000002. Not peer reviewed."

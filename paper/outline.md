@@ -1,6 +1,6 @@
 # Manuscript outline
 
-**Working title:** *A one-dimensional neural cellular automaton for next-tool prediction in agent traces*
+**Title:** *Micro-Routing with Graph Neural Cellular Automata for Sub-Millisecond Agent Tool Selection*
 
 **Status:** Living outline. Every Results claim must cite an `EXP-*` id from [si/experiments/](si/experiments/).
 

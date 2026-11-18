@@ -1,6 +1,6 @@
 # Paper workspace
 
-Working material for a methods + results manuscript on **1D trace neural cellular automata for next-tool prediction**, with supporting information (SI) that can be compiled into a paper.
+Working material for the manuscript **Micro-Routing with Graph Neural Cellular Automata for Sub-Millisecond Agent Tool Selection**, with supporting information (SI) that can be compiled into a paper.
 
 | Path | Role |
 | --- | --- |
