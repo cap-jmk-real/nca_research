@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Derive the TMLR-format source (paper/main_tmlr.tex) from paper/main.tex.
 
+Citations are converted to the template's natbib author-year style (labels below).
+
 Body text, tables and numbers are untouched (they stay generated from result files).
 Only the preamble, title block, bibliography style hooks and one internal appendix
 (the change ledger vs. an earlier internal version) are changed.
@@ -34,7 +36,6 @@ head = r"""\documentclass[10pt]{article}
   \usepackage{tmlr}
 \fi
 \usepackage[utf8]{inputenc}
-\setcitestyle{numbers,square,comma}
 """
 title = r"""
 \title{Micro-Routing with Graph Neural Cellular Automata for Sub-Millisecond Agent Tool Selection}
@@ -47,7 +48,7 @@ title = r"""
 \else
 \author{Anonymous authors}
 \def\month{MM}\def\year{YYYY}\def\openreview{\url{https://openreview.net/forum?id=XXXX}}
-\newcommand{\repolink}{\textit{[repository URL withheld for double-blind review; the public repository and its MIT licence are added in the camera-ready version]}}
+\newcommand{\repolink}{\textit{[anonymized code mirror: URL inserted when the mirror is built; the same files are in the supplementary ZIP]}}
 \fi
 """
 
@@ -66,6 +67,50 @@ body = re.sub(r"Table~\\ref\{tab:sources\} names the result sources used in this
               r"Table~\\ref{tab:sources} names the result sources used in this paper.", body, flags=re.S)
 body = re.sub(r"\\begin\{table\*\}\[p\]\n\\centering\n\\scriptsize\n\\setlength\{\\tabcolsep\}\{3pt\}\n\\caption\{Ledger of Version.*?\\end\{table\*\}\n", "", body, flags=re.S)
 body = body.replace(" Version~7.6 of this manuscript claimed more than the result files support; Appendix~\\ref{app:ledger} lists what was removed or replaced.", "")
+
+# ---- citations: TMLR template style is natbib author-year (tmlr.sty) -------------
+body = body.replace("\\cite{", "\\citep{")
+LABELS = {
+ "mordvintsev2020growing": "Mordvintsev et~al.(2020)", "grattarola2021learning": "Grattarola et~al.(2021)",
+ "gala2023equivariant": "Gala et~al.(2023)", "etcheverry2026reasoning": "Etcheverry et~al.(2026)",
+ "pio2026brainca": "Pio-Lopez et~al.(2026)", "mittal2026textnca": "Mittal et~al.(2026)",
+ "lee2026training": "Lee et~al.(2026)", "li2016ggnn": "Li et~al.(2016)", "gilmer2017mpnn": "Gilmer et~al.(2017)",
+ "dehghani2019universal": "Dehghani et~al.(2019)", "bai2019deq": "Bai et~al.(2019)",
+ "vaswani2017attention": "Vaswani et~al.(2017)", "cover1967nearest": "Cover and Hart(1967)",
+ "geifman2017selective": "Geifman and El-Yaniv(2017)", "kontschieder2015deep": "Kontschieder et~al.(2015)",
+ "frosst2017distilling": "Frosst and Hinton(2017)", "yang2018deep": "Yang et~al.(2018)",
+ "chen2023frugalgpt": "Chen et~al.(2023)", "ong2024routellm": "Ong et~al.(2024)",
+ "singla2026agentweave": "Singla et~al.(2026)", "li2026fastmodels": "Li(2026)",
+ "chen2024octopus": "Chen and Li(2024)", "erdogan2024tinyagent": "Erdogan et~al.(2024)",
+ "lin2024hammer": "Lin et~al.(2024)", "chen2026oats": "Chen et~al.(2026)", "qu2024colt": "Qu et~al.(2024)",
+ "patil2023gorilla": "Patil et~al.(2023)", "gorilla-bfcl": "Patil et~al.(2024)", "qin2023toolllm": "Qin et~al.(2024)",
+ "li2023apibank": "Li et~al.(2023)", "hermestraces": "{Hermes traces}(2026)", "chung1997spectral": "Chung(1997)",
+ "katz2019marabou": "Katz et~al.(2019)", "wang2021beta": "Wang et~al.(2021)",
+}
+bib_m = re.search(r"(\\begin\{thebibliography\}\{[^}]*\}[^\n]*\n)(.*?)(\\end\{thebibliography\})", body, flags=re.S)
+items = re.findall(r"\\bibitem\{([^}]+)\}([^\n]*(?:\n(?!\\bibitem|\\end\{thebibliography\})[^\n]*)*)", bib_m.group(2))
+missing = [k for k, _ in items if k not in LABELS]
+assert not missing, f"no author-year label for {missing}"
+items.sort(key=lambda kv: re.sub(r"[^a-z0-9]", "", LABELS[kv[0]].lower()))
+new_bib = "".join("\\bibitem[%s]{%s}%s\n" % (LABELS[k], k, t.rstrip("\n")) for k, t in items)
+body = body[:bib_m.start(2)] + new_bib + body[bib_m.end(2):]
+
+# ---- LLM-use footnote on the first page (TMLR FAQ). Wording pending Julian's OK. ----
+AI_NOTE_NAMED = ("The author used AI coding and writing assistants (Cursor and other LLM-based tools) to write code, "
+           "run experiments and draft and edit text. The research questions, study design and conclusions are the "
+           "author's. The author checked every number against the released result files and every citation against "
+           "its source, and takes full responsibility for the content.")
+AI_NOTE_ANON = (AI_NOTE_NAMED.replace("The author used", "The authors used").replace("the author's", "the authors'")
+                .replace("The author checked", "The authors checked").replace("takes full", "take full"))
+AI_NOTE = "\\ifdefined\\NONANON " + AI_NOTE_NAMED + "\\else " + AI_NOTE_ANON + "\\fi"
+# the footnote replaces the body paragraph "Use of AI tools" in the TMLR builds (no duplicate statement)
+body, n_ai = re.subn(r"\\paragraph\{Use of AI tools\.\}[^\n]*\n", "", body)
+assert n_ai == 1, "AI-use paragraph not found"
+body = body.replace("\\end{abstract}", "\\footnote{" + AI_NOTE + "}\n\\end{abstract}", 1)
+# two appendix tables were laid out for the wider two-column page (overfull in the 6.5in TMLR text block)
+body, n1 = re.subn(r"(\\section\{Default Configurations and the Single-Seed Search\}\\label\{app:earlier\}\n\\begin\{table\*\}\[t\]\n\\centering\n)\\small", r"\1\\footnotesize\\setlength{\\tabcolsep}{2.5pt}", body)
+body, n2 = re.subn(r"(\\scriptsize\n)\\setlength\{\\tabcolsep\}\{3\.5pt\}(\n\\caption\{Tuned models: test top-1)", r"\1\\setlength{\\tabcolsep}{2.5pt}\2", body)
+assert n1 == 1 and n2 == 1, (n1, n2)
 assert "tab:ledger" not in body and "Version~7.6" not in body, "ledger removal failed"
 assert "github.com" not in body.replace("\\repolink", ""), "repo URL still in body"
 out = head + pre.strip() + "\n" + title + body

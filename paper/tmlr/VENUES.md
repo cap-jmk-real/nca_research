@@ -43,3 +43,11 @@ The paper is on aiXiv as `aixiv.261101.000002` (site shows "v7.7, 2026-11-10"; p
 - TMLR's rule that authors need a complete OpenReview profile means Julian must create it himself; this package created nothing.
 - Quota: TMLR limits the number of submissions per author per year ("Generalized Harmonic Quota Rule, N_1 = 2 and N_9 = 9", [policies](https://jmlr.org/tmlr/editorial-policies.html)). Check the remaining budget with the tool linked there before submitting two papers.
 - LLM policy: LLMs may be used as assistive tools; authors are fully responsible and low-quality, largely LLM-generated contributions are examined closely. The manuscript discloses AI use.
+
+## Further options (ported from the PR #14 shortlist)
+
+Read on 2026-11-18 by the author of PR #14 from the pages linked. Not re-checked in the consolidation PR.
+
+- **Computo** (https://computo-journal.org/site/about.html, https://computo-journal.org/site/guidelines-authors.html): "free for both readers and authors", Diamond OA, CC BY 4.0. New methods and numerical studies in statistics and ML. Reproducibility is a publication condition (Quarto notebook, frozen environment, CI, data on Zenodo or OSF), and reviewers run the code. Every submission ends with a "Use of generative AI" statement. The paper would need re-authoring as a Quarto notebook. Review time not stated.
+- **Journal of Formalized Reasoning** (https://jfr.unibo.it/about): "neither article processing charges nor submission processing fees", CC BY 3.0, initial assessment within 15 days, two anonymous reviewers within 2 months. Only for a later Lean-centred companion: the 28 Lean theorems are an appendix of this paper, not a stand-alone formalization.
+- Excluded: **JOSS** (https://joss.readthedocs.io/en/latest/submitting.html) needs at least six months of public history. The repository was created 2026-10-03, so it is not eligible before about April 2027, and JOSS publishes the software, not the paper.

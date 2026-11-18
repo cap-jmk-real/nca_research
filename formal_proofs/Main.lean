@@ -13,7 +13,7 @@ def main : IO Unit := do
   IO.println "  [✓] Theorem 7: Hierarchical Tree Subsumption (Tree DAG ⊂ GNCA)"
   IO.println "  [✓] Theorem 8: Decision-Tree / Cellular-Automaton Simulation & Weight-Tying Compression"
   IO.println "  [✓] Theorem 9: Damped Convex Recurrence Dyadic Contraction (Exact Trained Operator)"
-  IO.println "  [✓] Theorem 10: Exponential Perturbation Decay on Deployed Contractive Router"
+  IO.println "  [✓] Theorem 10: Exponential Perturbation Decay (damped Eq. 14 operator only)"
   IO.println "  [✓] Theorem 11: Continuous Row-Softmax Message Passing Convex Boundedness"
   IO.println "  [✓] Theorem 12: Top-k Discretization Call-Tree Spanning DAG Preservation"
   IO.println "  [✓] Theorem 13: Sigmoidal Gating Concordance under Margin Separation (Continuous-to-Tree Bridge)"

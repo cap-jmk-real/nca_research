@@ -1,7 +1,8 @@
 /-
-  NCAMetaLearning.TrainedAlgorithm: Formal Verification of the Deployed Continuous
-  Algorithm, Damped Convex Recurrence Contraction, Softmax Row-Stochastic Boundedness,
-  and Top-k Discretization Spanning Preservation.
+  NCAMetaLearning.TrainedAlgorithm: Formal verification scoped to the damped convex
+  recurrence (Eq. 14 / paper eq:damped-update), plus row-softmax boundedness and
+  top-k tree preservation. The headline residual router (Eq. 7 / eq:residual-update)
+  is not claimed contractive here; empirical rho for Eq. 7 is measured offline.
 -/
 
 import NCAMetaLearning.Basic
