@@ -1,0 +1,63 @@
+# Documentation build, CycloneDX SBOM and README command check.
+# Independent of stage0-dry-run.yml, which keeps its own path filters.
+name: docs-sbom
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-docs.txt
+      - name: Install docs dependencies
+        run: pip install -r requirements-docs.txt
+      - name: Build docs
+        run: mkdocs build --strict
+
+  sbom:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install runtime dependencies into a clean venv
+        run: |
+          python -m venv "$RUNNER_TEMP/sbom-env"
+          "$RUNNER_TEMP/sbom-env/bin/pip" install torch --index-url https://download.pytorch.org/whl/cpu
+          "$RUNNER_TEMP/sbom-env/bin/pip" install -r requirements.txt
+      - name: Generate CycloneDX SBOM
+        run: |
+          python -m venv "$RUNNER_TEMP/sbom-tool"
+          "$RUNNER_TEMP/sbom-tool/bin/pip" install cyclonedx-bom==8.0.1
+          "$RUNNER_TEMP/sbom-tool/bin/cyclonedx-py" environment \
+            --of JSON --sv 1.6 -o sbom.cdx.json "$RUNNER_TEMP/sbom-env"
+          python -c "import json; d=json.load(open('sbom.cdx.json')); print(d['bomFormat'], d['specVersion'], len(d['components']), 'components')"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sbom-cyclonedx
+          path: sbom.cdx.json
+
+  readme-commands:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run the commands marked for CI in README and docs
+        run: python tools/run_readme_blocks.py README.md docs/install.md docs/reproduce.md

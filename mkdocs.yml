@@ -1,0 +1,51 @@
+site_name: nca_research
+site_description: Graph neural cellular automata for agent tool selection
+repo_url: https://github.com/cap-jmk-real/nca_research
+docs_dir: docs
+strict: true
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - content.code.copy
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [., stage0]
+          options:
+            show_source: false
+            docstring_style: google
+            show_root_heading: true
+exclude_docs: |
+  /agent-coding-datasets.md
+  /agent-trace-datasets.md
+  /auto-research-3day-report.md
+  /auto-research-loop.md
+  /benchmarks.md
+  /curated-traces.md
+  /data-root.md
+  /efficiency.md
+  /extra-traces.md
+  /hermes-first-run.md
+  /huggingface-distribution.md
+  /hypotheses-backlog.md
+  /hypothesis-tests.md
+  /literature.md
+  /m1-engines.md
+  /mac-worker-prep.md
+  /multi-harness-and-message-passing.md
+  /paper-release-plan.md
+  /research-design.md
+  /specialist-coder-stack.md
+  /tensorboard.md
+  /text-nca-architecture.md
+  /text_nca_1d_mix13_metrics.json
+nav:
+  - Home: index.md
+  - Install: install.md
+  - Repository layout: layout.md
+  - Reproduce the paper results: reproduce.md
+  - API reference: api.md
+  - Data and licence: data-and-licence.md
