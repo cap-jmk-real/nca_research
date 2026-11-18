@@ -1,0 +1,247 @@
+{
+  "timestamp_utc": "2026-11-10T04:19:29Z",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "benchmarks": {
+    "curated": {
+      "n_test": 3530,
+      "models": {
+        "RandomForest_packed": {
+          "runs": [
+            {
+              "seed": 0,
+              "test_top1": 68.64,
+              "val_top1": 70.94,
+              "n_features": 730,
+              "fit_s": 2.0
+            },
+            {
+              "seed": 1,
+              "test_top1": 69.24,
+              "val_top1": 70.22,
+              "n_features": 730,
+              "fit_s": 2.0
+            },
+            {
+              "seed": 2,
+              "test_top1": 69.24,
+              "val_top1": 70.74,
+              "n_features": 730,
+              "fit_s": 1.9
+            }
+          ],
+          "test_top1_mean": 69.04,
+          "test_top1_sd": 0.35
+        },
+        "HistGradientBoosting_packed": {
+          "runs": [
+            {
+              "seed": 0,
+              "test_top1": 67.03,
+              "val_top1": 67.65,
+              "n_features": 730,
+              "fit_s": 3.8
+            },
+            {
+              "seed": 1,
+              "test_top1": 66.03,
+              "val_top1": 67.79,
+              "n_features": 730,
+              "fit_s": 3.9
+            },
+            {
+              "seed": 2,
+              "test_top1": 67.37,
+              "val_top1": 68.72,
+              "n_features": 730,
+              "fit_s": 3.9
+            }
+          ],
+          "test_top1_mean": 66.81,
+          "test_top1_sd": 0.7
+        }
+      }
+    },
+    "bfcl_e1v2": {
+      "n_test": 692,
+      "models": {
+        "RandomForest_packed": {
+          "runs": [
+            {
+              "seed": 0,
+              "test_top1": 72.69,
+              "val_top1": 75.36,
+              "n_features": 730,
+              "fit_s": 0.2
+            },
+            {
+              "seed": 1,
+              "test_top1": 72.54,
+              "val_top1": 75.07,
+              "n_features": 730,
+              "fit_s": 0.1
+            },
+            {
+              "seed": 2,
+              "test_top1": 72.69,
+              "val_top1": 74.64,
+              "n_features": 730,
+              "fit_s": 0.1
+            }
+          ],
+          "test_top1_mean": 72.64,
+          "test_top1_sd": 0.09
+        },
+        "HistGradientBoosting_packed": {
+          "runs": [
+            {
+              "seed": 0,
+              "test_top1": 78.18,
+              "val_top1": 79.37,
+              "n_features": 730,
+              "fit_s": 4.0
+            },
+            {
+              "seed": 1,
+              "test_top1": 77.6,
+              "val_top1": 79.66,
+              "n_features": 730,
+              "fit_s": 4.1
+            },
+            {
+              "seed": 2,
+              "test_top1": 78.76,
+              "val_top1": 80.95,
+              "n_features": 730,
+              "fit_s": 4.0
+            }
+          ],
+          "test_top1_mean": 78.18,
+          "test_top1_sd": 0.58
+        }
+      }
+    },
+    "toolbench": {
+      "n_test": 422,
+      "models": {
+        "RandomForest_packed": {
+          "runs": [
+            {
+              "seed": 0,
+              "test_top1": 72.75,
+              "val_top1": 77.21,
+              "n_features": 730,
+              "fit_s": 0.1
+            },
+            {
+              "seed": 1,
+              "test_top1": 73.93,
+              "val_top1": 79.87,
+              "n_features": 730,
+              "fit_s": 0.1
+            },
+            {
+              "seed": 2,
+              "test_top1": 73.46,
+              "val_top1": 79.2,
+              "n_features": 730,
+              "fit_s": 0.1
+            }
+          ],
+          "test_top1_mean": 73.38,
+          "test_top1_sd": 0.59
+        },
+        "HistGradientBoosting_packed": {
+          "runs": [
+            {
+              "seed": 0,
+              "test_top1": 77.73,
+              "val_top1": 78.54,
+              "n_features": 730,
+              "fit_s": 4.1
+            },
+            {
+              "seed": 1,
+              "test_top1": 77.25,
+              "val_top1": 79.2,
+              "n_features": 730,
+              "fit_s": 4.2
+            },
+            {
+              "seed": 2,
+              "test_top1": 76.78,
+              "val_top1": 79.2,
+              "n_features": 730,
+              "fit_s": 4.1
+            }
+          ],
+          "test_top1_mean": 77.25,
+          "test_top1_sd": 0.48
+        }
+      }
+    },
+    "apibank": {
+      "n_test": 483,
+      "models": {
+        "RandomForest_packed": {
+          "runs": [
+            {
+              "seed": 0,
+              "test_top1": 80.54,
+              "val_top1": 79.3,
+              "n_features": 730,
+              "fit_s": 0.1
+            },
+            {
+              "seed": 1,
+              "test_top1": 82.4,
+              "val_top1": 79.69,
+              "n_features": 730,
+              "fit_s": 0.1
+            },
+            {
+              "seed": 2,
+              "test_top1": 81.99,
+              "val_top1": 80.85,
+              "n_features": 730,
+              "fit_s": 0.1
+            }
+          ],
+          "test_top1_mean": 81.64,
+          "test_top1_sd": 0.98
+        },
+        "HistGradientBoosting_packed": {
+          "runs": [
+            {
+              "seed": 0,
+              "test_top1": 85.51,
+              "val_top1": 84.53,
+              "n_features": 730,
+              "fit_s": 4.2
+            },
+            {
+              "seed": 1,
+              "test_top1": 85.71,
+              "val_top1": 84.33,
+              "n_features": 730,
+              "fit_s": 4.3
+            },
+            {
+              "seed": 2,
+              "test_top1": 85.71,
+              "val_top1": 83.95,
+              "n_features": 730,
+              "fit_s": 4.1
+            }
+          ],
+          "test_top1_mean": 85.64,
+          "test_top1_sd": 0.12
+        }
+      }
+    }
+  },
+  "elapsed_s": 111.2
+}

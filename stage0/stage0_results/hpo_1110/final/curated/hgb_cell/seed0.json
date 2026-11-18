@@ -1,0 +1,19 @@
+{
+ "seed": 0,
+ "best_trial": 16,
+ "config": {
+  "learning_rate": 0.027224435893839556,
+  "max_iter": 100,
+  "max_leaf_nodes": 63,
+  "min_samples_leaf": 20,
+  "l2_regularization": 1.0,
+  "class_weight": null
+ },
+ "val_top1": 71.4,
+ "fit_s": 50.5,
+ "n_tree_nodes": 135544,
+ "n_params": 677720,
+ "test_top1": 70.54,
+ "n_test": 3530,
+ "wall_s": 50.5
+}

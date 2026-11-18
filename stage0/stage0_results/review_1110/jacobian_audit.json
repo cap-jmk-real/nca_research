@@ -1,0 +1,39 @@
+{
+  "model": "GraphNCA_tree_LS (K=4)",
+  "split": "curated",
+  "per_seed": [
+    {
+      "seed": 0,
+      "n_jacobians": 14120,
+      "n_test_turns": 3530,
+      "steps": 4,
+      "spectral_norm_max": 3.3357,
+      "spectral_norm_p95": 2.872,
+      "spectral_norm_mean": 2.532,
+      "spectral_norm_min": 1.8281,
+      "fraction_below_1": 0.0
+    },
+    {
+      "seed": 1,
+      "n_jacobians": 14120,
+      "n_test_turns": 3530,
+      "steps": 4,
+      "spectral_norm_max": 2.9498,
+      "spectral_norm_p95": 2.6561,
+      "spectral_norm_mean": 2.3499,
+      "spectral_norm_min": 1.8589,
+      "fraction_below_1": 0.0
+    },
+    {
+      "seed": 2,
+      "n_jacobians": 14120,
+      "n_test_turns": 3530,
+      "steps": 4,
+      "spectral_norm_max": 3.2406,
+      "spectral_norm_p95": 2.7681,
+      "spectral_norm_mean": 2.4008,
+      "spectral_norm_min": 1.7229,
+      "fraction_below_1": 0.0
+    }
+  ]
+}

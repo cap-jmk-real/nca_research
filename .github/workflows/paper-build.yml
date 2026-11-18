@@ -1,0 +1,77 @@
+name: paper build (TMLR)
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  paper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install table-generator dependencies
+        run: pip install "numpy>=1.26" scipy matplotlib
+
+      - name: Regenerate every paper number from the result files
+        run: |
+          cd scripts
+          for s in build_review_tables_1110 build_hpo_tables_1110 build_v76c_extras_1110 build_rigour_tables_1110 build_bfcl_official_1116; do
+            echo "::group::$s"; python "$s.py" > /dev/null; echo "::endgroup::"
+          done
+
+      - name: Generated macros and tables must match the committed ones
+        run: git diff --exit-code -- paper/generated
+
+      - name: TMLR source must match make_tmlr.py output
+        run: |
+          cd paper
+          python tmlr/make_tmlr.py
+          git diff --exit-code -- main_tmlr.tex main_tmlr_preprint.tex
+
+      - name: Install tectonic and poppler
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+          curl --proto '=https' --tlsv1.2 -fsSL https://drop-sh.fullyjustified.net | sh
+          sudo mv tectonic /usr/local/bin/
+
+      - name: Build anonymous review PDF, named preprint and two-column PDF
+        run: |
+          cd paper
+          tectonic -X compile -Z search-path=tmlr --keep-logs main_tmlr.tex
+          tectonic -X compile -Z search-path=tmlr main_tmlr_preprint.tex
+          tectonic -X compile main.tex
+
+      - name: LaTeX log checks (review build)
+        run: |
+          cd paper
+          if grep -E "Overfull \\\\hbox" main_tmlr.log; then echo "overfull hbox in the review build"; exit 1; fi
+          if grep -E "(Reference|Citation) .* undefined" main_tmlr.log; then echo "undefined reference or citation"; exit 1; fi
+
+      - name: Anonymity check of the review PDF (text and metadata)
+        run: |
+          cd paper
+          pdftotext main_tmlr.pdf review.txt
+          tr '\n' ' ' < review.txt | sed 's/- //g' > review.flat
+          pat='github|cap-jmk|kleber|julian|orcid|0000-0001-5518|aixiv|klaut|sail\.black|obsevia|librebase|s4il0r|reelsynth|denoise-opt'
+          if grep -n -i -o -E ".{0,40}($pat).{0,40}" review.flat; then echo "identifying string in the review PDF"; exit 1; fi
+          if pdfinfo main_tmlr.pdf | grep -i -E "^(Author|Title|Subject|Keywords):.*($pat)"; then echo "identifying PDF metadata"; exit 1; fi
+          echo "anonymity check passed"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: paper-pdfs
+          path: |
+            paper/main_tmlr.pdf
+            paper/main_tmlr_preprint.pdf
+            paper/main.pdf

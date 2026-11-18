@@ -1,0 +1,37 @@
+{
+  "cpu": "AMD Ryzen 9 7950X 16-Core Processor",
+  "threads": 1,
+  "split": "curated",
+  "RandomForest": {
+    "latency": {
+      "p50_ms": 1.2087,
+      "p95_ms": 1.2931,
+      "mean_ms": 1.2213,
+      "n": 1000
+    },
+    "pickle_bytes": 51617978,
+    "n_tree_nodes": 307118,
+    "config": "n_estimators=50, max_depth=15"
+  },
+  "HistGradientBoosting": {
+    "latency": {
+      "p50_ms": 0.5325,
+      "p95_ms": 0.5878,
+      "mean_ms": 0.5426,
+      "n": 1000
+    },
+    "pickle_bytes": 777473,
+    "config": "max_iter=200, max_leaf_nodes=31, lr=0.1"
+  },
+  "GraphNCA_tree_LS": {
+    "latency": {
+      "p50_ms": 0.4025,
+      "p95_ms": 0.4607,
+      "mean_ms": 0.4138,
+      "n": 1000
+    },
+    "state_dict_bytes": 240245,
+    "n_params": 59182
+  },
+  "note": "sklearn predict_proba batch-1 includes Python call overhead; GNCA forward via PyTorch eager."
+}

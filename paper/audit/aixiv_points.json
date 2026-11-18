@@ -1,0 +1,2797 @@
+{
+ "points": [
+  {
+   "theme": "T03",
+   "point": "Inconsistent reporting of meta-learning ablation results across tables and text undermines statistical rigor and clarity; train/val/test splits and seeds should be explicitly labeled and reconciled.",
+   "severity": "major",
+   "version": "1.4",
+   "review_id": 1745,
+   "rating": 5
+  },
+  {
+   "theme": "T11",
+   "point": "Small pilot sample sizes (N=10, N=30) yield wide confidence intervals, limiting inferential strength and undermining claims of superiority over baselines without acknowledging uncertainty.",
+   "severity": "major",
+   "version": "1.4",
+   "review_id": 1745,
+   "rating": 5
+  },
+  {
+   "theme": "T05",
+   "point": "Formal contraction guarantee (Theorem 4) requires dyadic contraction assumption not verified for trained weights; presenting it as certifying stability without caveats is misleading.",
+   "severity": "major",
+   "version": "1.4",
+   "review_id": 1745,
+   "rating": 5
+  },
+  {
+   "theme": "T01",
+   "point": "Insufficient positioning against concurrent graph-NCA topology work (2023) weakens novelty claims; bilevel meta-learning approach is not clearly distinguished from existing topology-learning methods.",
+   "severity": "minor",
+   "version": "1.4",
+   "review_id": 1745,
+   "rating": 5
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation and exposition lack clarity on Laplacian symmetrization, spectral properties, and application order of operators, reducing readability and formal correctness.",
+   "severity": "minor",
+   "version": "1.4",
+   "review_id": 1745,
+   "rating": 5
+  },
+  {
+   "theme": "T10",
+   "point": "Evaluation uses only one curated Hermes corpus, limiting external validity and generalization claims to other tool vocabularies or domains.",
+   "severity": "major",
+   "version": "1.5",
+   "review_id": 1755,
+   "rating": 5
+  },
+  {
+   "theme": "T01",
+   "point": "Meta-learned topology does not outperform simpler hand-crafted topologies, undermining the motivation for bilevel architecture search.",
+   "severity": "major",
+   "version": "1.5",
+   "review_id": 1755,
+   "rating": 5
+  },
+  {
+   "theme": "T11",
+   "point": "Pilot agentic evaluations have small sample sizes and confounding factors, preventing clear attribution of performance gains to the proposed method.",
+   "severity": "major",
+   "version": "1.5",
+   "review_id": 1755,
+   "rating": 5
+  },
+  {
+   "theme": "T13",
+   "point": "Mathematical formulations contain inconsistencies and ambiguities in Laplacian definitions, parameter counts, and theorem applicability.",
+   "severity": "major",
+   "version": "1.5",
+   "review_id": 1755,
+   "rating": 5
+  },
+  {
+   "theme": "T14",
+   "point": "Reproducibility is limited by reliance on private datasets, underspecified preprocessing, and unavailable formal proof details.",
+   "severity": "major",
+   "version": "1.5",
+   "review_id": 1755,
+   "rating": 5
+  },
+  {
+   "theme": "T03",
+   "point": "Reported 95% bootstrap confidence intervals for GNCA variants overlap, so claims of improvement over 1D lattices lack statistical significance and require formal testing.",
+   "severity": "major",
+   "version": "1.6",
+   "review_id": 1796,
+   "rating": 5
+  },
+  {
+   "theme": "T02",
+   "point": "Grokking result at 200k steps is compared to 10k-step baselines and tabular models without matched optimization budgets, leading to unfair performance comparisons.",
+   "severity": "major",
+   "version": "1.6",
+   "review_id": 1796,
+   "rating": 5
+  },
+  {
+   "theme": "T05",
+   "point": "Formal verification certifies design space properties, not trained models, but manuscript framing sometimes blurs this distinction, overstating practical impact.",
+   "severity": "major",
+   "version": "1.6",
+   "review_id": 1796,
+   "rating": 5
+  },
+  {
+   "theme": "T13",
+   "point": "Mathematical notation inconsistencies: (A−I) operator is not a Laplacian though called high-pass; parameter counts and SVD dimension labels conflict; escalation score normalization lacks justification.",
+   "severity": "major",
+   "version": "1.6",
+   "review_id": 1796,
+   "rating": 5
+  },
+  {
+   "theme": "T11",
+   "point": "Pilot agentic diagnostics use small sample sizes with confounds and wide confidence intervals, yet claims in Abstract overstate their evidential strength without caveats.",
+   "severity": "major",
+   "version": "1.6",
+   "review_id": 1796,
+   "rating": 5
+  },
+  {
+   "theme": "T02",
+   "point": "Training budgets differ: GNCA uses 200k steps while Random Forest uses 10k-step features, making headline parity claims unfair and misleading.",
+   "severity": "major",
+   "version": "1.7",
+   "review_id": 1799,
+   "rating": 5
+  },
+  {
+   "theme": "T05",
+   "point": "Formal verification applies only to idealized discrete topologies, not the continuous meta-learned adjacency used in practice, creating a gap between theory and deployment.",
+   "severity": "major",
+   "version": "1.7",
+   "review_id": 1799,
+   "rating": 5
+  },
+  {
+   "theme": "T11",
+   "point": "Pilot agentic results are confounded by router, actuator, and prompt differences, undermining the validity of reported performance improvements.",
+   "severity": "major",
+   "version": "1.7",
+   "review_id": 1799,
+   "rating": 5
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation is unclear: normalization in Eq. (13) lacks justification; spectral analysis uses different Laplacian than forward pass; parameter count arithmetic is unexplained.",
+   "severity": "minor",
+   "version": "1.7",
+   "review_id": 1799,
+   "rating": 5
+  },
+  {
+   "theme": "T14",
+   "point": "Reproducibility is limited by missing trained α weights, absent score JSONs for some baselines, and unavailable per-probe pilot ledgers, hindering independent verification.",
+   "severity": "major",
+   "version": "1.7",
+   "review_id": 1799,
+   "rating": 5
+  },
+  {
+   "theme": "T02",
+   "point": "GNCA at 10k steps underperforms Random Forest and HistGradientBoosting; 200k-step Deep Tree matches RF but with 20× more steps and different hyperparameters, weakening claimed advantage.",
+   "severity": "major",
+   "version": "1.8",
+   "review_id": 1800,
+   "rating": 5
+  },
+  {
+   "theme": "T13",
+   "point": "Parameter counts and configuration labels are inconsistent across abstract, Sec. 3.2, Sec. 5.2, and Tables 1–2, impeding reproducibility.",
+   "severity": "major",
+   "version": "1.8",
+   "review_id": 1800,
+   "rating": 5
+  },
+  {
+   "theme": "T05",
+   "point": "Formal theorems certify idealized topologies but lack connection to trained models; trained adjacency matrices not archived, so empirical claims on diameter separation are unsubstantiated.",
+   "severity": "major",
+   "version": "1.8",
+   "review_id": 1800,
+   "rating": 5
+  },
+  {
+   "theme": "T11",
+   "point": "Pilot agentic results are preliminary, non-matched, small-N, and confounded; escalation threshold hand-set without sweep; results should be anecdotal, not evidence for Dual-System claims.",
+   "severity": "major",
+   "version": "1.8",
+   "review_id": 1800,
+   "rating": 5
+  },
+  {
+   "theme": "T12",
+   "point": "Notation issues: escalation score τ overloaded with softmax temperature; (A−I) operator misdescribed as random-walk Laplacian; normalization assumptions unverified, reducing clarity.",
+   "severity": "minor",
+   "version": "1.8",
+   "review_id": 1800,
+   "rating": 5
+  },
+  {
+   "theme": "T10",
+   "point": "Evaluation relies on a single curated Hermes dataset without testing on standard benchmarks like ToolBench or API-Bank, limiting external validity and empirical scope.",
+   "severity": "major",
+   "version": "1.9",
+   "review_id": 1806,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Baselines such as Random Forest and HistGradientBoosting are under-tuned or not fairly compared, with no confidence intervals or multiple seeds reported.",
+   "severity": "major",
+   "version": "1.9",
+   "review_id": 1806,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical rigor is weak: grokking analysis uses a single seed without error bars; paired tests show no significant differences but claims remain optimistic.",
+   "severity": "major",
+   "version": "1.9",
+   "review_id": 1806,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal Lean proofs certify topology properties but do not constrain trained model weights; empirical discretization bridge is post-hoc, risking overclaiming guarantees.",
+   "severity": "major",
+   "version": "1.9",
+   "review_id": 1806,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Notation and exposition inconsistencies in escalation score definition and normalization; parameter count derivation referenced but missing, reducing clarity and verifiability.",
+   "severity": "minor",
+   "version": "1.9",
+   "review_id": 1806,
+   "rating": 6
+  },
+  {
+   "theme": "T14",
+   "point": "Reproducibility hindered by reliance on archived JSON/checkpoints with insufficient experimental detail; hardware differences and step budgets not clearly rationalized.",
+   "severity": "major",
+   "version": "1.9",
+   "review_id": 1806,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Empirical gains over tabular baselines are marginal and inconsistent, with GNCA underperforming the strongest baseline on the primary benchmark and inconsistent comparison sets across datasets.",
+   "severity": "major",
+   "version": "2.0",
+   "review_id": 1808,
+   "rating": 5
+  },
+  {
+   "theme": "T02",
+   "point": "Headline GNCA configurations mix loss functions and step budgets, confounding attribution of gains to architecture versus label smoothing or training length.",
+   "severity": "major",
+   "version": "2.0",
+   "review_id": 1808,
+   "rating": 5
+  },
+  {
+   "theme": "T05",
+   "point": "Theorem 6 assumes threshold-gated tree transitions but the trained GNCA uses sigmoidal gating; no empirical evidence bridges this gap, making the claimed explanation unsubstantiated.",
+   "severity": "major",
+   "version": "2.0",
+   "review_id": 1808,
+   "rating": 5
+  },
+  {
+   "theme": "T05",
+   "point": "Formal results mainly verify structural properties of chosen topologies by construction and do not constrain the learned continuous model, risking overstatement of guarantees.",
+   "severity": "minor",
+   "version": "2.0",
+   "review_id": 1808,
+   "rating": 5
+  },
+  {
+   "theme": "T12",
+   "point": "Notation ambiguity arises from using the same symbol τ for escalation threshold and DARTS softmax temperature, and inconsistent definitions impede verification of contraction claims.",
+   "severity": "minor",
+   "version": "2.0",
+   "review_id": 1808,
+   "rating": 5
+  },
+  {
+   "theme": "T02",
+   "point": "Random Forest and HistGradientBoosting baselines lack reported hyperparameter tuning details, raising fairness concerns in performance comparisons.",
+   "severity": "major",
+   "version": "2.1",
+   "review_id": 1809,
+   "rating": 5
+  },
+  {
+   "theme": "T05",
+   "point": "Formal theorems apply to idealized or variant models, not the deployed sigmoidal GNCA, limiting their practical guarantees.",
+   "severity": "major",
+   "version": "2.1",
+   "review_id": 1809,
+   "rating": 5
+  },
+  {
+   "theme": "T12",
+   "point": "Equation (13) and Table 1 contain unclear notation and parameter count inconsistencies, hindering verification.",
+   "severity": "minor",
+   "version": "2.1",
+   "review_id": 1809,
+   "rating": 5
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical tests for p-values are unspecified; multiple comparison corrections and seed details are missing, reducing rigor and reproducibility.",
+   "severity": "major",
+   "version": "2.1",
+   "review_id": 1809,
+   "rating": 5
+  },
+  {
+   "theme": "T10",
+   "point": "Multiple Hermes 'curated test top-1' values are reported without clear definitions or consolidated presentation, impairing external validity.",
+   "severity": "minor",
+   "version": "2.1",
+   "review_id": 1809,
+   "rating": 5
+  },
+  {
+   "theme": "T01",
+   "point": "The architecture closely resembles existing Graph Cellular Automata and GNNs; claimed novelty is incremental and insufficiently differentiated.",
+   "severity": "major",
+   "version": "2.1",
+   "review_id": 1809,
+   "rating": 5
+  },
+  {
+   "theme": "T02",
+   "point": "Baselines (Random Forest, HistGradientBoosting) are weak and not fairly tuned; no strong neural or simple baselines included, limiting significance of GNCA's claimed superiority.",
+   "severity": "major",
+   "version": "2.2",
+   "review_id": 1810,
+   "rating": 5
+  },
+  {
+   "theme": "T04",
+   "point": "The term 'grokking' is used without definition or evidence; no training curves or phase transition analysis provided, misleading readers about the phenomenon.",
+   "severity": "major",
+   "version": "2.2",
+   "review_id": 1810,
+   "rating": 5
+  },
+  {
+   "theme": "T13",
+   "point": "Inconsistent escalation results between Sec. 3.4 and Abstract; relationship between escalation rate, retained accuracy, and composite score is unclear and not tabulated.",
+   "severity": "major",
+   "version": "2.2",
+   "review_id": 1810,
+   "rating": 5
+  },
+  {
+   "theme": "T05",
+   "point": "Formal theorems certify idealized or contractive variants, not the deployed non-contractive model; guarantees do not directly apply, overstating claims.",
+   "severity": "major",
+   "version": "2.2",
+   "review_id": 1810,
+   "rating": 5
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation and exposition inconsistent: unclear bias terms, normalization scales in Eq. (13), and parameter count presentation cause confusion.",
+   "severity": "minor",
+   "version": "2.2",
+   "review_id": 1810,
+   "rating": 5
+  },
+  {
+   "theme": "T16",
+   "point": "No dedicated limitations section; accuracy trade-offs and practical deployment implications of contractive variant and class-weighted models are not discussed.",
+   "severity": "minor",
+   "version": "2.2",
+   "review_id": 1810,
+   "rating": 5
+  },
+  {
+   "theme": "T13",
+   "point": "Inconsistent reporting of Hermes headline results between Abstract and Sec. 4 undermines confidence in central empirical claims.",
+   "severity": "major",
+   "version": "2.3",
+   "review_id": 1811,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Baseline tuning details and statistical protocols (search budgets, validation splits) are underspecified, risking unfair comparisons.",
+   "severity": "major",
+   "version": "2.3",
+   "review_id": 1811,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "P-values reported without specifying statistical tests or multiple-comparison corrections across benchmarks and metrics.",
+   "severity": "major",
+   "version": "2.3",
+   "review_id": 1811,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Lean-verified theorems apply to idealized discrete models; deployed model uses sigmoidal gating, so formal guarantees do not fully transfer.",
+   "severity": "major",
+   "version": "2.3",
+   "review_id": 1811,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Evaluation limited to fixed V=5 graph and 13-tool vocabulary; no evidence or discussion of scaling to larger tool sets or longer causal windows.",
+   "severity": "major",
+   "version": "2.3",
+   "review_id": 1811,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation and derivations lack clarity; normalization in Eq. (13) is heuristic and parameter count arithmetic is not shown step-by-step.",
+   "severity": "minor",
+   "version": "2.3",
+   "review_id": 1811,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Headline empirical results lack accompanying full tables with per-seed data and confidence intervals, undermining verifiability and reproducibility.",
+   "severity": "major",
+   "version": "2.4",
+   "review_id": 1815,
+   "rating": 5
+  },
+  {
+   "theme": "T04",
+   "point": "Hermes evaluation uses multiple curated test variants and checkpoint selections without a clear primary metric, risking selective reporting.",
+   "severity": "major",
+   "version": "2.4",
+   "review_id": 1815,
+   "rating": 5
+  },
+  {
+   "theme": "T05",
+   "point": "Formal theorems certify idealized or conditional models; deployed model differs and loses accuracy with damped variant, weakening formal guarantees.",
+   "severity": "major",
+   "version": "2.4",
+   "review_id": 1815,
+   "rating": 5
+  },
+  {
+   "theme": "T13",
+   "point": "Mathematical and notational inconsistencies in theorem counts, equation references, and parameter counts hinder clarity and correctness checking.",
+   "severity": "minor",
+   "version": "2.4",
+   "review_id": 1815,
+   "rating": 5
+  },
+  {
+   "theme": "T01",
+   "point": "Limited novelty as core architecture closely resembles prior GNCA and GNN message passing; claimed novelties are incremental combinations without new paradigm.",
+   "severity": "major",
+   "version": "2.4",
+   "review_id": 1815,
+   "rating": 5
+  },
+  {
+   "theme": "T02",
+   "point": "No parameter-matched standard GNN or small transformer baselines included, limiting fairness of comparisons and novelty claims.",
+   "severity": "major",
+   "version": "2.4",
+   "review_id": 1815,
+   "rating": 5
+  },
+  {
+   "theme": "T04",
+   "point": "The paper emphasizes GNCA's 68.92% Hermes result but does not clearly acknowledge that HistGradientBoosting achieves 69.47%, causing misleading claims about GNCA's superiority.",
+   "severity": "major",
+   "version": "2.5",
+   "review_id": 1818,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal guarantees (Theorem 4) apply only to the contractive variant with 61.99% accuracy, not the deployed 68.92% model, leaving a gap between theory and practice.",
+   "severity": "major",
+   "version": "2.5",
+   "review_id": 1818,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Theorems certify discrete topologies, but the trained continuous softmax-relaxed adjacency lacks formal guarantees, weakening the claimed machine-checked certification.",
+   "severity": "major",
+   "version": "2.5",
+   "review_id": 1818,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation and derivations (e.g., escalation score normalization, parameter counts) lack clarity and full justification, hindering independent verification.",
+   "severity": "minor",
+   "version": "2.5",
+   "review_id": 1818,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Limited analysis of failure modes and generalization; fixed graph size (V=5) and window (L=5) may not scale to real agent traces or noisy data, with no robustness evidence.",
+   "severity": "major",
+   "version": "2.5",
+   "review_id": 1818,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Baseline comparisons lack clarity on hyperparameter tuning fairness and multiple comparison corrections across four benchmarks, weakening comparative claims.",
+   "severity": "major",
+   "version": "2.6",
+   "review_id": 1819,
+   "rating": 5
+  },
+  {
+   "theme": "T05",
+   "point": "Formal theorems certify idealized or conditional model variants, not the deployed model; the gap between guarantees and actual model is unclear.",
+   "severity": "major",
+   "version": "2.6",
+   "review_id": 1819,
+   "rating": 5
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical exposition is inconsistent: parameter count formulas and escalation score normalization assumptions are scattered and not empirically validated, hindering clarity.",
+   "severity": "minor",
+   "version": "2.6",
+   "review_id": 1819,
+   "rating": 5
+  },
+  {
+   "theme": "T01",
+   "point": "Novelty is limited; core architecture adapts prior GNCA work with incremental modifications and insufficient differentiation from existing variants.",
+   "severity": "major",
+   "version": "2.6",
+   "review_id": 1819,
+   "rating": 5
+  },
+  {
+   "theme": "T14",
+   "point": "Reproducibility is limited by missing code, data splits, preprocessing details, and Lean proofs, restricting independent verification.",
+   "severity": "major",
+   "version": "2.6",
+   "review_id": 1819,
+   "rating": 5
+  },
+  {
+   "theme": "T01",
+   "point": "The core architecture largely adapts existing GNCA and GNN methods; claimed innovations like directed Laplacian and formal verification are incremental or loosely integrated.",
+   "severity": "major",
+   "version": "2.7",
+   "review_id": 1820,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal Lean theorems certify idealized discrete topologies, but the deployed continuous model with row-softmax adjacency lacks direct theoretical guarantees.",
+   "severity": "major",
+   "version": "2.7",
+   "review_id": 1820,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Notation is inconsistent and dense, with overlapping symbols and contradictory parameter count formulas, hindering clarity and verification.",
+   "severity": "minor",
+   "version": "2.7",
+   "review_id": 1820,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Compression claims emphasize a weaker baseline (Random Forest) over the stronger HistGradientBoosting, and multiple headline results lack a clear primary metric.",
+   "severity": "major",
+   "version": "2.7",
+   "review_id": 1820,
+   "rating": 6
+  },
+  {
+   "theme": "T08",
+   "point": "The escalation risk score combines entropy and step-norm heuristically with hand-tuned β, lacking theoretical grounding or principled calibration.",
+   "severity": "minor",
+   "version": "2.7",
+   "review_id": 1820,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Multiple pairwise p-values reported without correction for multiple comparisons across benchmarks and baselines, risking inflated Type I error.",
+   "severity": "major",
+   "version": "2.8",
+   "review_id": 1821,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Multiple Hermes top-1 accuracy numbers reported without clear hierarchy or justification, undermining clarity of primary performance claim.",
+   "severity": "major",
+   "version": "2.8",
+   "review_id": 1821,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal contraction guarantee applies to a certified convex relaxation variant, but its relation to the empirically evaluated trained model is unclear.",
+   "severity": "major",
+   "version": "2.8",
+   "review_id": 1821,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "Novelty claims insufficiently differentiated from prior GNCA work; directed random-walk Laplacian and tree simulation duality may be known concepts.",
+   "severity": "major",
+   "version": "2.8",
+   "review_id": 1821,
+   "rating": 6
+  },
+  {
+   "theme": "T13",
+   "point": "Inconsistent notation and parameter count formulas: Chead defined as constant but varies with D; mismatch between Eq. (7) and Table 2.",
+   "severity": "minor",
+   "version": "2.8",
+   "review_id": 1821,
+   "rating": 6
+  },
+  {
+   "theme": "T16",
+   "point": "Lack of discussion on limitations and failure modes, including out-of-distribution generalization and rare-tool macro-F1 trade-off.",
+   "severity": "minor",
+   "version": "2.8",
+   "review_id": 1821,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Headline result shows Hermes underperforms HistGradientBoosting by 0.55 pp and ToolBench improvement is non-significant, risking overstated accuracy claims without latency-accuracy trade-off analysis.",
+   "severity": "major",
+   "version": "2.9",
+   "review_id": 1825,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal contraction theorem applies to a certified convex relaxation, but its relation to the deployed discrete recurrence model is unclear and unquantified.",
+   "severity": "major",
+   "version": "2.9",
+   "review_id": 1825,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "Claimed novelty of asymmetric random-walk Laplacian is weak; no ablation isolates its contribution versus symmetric convolution on same benchmarks.",
+   "severity": "major",
+   "version": "2.9",
+   "review_id": 1825,
+   "rating": 6
+  },
+  {
+   "theme": "T13",
+   "point": "Escalation score mixes normalized entropy with heuristic step-norm term; Laplace approximation is asserted, not derived; notation overload risks confusion.",
+   "severity": "minor",
+   "version": "2.9",
+   "review_id": 1825,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Dual-system and 'grokking' framing lacks mechanistic support; escalation AUROC reported but no training dynamics or explanation for checkpoint escalation rate differences.",
+   "severity": "major",
+   "version": "2.9",
+   "review_id": 1825,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "The paper presents Lean 4 theorems certifying contraction and simulation duality but fails to explicitly connect these formal guarantees to empirical routing accuracy or generalization outcomes.",
+   "severity": "major",
+   "version": "3.0",
+   "review_id": 1826,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "No quantitative experiments compare the proposed GNCA router against prior GNCA methods like LGCA, E(n)-GNCA, or TextNCA, limiting assessment of novelty and effectiveness.",
+   "severity": "major",
+   "version": "3.0",
+   "review_id": 1826,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical significance is marginal or lacking for key results; baseline selection omits lightweight neural routers, and effect sizes or confidence intervals are not fully reported.",
+   "severity": "major",
+   "version": "3.0",
+   "review_id": 1826,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation and exposition are unclear: key constants (e.g., 8,846 in Eq. 7) lack motivation, and adjacency matrix role (fixed vs. learned) is ambiguous across sections.",
+   "severity": "minor",
+   "version": "3.0",
+   "review_id": 1826,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "The paper lacks discussion on limitations and failure modes, including scalability to larger tool vocabularies, longer histories, and robustness to noisy or adversarial inputs.",
+   "severity": "minor",
+   "version": "3.0",
+   "review_id": 1826,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The core architecture adapts known GNCA components; asymmetric Laplacian and tree simulation duality are incremental and insufficiently distinguished from prior work.",
+   "severity": "major",
+   "version": "3.1",
+   "review_id": 1827,
+   "rating": 5
+  },
+  {
+   "theme": "T05",
+   "point": "Ten Lean 4 theorems are referenced but not stated with assumptions or proof sketches, preventing assessment of their significance and correctness.",
+   "severity": "major",
+   "version": "3.1",
+   "review_id": 1827,
+   "rating": 5
+  },
+  {
+   "theme": "T03",
+   "point": "Empirical gains are modest; ToolBench improvement is not statistically significant (padj=0.0690), and gains over strong baselines are marginal, questioning practical impact.",
+   "severity": "major",
+   "version": "3.1",
+   "review_id": 1827,
+   "rating": 5
+  },
+  {
+   "theme": "T08",
+   "point": "Escalation score uses hand-tuned β without theoretical justification or sensitivity analysis; AUROC of 0.730 is moderate and calibration is unverified.",
+   "severity": "major",
+   "version": "3.1",
+   "review_id": 1827,
+   "rating": 5
+  },
+  {
+   "theme": "T12",
+   "point": "Notation is dense and inconsistent: adjacency matrix sign conventions and parameter count formulas use conflicting symbols (T vs K), causing reader confusion.",
+   "severity": "minor",
+   "version": "3.1",
+   "review_id": 1827,
+   "rating": 5
+  },
+  {
+   "theme": "T01",
+   "point": "The core architecture adapts existing GNCA/GNN methods; directed Laplacian and tree duality are standard or constructive equivalences, limiting claimed novelty.",
+   "severity": "major",
+   "version": "3.2",
+   "review_id": 1828,
+   "rating": 5
+  },
+  {
+   "theme": "T04",
+   "point": "Empirical gains are inconsistent across benchmarks; multiple secondary snapshots raise selective reporting and overfitting concerns.",
+   "severity": "major",
+   "version": "3.2",
+   "review_id": 1828,
+   "rating": 5
+  },
+  {
+   "theme": "T13",
+   "point": "Parameter count formulas (Eq.7 vs Eq.8) are inconsistent; escalation score normalization relies on circular empirical variance assumption.",
+   "severity": "major",
+   "version": "3.2",
+   "review_id": 1828,
+   "rating": 5
+  },
+  {
+   "theme": "T05",
+   "point": "Formal Lean proofs cover simplified convex relaxation, not full trained model with residuals and stochastic masking; practical guarantee scope unclear.",
+   "severity": "major",
+   "version": "3.2",
+   "review_id": 1828,
+   "rating": 5
+  },
+  {
+   "theme": "T04",
+   "point": "The primary empirical margin (0.55-1 pp) is small and framed as favorable without decision-theoretic or deployment-cost justification, weakening the 'competitive routing accuracy' claim.",
+   "severity": "major",
+   "version": "3.3",
+   "review_id": 1832,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical reporting is inconsistent; ToolBench's non-significant padj=0.0690 is not flagged, and LME pooling lacks random-slope or heteroscedasticity diagnostics.",
+   "severity": "major",
+   "version": "3.3",
+   "review_id": 1832,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal theorems cover a certified convex relaxation, not the deployed fixed-tree bilinear-head model; the moderate empirical bridge (κ=0.5628) does not establish guarantee transfer.",
+   "severity": "major",
+   "version": "3.3",
+   "review_id": 1832,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical exposition is ambiguous: diffusion interpretation of (A−I) conflates concepts; Eq. (15) invariance claim is asserted without derivation; parameter count conventions are inconsistent.",
+   "severity": "major",
+   "version": "3.3",
+   "review_id": 1832,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "Novelty claims overstate contributions; directed message passing and tree routing exist in prior GNCA work, and decision-tree simulation duality is equivalence, not a new primitive.",
+   "severity": "major",
+   "version": "3.3",
+   "review_id": 1832,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Related work omits comparisons to learned routers, retrieval-based tool selection, and cascade/early-exit methods, limiting external validity and baseline fairness.",
+   "severity": "major",
+   "version": "3.3",
+   "review_id": 1832,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "Novelty claims are overstated; directed Laplacian filtering and tree simulation duality are incremental extensions of known GNCA methods.",
+   "severity": "major",
+   "version": "3.4",
+   "review_id": 1833,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Baselines (Random Forest, HistGradientBoosting, GCN, Transformer) lack detailed hyperparameter tuning info and may be under-tuned compared to GNCA.",
+   "severity": "major",
+   "version": "3.4",
+   "review_id": 1833,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical rigor is insufficient: no confidence intervals reported, ToolBench results not significant after correction, and null results not discussed.",
+   "severity": "major",
+   "version": "3.4",
+   "review_id": 1833,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Disconnect between formal proofs (contraction, simulation duality) and empirical claims; unclear how guarantees impact deployed model performance.",
+   "severity": "major",
+   "version": "3.4",
+   "review_id": 1833,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Experimental setup details incomplete, hindering reproducibility; missing data preprocessing and training protocol specifics.",
+   "severity": "major",
+   "version": "3.4",
+   "review_id": 1833,
+   "rating": 6
+  },
+  {
+   "theme": "T16",
+   "point": "No cost-benefit or deployment trade-off analysis comparing accuracy, latency, memory, and parameter count across models.",
+   "severity": "major",
+   "version": "3.4",
+   "review_id": 1833,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical exposition dense and unclear; escalation score normalization lacks rigorous justification and dimensionless claim unproven.",
+   "severity": "minor",
+   "version": "3.4",
+   "review_id": 1833,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The paper's core components are adapted from prior GNCA work; novel contributions are incremental and practical benefits of the decision-tree simulation duality are not demonstrated.",
+   "severity": "major",
+   "version": "3.5",
+   "review_id": 1834,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal proofs apply to relaxed convex variants and spectrally normalized models, not the exact trained GNCA with stochastic masking; empirical correlation does not guarantee theoretical properties.",
+   "severity": "major",
+   "version": "3.5",
+   "review_id": 1834,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Empirical gains are modest and inconsistent; some improvements lack statistical significance and practical impact on agent routing is not established.",
+   "severity": "major",
+   "version": "3.5",
+   "review_id": 1834,
+   "rating": 6
+  },
+  {
+   "theme": "T16",
+   "point": "Latency advantage is reported in isolation without end-to-end agent evaluation; operational cost model assumptions and real-world impact of ~20 ms savings are unclear.",
+   "severity": "major",
+   "version": "3.5",
+   "review_id": 1834,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation lacks clarity: undefined activation σ, unspecified dimensions in key equations, and missing parameter range definitions reduce reproducibility.",
+   "severity": "minor",
+   "version": "3.5",
+   "review_id": 1834,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The manuscript blurs adaptation and novelty, claiming 'genuinely novel' components despite adapting known GNN-GSP ideas and prior routing methods.",
+   "severity": "major",
+   "version": "3.6",
+   "review_id": 1835,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Baselines like Random Forest and HistGradientBoosting appear under-tuned with no reported hyperparameter search budget, risking unfair comparison.",
+   "severity": "major",
+   "version": "3.6",
+   "review_id": 1835,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical claims rely on a small empirical margin (0.55 pp) with borderline significance (padj=0.0410) and no multiple comparison correction or effect size discussion.",
+   "severity": "minor",
+   "version": "3.6",
+   "review_id": 1835,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Pareto superiority claim depends on a cost model parameter λ≥0.026 pp/ms without empirical justification from real agent latency/error trade-offs.",
+   "severity": "major",
+   "version": "3.6",
+   "review_id": 1835,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal contraction theorems apply to a certified convex relaxation, not the actual trained row-softmax adjacency; the empirical bridge is a single correlation, insufficient to close the gap.",
+   "severity": "major",
+   "version": "3.6",
+   "review_id": 1835,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical exposition lacks clarity: derivation of parameter count constant mixes dimensions; spectral claims on (A−I) lack supporting analysis; escalation score normalization by √H is unjustified.",
+   "severity": "minor",
+   "version": "3.6",
+   "review_id": 1835,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Ablations omit sensitivity to graph construction parameters (history turns L, node features) and escalation threshold θesc, limiting understanding of robustness.",
+   "severity": "minor",
+   "version": "3.6",
+   "review_id": 1835,
+   "rating": 6
+  },
+  {
+   "theme": "T16",
+   "point": "The cost model J=Error+λ·Latency uses an arbitrary λ≥0.026 pp/ms without operational justification, ignoring other costs like training and memory, weakening practical significance claims.",
+   "severity": "major",
+   "version": "3.7",
+   "review_id": 1836,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal Lean proofs apply to a relaxed variant, but the trained GNCA uses row-softmax adjacency and stochastic masking; the empirical 76.63% partition agreement leaves unclear how proofs constrain the deployed model.",
+   "severity": "major",
+   "version": "3.7",
+   "review_id": 1836,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "Novelty is overstated; key components like random-walk Laplacian and tree-structured routing are adapted prior art, and decision-tree duality is a known equivalence, not genuinely novel.",
+   "severity": "major",
+   "version": "3.7",
+   "review_id": 1836,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Evaluation is limited in scale and scope: small graph size (V=5, |C|=13), small benchmarks, only 3 seeds, and possibly underpowered LME model with four benchmarks.",
+   "severity": "major",
+   "version": "3.7",
+   "review_id": 1836,
+   "rating": 6
+  },
+  {
+   "theme": "T13",
+   "point": "Mathematical inconsistencies: parameter count discrepancy in bilinear head (Eq. 13 vs Table 3) and incomplete scale-invariance derivation for s_esc (Eq. 15) hinder reproducibility.",
+   "severity": "minor",
+   "version": "3.7",
+   "review_id": 1836,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The core GNCA components are well-known; claimed novelties like directed diffusion drift and tree simulation duality are incremental adaptations rather than fundamentally new algorithms.",
+   "severity": "major",
+   "version": "3.8",
+   "review_id": 1837,
+   "rating": 5
+  },
+  {
+   "theme": "T05",
+   "point": "Formal Lean 4 proofs cover a relaxed, damped variant but not the actual deployed model with ReLU and gating, raising soundness concerns about guarantee applicability.",
+   "severity": "major",
+   "version": "3.8",
+   "review_id": 1837,
+   "rating": 5
+  },
+  {
+   "theme": "T03",
+   "point": "Empirical gains are small and sometimes statistically non-significant; effect sizes and parameter-matched baselines are missing, limiting practical significance assessment.",
+   "severity": "major",
+   "version": "3.8",
+   "review_id": 1837,
+   "rating": 5
+  },
+  {
+   "theme": "T10",
+   "point": "Graph construction and feature engineering from raw agent logs are underspecified, hindering reproducibility and obscuring whether causal dependencies are captured.",
+   "severity": "major",
+   "version": "3.8",
+   "review_id": 1837,
+   "rating": 5
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation is dense and inconsistent, especially regarding dimension definitions and parameter count derivations; escalation score calibration lacks detail and justification.",
+   "severity": "minor",
+   "version": "3.8",
+   "review_id": 1837,
+   "rating": 5
+  },
+  {
+   "theme": "T01",
+   "point": "The manuscript overstates novelty; directed message passing on DAGs and weight-tied tree simulation closely relate to existing GNN and neural decision tree work without isolating architectural gains.",
+   "severity": "major",
+   "version": "3.9",
+   "review_id": 1838,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal theorems certify properties of a convex relaxation variant, not the deployed GNCA model, creating a gap between guarantees and empirical behavior.",
+   "severity": "major",
+   "version": "3.9",
+   "review_id": 1838,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Pareto-superiority claim relies on a single benchmark and a narrow, unvalidated cost model with an arbitrary latency threshold lacking deployment justification.",
+   "severity": "major",
+   "version": "3.9",
+   "review_id": 1838,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation inconsistencies and incomplete derivations (e.g., escalation score scale invariance, Laplacian definitions, parameter counts) reduce clarity.",
+   "severity": "minor",
+   "version": "3.9",
+   "review_id": 1838,
+   "rating": 6
+  },
+  {
+   "theme": "T08",
+   "point": "Limited evidence for dual-system escalation claim; escalation threshold calibrated only on validation data without comparison to simpler baselines like entropy alone.",
+   "severity": "major",
+   "version": "3.9",
+   "review_id": 1838,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The core algorithmic components adapt known GNN-GSP ideas; novel contributions like directed diffusion drift and tree simulation duality are insufficiently distinguished from prior GNCA work.",
+   "severity": "major",
+   "version": "4.0",
+   "review_id": 1839,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal theorems apply to relaxed or spectrally normalized variants, not the actual deployed GNCA with nonlinearities; the gap between theory and practice is not adequately addressed.",
+   "severity": "major",
+   "version": "4.0",
+   "review_id": 1839,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Empirical improvements over baselines are small, inconsistent, and sometimes statistically insignificant, raising questions about practical significance in tool routing.",
+   "severity": "major",
+   "version": "4.0",
+   "review_id": 1839,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Claims of Pareto-superiority are overgeneralized, relying on a specific cost model that ignores other deployment costs and assumes linear latency-error trade-offs.",
+   "severity": "major",
+   "version": "4.0",
+   "review_id": 1839,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation is dense and inconsistent, with unclear definitions and verbose derivations, hindering readability and reproducibility.",
+   "severity": "minor",
+   "version": "4.0",
+   "review_id": 1839,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The core algorithmic components are adaptations of known GNN-GSP techniques; claimed novelties like the directed diffusion drift operator are incremental combinations rather than fundamentally new.",
+   "severity": "major",
+   "version": "4.1",
+   "review_id": 1840,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal Lean 4 theorems apply to relaxed or convex variants, but the deployed GNCA with fixed tree topology and non-convex updates lacks clear certification; the gap is not fully addressed.",
+   "severity": "major",
+   "version": "4.1",
+   "review_id": 1840,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Baseline tuning details (Random Forest, HistGradientBoosting, GCN, Transformer) are missing, raising concerns about fairness and whether baselines were optimally configured.",
+   "severity": "major",
+   "version": "4.1",
+   "review_id": 1840,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical reporting lacks pre-registration documentation and detailed analysis plans; multiple comparisons and heterogeneity across benchmarks are not fully explored.",
+   "severity": "minor",
+   "version": "4.1",
+   "review_id": 1840,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Claims of Pareto-superiority rely on a specific cost model with an arbitrary latency threshold; overclaiming occurs without sensitivity analysis or broader validation.",
+   "severity": "major",
+   "version": "4.1",
+   "review_id": 1840,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Empirical gains (~1 percentage point) are small and practical significance is questionable, especially given unclear baseline tuning and cost model assumptions.",
+   "severity": "major",
+   "version": "4.1",
+   "review_id": 1840,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Manuscript is dense with heavy notation; some derivations are asserted without full proofs; figure captions are lengthy and some subfigures lack clear connection to main experiments.",
+   "severity": "minor",
+   "version": "4.1",
+   "review_id": 1840,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The core architecture is an incremental adaptation of known GNN-GSP ideas; the duality theorem is mathematically straightforward and not a significant conceptual advance.",
+   "severity": "major",
+   "version": "4.2",
+   "review_id": 1841,
+   "rating": 5
+  },
+  {
+   "theme": "T04",
+   "point": "Empirical gains are modest and inconsistent; GNCA underperforms or ties baselines, and the post hoc operational cost model threshold lacks pre-registration and practical justification.",
+   "severity": "major",
+   "version": "4.2",
+   "review_id": 1841,
+   "rating": 5
+  },
+  {
+   "theme": "T05",
+   "point": "Formal proofs certify simplified convex relaxation variants, not the full trained model with softmax attention and stochastic masking; the contraction guarantee's applicability is unclear.",
+   "severity": "major",
+   "version": "4.2",
+   "review_id": 1841,
+   "rating": 5
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation and exposition are dense and inconsistent, with unclear dimensionality derivations hindering reproducibility.",
+   "severity": "minor",
+   "version": "4.2",
+   "review_id": 1841,
+   "rating": 5
+  },
+  {
+   "theme": "T10",
+   "point": "Lack of comparison to relevant specialized GNN-based tool selection baselines like ARTS or dense retrieval methods limits external validity.",
+   "severity": "major",
+   "version": "4.2",
+   "review_id": 1841,
+   "rating": 5
+  },
+  {
+   "theme": "T02",
+   "point": "Adapted GNCA baselines lack detailed tuning protocols and hyperparameter search descriptions, raising fairness concerns in reported +4.28 to +10.22 pp improvements.",
+   "severity": "major",
+   "version": "4.3",
+   "review_id": 1842,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "The contraction theorem applies to a convex relaxation variant, but no formal link or bound connects it to the deployed model's update with Bernoulli masking and residuals.",
+   "severity": "major",
+   "version": "4.3",
+   "review_id": 1842,
+   "rating": 6
+  },
+  {
+   "theme": "T16",
+   "point": "Operational threshold λ≥0.026 pp/ms lacks grounding in real deployment costs; no sensitivity analysis over λ to validate practical significance of Pareto-superiority claim.",
+   "severity": "major",
+   "version": "4.3",
+   "review_id": 1842,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Parameter count derivation and notation are dense and partially unexplained; spectral properties of the high-pass filter on directed graphs are not discussed, affecting clarity and stability understanding.",
+   "severity": "minor",
+   "version": "4.3",
+   "review_id": 1842,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Related work omits recent graph NCA variants for structured reasoning and routing; strong claim of no formal guarantees in prior GNCAs is unsubstantiated by systematic literature review.",
+   "severity": "minor",
+   "version": "4.3",
+   "review_id": 1842,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The GNCA architecture is a modest adaptation of existing GNN-GSP methods, with claimed novelties being straightforward extensions lacking clear differentiation from recent work like ARTS.",
+   "severity": "major",
+   "version": "4.4",
+   "review_id": 1843,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Empirical evaluation uses weak baselines; lacks comparison to state-of-the-art methods such as ARTS or LLM-based routers, and parameter-matched GCN/Transformer baselines are under-tuned.",
+   "severity": "major",
+   "version": "4.4",
+   "review_id": 1843,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal proofs cover simplified model variants only; deployed GNCA uses stochastic masking and continuous adjacency, creating a gap between guarantees and actual model behavior.",
+   "severity": "major",
+   "version": "4.4",
+   "review_id": 1843,
+   "rating": 6
+  },
+  {
+   "theme": "T13",
+   "point": "Parameter counting formulas and escalation score equations contain inconsistencies and unclear notation, hindering reproducibility and understanding.",
+   "severity": "minor",
+   "version": "4.4",
+   "review_id": 1843,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Claims of Pareto-superiority rely on a specific cost model threshold without discussing generalizability or potential failure modes; related work omits recent relevant methods.",
+   "severity": "major",
+   "version": "4.4",
+   "review_id": 1843,
+   "rating": 6
+  },
+  {
+   "theme": "T07",
+   "point": "Theorem 6 claims exact simulation duality, but empirical 76.63% partition agreement and κ=0.5628 show only approximate structural analogy, weakening the novelty claim.",
+   "severity": "major",
+   "version": "4.5",
+   "review_id": 1844,
+   "rating": 6
+  },
+  {
+   "theme": "T07",
+   "point": "307× compression compares GNCA to an 18.2M-parameter Random Forest ensemble, conflating ensemble size with single-tree capacity; single tree parameter count is missing.",
+   "severity": "major",
+   "version": "4.5",
+   "review_id": 1844,
+   "rating": 6
+  },
+  {
+   "theme": "T16",
+   "point": "Pareto-superiority claim depends on an arbitrary cost model threshold λ≥0.026 pp/ms without deployment justification; practical significance of latency gain is unclear.",
+   "severity": "major",
+   "version": "4.5",
+   "review_id": 1844,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Notation is dense and inconsistent, e.g., overlapping symbols (A, α, τ) without clear disambiguation; formal connection between continuous adjacency and discrete topologies is missing.",
+   "severity": "minor",
+   "version": "4.5",
+   "review_id": 1844,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Hard top-k=2 discretization is empirically evaluated but lacks formal proof of preserving certified properties, creating a gap between guarantees and deployed model.",
+   "severity": "major",
+   "version": "4.5",
+   "review_id": 1844,
+   "rating": 6
+  },
+  {
+   "theme": "T08",
+   "point": "Escalation score calibration (θ_esc=0.76) is under-described; no baseline comparisons to entropy or max softmax probability; unclear contribution of dynamical step-norm term.",
+   "severity": "major",
+   "version": "4.5",
+   "review_id": 1844,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Related work omits key recent GNN-based tool selectors like ARTS and lacks thorough comparison to model cascades such as RouteLLM and FrugalGPT, weakening novelty positioning.",
+   "severity": "minor",
+   "version": "4.5",
+   "review_id": 1844,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The GNCA architecture mainly adapts existing GNN-GSP ideas with limited novelty beyond directed message passing and a new readout.",
+   "severity": "minor",
+   "version": "4.6",
+   "review_id": 1845,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Empirical comparisons lack modern baselines like lightweight transformers or retrieval-based routers under matched latency constraints.",
+   "severity": "major",
+   "version": "4.6",
+   "review_id": 1845,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical rigor is insufficient: confidence intervals and power analysis for accuracy gaps are missing.",
+   "severity": "major",
+   "version": "4.6",
+   "review_id": 1845,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Claims of formal guarantees overstate practical relevance since contraction bounds apply only to a convex variant, not the trained model.",
+   "severity": "major",
+   "version": "4.6",
+   "review_id": 1845,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal guarantees pertain to a Lean 4 certified convex relaxation, but the trained model's behavior is only empirically bridged with moderate agreement.",
+   "severity": "major",
+   "version": "4.6",
+   "review_id": 1845,
+   "rating": 6
+  },
+  {
+   "theme": "T08",
+   "point": "Escalation score normalization derivation assumes zero-mean/unit-variance activations without empirical validation, risking scale-invariance claims.",
+   "severity": "major",
+   "version": "4.6",
+   "review_id": 1845,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Benchmark scope is limited to a single Hermes dataset; practical significance of small accuracy gains is unclear given operational cost sensitivity.",
+   "severity": "major",
+   "version": "4.6",
+   "review_id": 1845,
+   "rating": 6
+  },
+  {
+   "theme": "T16",
+   "point": "Practical deployment cost model sensitivity to λ questions the significance of marginal accuracy improvements over baselines.",
+   "severity": "major",
+   "version": "4.6",
+   "review_id": 1845,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical exposition is incomplete: parameter count formula includes unexplained constants and partial breakdown of argument head capacity.",
+   "severity": "minor",
+   "version": "4.6",
+   "review_id": 1845,
+   "rating": 6
+  },
+  {
+   "theme": "T14",
+   "point": "Reproducibility could improve by providing detailed derivations and empirical histograms supporting normalization assumptions.",
+   "severity": "minor",
+   "version": "4.6",
+   "review_id": 1845,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Limitations section lacks discussion of failure modes such as dynamic tool vocabularies and ambiguous user intents.",
+   "severity": "minor",
+   "version": "4.6",
+   "review_id": 1845,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The GNCA architecture mainly adapts existing GNN-GSP ideas with limited novelty beyond directed message passing and a new readout.",
+   "severity": "minor",
+   "version": "4.7",
+   "review_id": 1846,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Empirical comparisons lack modern baselines like lightweight transformers or retrieval-based routers under matched latency constraints.",
+   "severity": "major",
+   "version": "4.7",
+   "review_id": 1846,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical rigor is insufficient: confidence intervals and power analysis for accuracy gaps are missing.",
+   "severity": "major",
+   "version": "4.7",
+   "review_id": 1846,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Claims of formal guarantees overstate practical relevance since contraction bounds apply only to a convex variant, not the trained model.",
+   "severity": "major",
+   "version": "4.7",
+   "review_id": 1846,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal guarantees pertain to a Lean 4 certified convex relaxation, with limited bridging evidence to the actual trained dynamics.",
+   "severity": "major",
+   "version": "4.7",
+   "review_id": 1846,
+   "rating": 6
+  },
+  {
+   "theme": "T08",
+   "point": "Escalation score normalization derivation assumes zero-mean/unit-variance activations without empirical validation.",
+   "severity": "major",
+   "version": "4.7",
+   "review_id": 1846,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Benchmark scope is limited to a single Hermes dataset; practical applicability to dynamic tool vocabularies is unaddressed.",
+   "severity": "major",
+   "version": "4.7",
+   "review_id": 1846,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical exposition is incomplete: parameter count formula and escalation score normalization lack detailed derivations.",
+   "severity": "minor",
+   "version": "4.7",
+   "review_id": 1846,
+   "rating": 6
+  },
+  {
+   "theme": "T14",
+   "point": "Reproducibility is hindered by incomplete explanation of parameter count breakdown and escalation score assumptions.",
+   "severity": "minor",
+   "version": "4.7",
+   "review_id": 1846,
+   "rating": 6
+  },
+  {
+   "theme": "T16",
+   "point": "Practical significance is unclear given marginal accuracy gains and sensitivity of operational cost model to λ parameter.",
+   "severity": "major",
+   "version": "4.7",
+   "review_id": 1846,
+   "rating": 6
+  },
+  {
+   "theme": "T99",
+   "point": "Limitations section omits discussion of failure modes, dynamic tool sets, and escalation mechanism false negatives.",
+   "severity": "minor",
+   "version": "4.7",
+   "review_id": 1846,
+   "rating": 6
+  },
+  {
+   "theme": "T07",
+   "point": "Theorem 6's exact simulation claim applies only to balanced binary trees; it excludes unbalanced, oblique splits, or feature reuse, causing a large gap with empirical 76.63% concordance.",
+   "severity": "major",
+   "version": "4.8",
+   "review_id": 1847,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Lean 4 theorems certify a convex surrogate, not the deployed ReLU/gating model; empirical Jacobian norms lack formal guarantee, overstating formal coverage.",
+   "severity": "major",
+   "version": "4.8",
+   "review_id": 1847,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Primary benchmark shows GNCA underperforms strongest baseline; latency penalty λ* is assumed, not empirically calibrated, weakening deployment-cost argument.",
+   "severity": "major",
+   "version": "4.8",
+   "review_id": 1847,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Notation for operator (A−I) = −L_rw is inconsistent and misleading; it is the negative random-walk Laplacian, not a novel operator as implied.",
+   "severity": "minor",
+   "version": "4.8",
+   "review_id": 1847,
+   "rating": 6
+  },
+  {
+   "theme": "T08",
+   "point": "Escalation score calibration details (β choice, threshold θ_esc, reliability) are missing, undermining confidence in deployment-critical escalation gating.",
+   "severity": "major",
+   "version": "4.8",
+   "review_id": 1847,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "Theorem 6 is framed as a novel 'duality theorem' but essentially restates that weight-tied recurrent tree computations unroll to decision trees, a tautology from the architecture's definition.",
+   "severity": "major",
+   "version": "4.9",
+   "review_id": 1848,
+   "rating": 5
+  },
+  {
+   "theme": "T05",
+   "point": "Formal guarantees certify a convex surrogate model, but the deployed router uses ReLU and gating with only empirical Jacobian bounds, leaving a gap between theory and practice.",
+   "severity": "major",
+   "version": "4.9",
+   "review_id": 1848,
+   "rating": 5
+  },
+  {
+   "theme": "T16",
+   "point": "Latency cost-model parameters (λ values) are assumed without empirical validation, undermining claims that real-world latency penalties favor GNCA over baselines.",
+   "severity": "major",
+   "version": "4.9",
+   "review_id": 1848,
+   "rating": 5
+  },
+  {
+   "theme": "T04",
+   "point": "Accuracy improvements over Random Forest are small, inconsistent, and sometimes non-significant; practical significance and deployment trade-offs are not discussed.",
+   "severity": "minor",
+   "version": "4.9",
+   "review_id": 1848,
+   "rating": 5
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation and exposition inconsistently restate sign conventions and omit explicit equations for key operations, reducing clarity and verifiability.",
+   "severity": "minor",
+   "version": "4.9",
+   "review_id": 1848,
+   "rating": 5
+  },
+  {
+   "theme": "T01",
+   "point": "The directed negative random-walk Laplacian is a simple sign flip of a known operator; novelty mainly lies in domain adaptation rather than a new computational primitive.",
+   "severity": "major",
+   "version": "5.0",
+   "review_id": 1849,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Claims such as 'dominating the <1 ms SLA regime' rely on an arbitrary threshold λ* = 0.0264 pp/ms, which is not clearly justified or robustly supported.",
+   "severity": "major",
+   "version": "5.0",
+   "review_id": 1849,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical analysis lacks correction for multiple comparisons on primary results; LME model may be overparameterized given only four benchmarks.",
+   "severity": "major",
+   "version": "5.0",
+   "review_id": 1849,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal guarantees apply to a convex surrogate model, not the deployed ReLU-based router; empirical Jacobian checks do not constitute formal certification.",
+   "severity": "major",
+   "version": "5.0",
+   "review_id": 1849,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Empirical margins over baselines are small, inconsistent, and sensitive to seed variance; some baselines may be under-tuned or results underpowered.",
+   "severity": "major",
+   "version": "5.0",
+   "review_id": 1849,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Notation and exposition are dense; message passing direction and self-loop roles in equations (e.g., Eq. 4) are unclear and could be better illustrated.",
+   "severity": "minor",
+   "version": "5.0",
+   "review_id": 1849,
+   "rating": 6
+  },
+  {
+   "theme": "T14",
+   "point": "Reproducibility claims lack evidence of independent verification; details on deterministic seeds and environment specifications are missing.",
+   "severity": "minor",
+   "version": "5.0",
+   "review_id": 1849,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "The primary Hermes result (+1.04 pp advantage) is marginally significant with a lower CI barely above zero, weakening the claim of a clear routing advantage.",
+   "severity": "major",
+   "version": "5.1",
+   "review_id": 1850,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal Lean 4 guarantees apply only to a convex surrogate; the deployed ReLU/gated model lacks formal certification, relying on empirical Jacobian norms.",
+   "severity": "major",
+   "version": "5.1",
+   "review_id": 1850,
+   "rating": 6
+  },
+  {
+   "theme": "T11",
+   "point": "Downstream agentic results have very small sample sizes (n=42, n=10), leading to high uncertainty and underpowered conclusions.",
+   "severity": "major",
+   "version": "5.1",
+   "review_id": 1850,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Sign conventions and filtering interpretation of (A − I) as a high-pass spatial drift operator are asserted without formal derivation or proof.",
+   "severity": "minor",
+   "version": "5.1",
+   "review_id": 1850,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Adapted GNCA baselines may be under-tuned or mismatched to the domain; hyperparameter tuning details are missing, risking unfair comparison.",
+   "severity": "major",
+   "version": "5.1",
+   "review_id": 1850,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The novelty claims overstate contributions; the directed Laplacian and tree-simulation equivalence are known GSP and neural-tree adaptations rather than new operators.",
+   "severity": "major",
+   "version": "5.2",
+   "review_id": 1851,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Lean 4 theorems certify a convex surrogate, not the deployed ReLU/gated model; the empirical Jacobian bridge is not a formal guarantee.",
+   "severity": "major",
+   "version": "5.2",
+   "review_id": 1851,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Empirical accuracy gains (~1–3 pp) over Random Forest are small, benchmark-dependent, and sometimes non-significant, questioning practical impact.",
+   "severity": "major",
+   "version": "5.2",
+   "review_id": 1851,
+   "rating": 6
+  },
+  {
+   "theme": "T11",
+   "point": "Exploratory agent pilots have very small sample sizes (N=42, N=10), underpowered to support strong closed-loop claims despite optimistic pass rates.",
+   "severity": "major",
+   "version": "5.2",
+   "review_id": 1851,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Notation and exposition inconsistently define the adjacency matrix A and Laplacian sign conventions; interaction of self-loops and residual damping is unclear.",
+   "severity": "minor",
+   "version": "5.2",
+   "review_id": 1851,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Related work on neural trees and routing is incomplete; lacks discussion of recent learned tool-selection and function-calling routers beyond ARTS.",
+   "severity": "minor",
+   "version": "5.2",
+   "review_id": 1851,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Theorem 6 claims exact simulation for a weight-tied model, but the deployed ReLU/gating model only achieves 76.63% concordance, weakening parameter-efficiency arguments.",
+   "severity": "major",
+   "version": "5.3",
+   "review_id": 1852,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Lean 4 proofs certify a convex surrogate, not the deployed architecture; empirical Jacobian bounds and Proposition 4 are not machine-checked, making 'zero unproven axioms' misleading.",
+   "severity": "major",
+   "version": "5.3",
+   "review_id": 1852,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Empirical gains over strong baselines are small, sometimes non-significant, and practical significance of ~1–3 pp accuracy gain is not established relative to added complexity.",
+   "severity": "major",
+   "version": "5.3",
+   "review_id": 1852,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation and exposition are inconsistent; adjacency matrix properties and escalation score sesc calibration lack clear derivation and formal definitions.",
+   "severity": "minor",
+   "version": "5.3",
+   "review_id": 1852,
+   "rating": 6
+  },
+  {
+   "theme": "T11",
+   "point": "Downstream agentic evaluations are underpowered (N=10–42) yet highlighted prominently, risking overstatement of practical impact without confirmatory evidence.",
+   "severity": "major",
+   "version": "5.3",
+   "review_id": 1852,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The core operator and tree-simulation equivalence are known; novelty is mainly domain adaptation rather than conceptual advance.",
+   "severity": "major",
+   "version": "5.4",
+   "review_id": 1853,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal guarantees certify contraction on a convex surrogate, but no direct evidence links this to the deployed ReLU/gated model dynamics.",
+   "severity": "major",
+   "version": "5.4",
+   "review_id": 1853,
+   "rating": 6
+  },
+  {
+   "theme": "T16",
+   "point": "Parameter compression claims compare GNCA to large ensembles without parameter-matched baselines, potentially misleading compression benefits.",
+   "severity": "major",
+   "version": "5.4",
+   "review_id": 1853,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Notation inconsistencies for Lrw and −Lrw and incomplete specification of Eq. (10) reduce clarity; interaction of damping factors with contraction bound is not derived.",
+   "severity": "minor",
+   "version": "5.4",
+   "review_id": 1853,
+   "rating": 6
+  },
+  {
+   "theme": "T11",
+   "point": "Downstream agent evaluation uses small sample sizes (N=42, N=10) with large minimum detectable effect sizes, limiting statistical power and over-interpreting results.",
+   "severity": "major",
+   "version": "5.4",
+   "review_id": 1853,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The manuscript overstates novelty by framing standard directed negative random-walk Laplacian filtering and straightforward tree-simulation equivalence as core contributions.",
+   "severity": "major",
+   "version": "5.5",
+   "review_id": 1854,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal guarantees apply only to a convex relaxation surrogate, not the deployed ReLU/gated model; the empirical Jacobian bound does not constitute a formal certification.",
+   "severity": "major",
+   "version": "5.5",
+   "review_id": 1854,
+   "rating": 6
+  },
+  {
+   "theme": "T11",
+   "point": "Exploratory agent evaluations with small sample sizes (N=42, N=10) are underpowered, making reported pass rate and token savings improvements statistically unreliable.",
+   "severity": "major",
+   "version": "5.5",
+   "review_id": 1854,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Notation inconsistencies exist in defining Lrw and its negative; the escalation score sesc normalization lacks full specification, causing potential reader confusion.",
+   "severity": "minor",
+   "version": "5.5",
+   "review_id": 1854,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Baseline comparisons may be unfair: parameter-matched Random Forest is severely constrained and underperforms unconstrained RF, potentially misleading claims of GNCA superiority.",
+   "severity": "minor",
+   "version": "5.5",
+   "review_id": 1854,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The GNCA update rule integrates known weight-tied message-passing and directed Laplacian filtering without conceptual novelty; the contribution is primarily integrative.",
+   "severity": "major",
+   "version": "5.6",
+   "review_id": 1855,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal guarantees certify a convex surrogate with contraction ρ ≤ 0.47, but the deployed ReLU/gated model is uncertified, weakening claimed guarantees.",
+   "severity": "major",
+   "version": "5.6",
+   "review_id": 1855,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Evaluation relies heavily on a single-turn tabular benchmark (Hermes) with marginal gains (~1 pp), limiting external validity and practical significance.",
+   "severity": "major",
+   "version": "5.6",
+   "review_id": 1855,
+   "rating": 6
+  },
+  {
+   "theme": "T11",
+   "point": "Closed-loop system-1/2 integration claims are based on small exploratory samples (N=42, N=10), insufficient for confirmatory conclusions.",
+   "severity": "major",
+   "version": "5.6",
+   "review_id": 1855,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Notation inconsistencies around Lrw and −Lrw create ambiguity; spectral properties of A−I on DAGs are not fully analyzed, affecting clarity of certification scope.",
+   "severity": "minor",
+   "version": "5.6",
+   "review_id": 1855,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "Core technical components are adaptations of known GNN-GSP ideas with only incremental algorithmic novelty over prior GNCAs.",
+   "severity": "minor",
+   "version": "5.7",
+   "review_id": 1856,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal guarantees apply only to a convex surrogate, not the deployed ReLU-gated model; bridging arguments lack formal proof.",
+   "severity": "major",
+   "version": "5.7",
+   "review_id": 1856,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Empirical evaluation is narrow, with modest absolute performance gains and exploratory closed-loop studies underpowered for confirmatory claims.",
+   "severity": "major",
+   "version": "5.7",
+   "review_id": 1856,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation and exposition inconsistencies hinder reproducibility, including unclear definitions and incomplete recurrence specification.",
+   "severity": "minor",
+   "version": "5.7",
+   "review_id": 1856,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Baseline GNCA methods may be under-tuned with limited hyperparameter grids, risking unfair performance comparisons.",
+   "severity": "major",
+   "version": "5.7",
+   "review_id": 1856,
+   "rating": 6
+  },
+  {
+   "theme": "T16",
+   "point": "Statistical significance does not establish practical significance; modest accuracy gains lack demonstrated real-world impact.",
+   "severity": "minor",
+   "version": "5.7",
+   "review_id": 1856,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The paper's novelty is incremental, adapting known GNN-GSP methods with domain-specific integrations rather than fundamental advances, yet the abstract sometimes overstates contributions.",
+   "severity": "minor",
+   "version": "5.8",
+   "review_id": 1857,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal guarantees apply only to a convex surrogate, while the deployed model uses ReLU and gating; the bridging bound and Jacobian analysis do not fully close this gap.",
+   "severity": "major",
+   "version": "5.8",
+   "review_id": 1857,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Baseline adaptations (e.g., symmetrizing edges, virtual coordinate mapping) may disadvantage baselines; lack of ablations isolating adaptation effects weakens fairness claims.",
+   "severity": "major",
+   "version": "5.8",
+   "review_id": 1857,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation is dense and inconsistent, especially sign conventions for the negative random-walk Laplacian and unclear derivation of the cellular update rule, hindering verification.",
+   "severity": "minor",
+   "version": "5.8",
+   "review_id": 1857,
+   "rating": 6
+  },
+  {
+   "theme": "T11",
+   "point": "Closed-loop agent evaluations have very small sample sizes (N=42,10), limiting statistical power and weakening practical impact claims without confirmatory studies.",
+   "severity": "major",
+   "version": "5.8",
+   "review_id": 1857,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The headline efficiency claims (307×/40.5×) compare against unconstrained baselines, overshadowing the scientifically meaningful parameter-matched comparison with only +5.77 pp gain.",
+   "severity": "major",
+   "version": "5.9",
+   "review_id": 1858,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "The +1.04 pp accuracy margin on Hermes is near significance boundary (p=0.0410) with no per-class or per-tool error analysis to assess operational relevance.",
+   "severity": "major",
+   "version": "5.9",
+   "review_id": 1858,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Proposition 4's Ostrowski bound is cited without clearly stating or verifying its assumptions (differentiability, spectral separation, perturbation magnitude) in the manuscript.",
+   "severity": "major",
+   "version": "5.9",
+   "review_id": 1858,
+   "rating": 6
+  },
+  {
+   "theme": "T13",
+   "point": "Inconsistent mathematical notation: Lrw defined both as A−I and I−A; escalation score sesc range [0,2] conflicts with component terms and β=0.50, causing ambiguity.",
+   "severity": "minor",
+   "version": "5.9",
+   "review_id": 1858,
+   "rating": 6
+  },
+  {
+   "theme": "T09",
+   "point": "Latency and deployment-cost claims rely on a single hardware setup and λ choice; the break-even λ*=0.0264 pp/ms lacks contextualization with realistic SLA latency penalty ranges.",
+   "severity": "minor",
+   "version": "5.9",
+   "review_id": 1858,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "The paper inconsistently frames its primary result with multiple conflicting performance gains (+5.77 pp, +3.16 pp, +1.04 pp) without reconciling or clarifying the main claim.",
+   "severity": "major",
+   "version": "6.0",
+   "review_id": 1859,
+   "rating": 5
+  },
+  {
+   "theme": "T07",
+   "point": "Theorem 6's decision-tree simulation equivalence is overstated; the known weight-tied recurrence is presented as novel, and empirical concordance (76.63%) is far from perfect, undermining the claim.",
+   "severity": "major",
+   "version": "6.0",
+   "review_id": 1859,
+   "rating": 5
+  },
+  {
+   "theme": "T13",
+   "point": "Section 3 incorrectly claims Lrw = I − A is PSD with non-negative eigenvalues despite A being non-symmetric; this invalidates spectral arguments for causal backward advection and contraction.",
+   "severity": "major",
+   "version": "6.0",
+   "review_id": 1859,
+   "rating": 5
+  },
+  {
+   "theme": "T08",
+   "point": "Escalation score calibration and AUROC claims lack detail: calibration procedure, threshold choice, and sensitivity to parameters β and weighting are under-analyzed and derivations omitted.",
+   "severity": "major",
+   "version": "6.0",
+   "review_id": 1859,
+   "rating": 5
+  },
+  {
+   "theme": "T11",
+   "point": "Closed-loop results (44.0% token reduction, 13.1× speedup) are reported precisely despite small sample sizes (N=42, N=10), risking over-interpretation of underpowered exploratory trials.",
+   "severity": "major",
+   "version": "6.0",
+   "review_id": 1859,
+   "rating": 5
+  },
+  {
+   "theme": "T04",
+   "point": "Inconsistent empirical claims about capacity-matched vs unconstrained Random Forest baselines create confusion about the primary control and inflate perceived advantage.",
+   "severity": "major",
+   "version": "6.1",
+   "review_id": 1860,
+   "rating": 5
+  },
+  {
+   "theme": "T03",
+   "point": "LME model results rely on random slopes with only four benchmarks, risking unstable variance estimates without sensitivity analyses.",
+   "severity": "major",
+   "version": "6.1",
+   "review_id": 1860,
+   "rating": 5
+  },
+  {
+   "theme": "T05",
+   "point": "Formal guarantees apply to a convex surrogate, but the deployed ReLU/gating model lacks a formal contractivity proof beyond limited empirical Jacobian checks.",
+   "severity": "major",
+   "version": "6.1",
+   "review_id": 1860,
+   "rating": 5
+  },
+  {
+   "theme": "T01",
+   "point": "Novelty claims are overstated given that key components are adaptations or known analytical lenses, needing clearer distinction of genuine contributions.",
+   "severity": "minor",
+   "version": "6.1",
+   "review_id": 1860,
+   "rating": 5
+  },
+  {
+   "theme": "T13",
+   "point": "Notation inconsistencies and unproven assumptions on adjacency matrix properties (e.g., lower-triangularity) undermine eigenvalue claims and sign conventions.",
+   "severity": "minor",
+   "version": "6.1",
+   "review_id": 1860,
+   "rating": 5
+  },
+  {
+   "theme": "T04",
+   "point": "Exploratory closed-loop evaluation results are prominently reported in the Abstract without caveats, risking overinterpretation of preliminary findings.",
+   "severity": "minor",
+   "version": "6.1",
+   "review_id": 1860,
+   "rating": 5
+  },
+  {
+   "theme": "T07",
+   "point": "Theorem 6's formal statement, assumptions, and proof sketch are missing, making the decision-tree simulation equivalence claim unverifiable and underdeveloped.",
+   "severity": "major",
+   "version": "6.2",
+   "review_id": 1861,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal verification applies only to a convex surrogate; the deployed ReLU/gating model lacks formal guarantees, yet the abstract overstates certification scope.",
+   "severity": "major",
+   "version": "6.2",
+   "review_id": 1861,
+   "rating": 6
+  },
+  {
+   "theme": "T16",
+   "point": "Empirical gains over baselines are modest (1–3 pp) and benchmark-dependent; practical significance of accuracy improvements and compression claims is unclear.",
+   "severity": "major",
+   "version": "6.2",
+   "review_id": 1861,
+   "rating": 6
+  },
+  {
+   "theme": "T13",
+   "point": "Notation inconsistencies exist for Lrw and −Lrw definitions and eigenvalue claims, potentially confusing readers.",
+   "severity": "minor",
+   "version": "6.2",
+   "review_id": 1861,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Related work coverage is uneven; recent lightweight tool routers like Hammer are insufficiently discussed or compared, limiting novelty assessment.",
+   "severity": "minor",
+   "version": "6.2",
+   "review_id": 1861,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "The formal guarantees apply only to a convex surrogate and are empirically bridged to the deployed non-convex router, limiting practical significance of the theorems.",
+   "severity": "major",
+   "version": "6.3",
+   "review_id": 1862,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Empirical comparisons report inconsistent Random Forest baselines (63.15% vs 67.88%) without clear reconciliation or labeling of primary comparisons.",
+   "severity": "major",
+   "version": "6.3",
+   "review_id": 1862,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Dataset construction and splitting protocols lack detail, risking label leakage and undermining validity of routing evaluation.",
+   "severity": "major",
+   "version": "6.3",
+   "review_id": 1862,
+   "rating": 6
+  },
+  {
+   "theme": "T09",
+   "point": "Reported 0.35 ms latency excludes full pipeline steps like feature extraction and graph construction, limiting deployment-context validity.",
+   "severity": "major",
+   "version": "6.3",
+   "review_id": 1862,
+   "rating": 6
+  },
+  {
+   "theme": "T13",
+   "point": "Mathematical notation inconsistently defines adjacency matrix A and Laplacian L_rw, leading to incorrect spectral property claims.",
+   "severity": "major",
+   "version": "6.3",
+   "review_id": 1862,
+   "rating": 6
+  },
+  {
+   "theme": "T07",
+   "point": "Tree-simulation theorem is overstated; empirical partition concordance with Random Forest is only 76.63%, far from exact simulation.",
+   "severity": "major",
+   "version": "6.3",
+   "review_id": 1862,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "The manuscript is extremely dense with long paragraphs and nested claims, hindering readability and obscuring core contributions and novelty.",
+   "severity": "minor",
+   "version": "6.4",
+   "review_id": 1863,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Theoretical bridging from convex surrogate contraction to non-convex deployed router via Ostrowski bound and Jacobian norm is asserted but lacks full derivation and clear assumptions.",
+   "severity": "major",
+   "version": "6.4",
+   "review_id": 1863,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical reporting is inconsistent: paired bootstrap difference and LME fixed-effect advantage are unclear and possibly overparameterized given only four benchmarks.",
+   "severity": "major",
+   "version": "6.4",
+   "review_id": 1863,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Non-inferiority test against HistGradientBoosting is inconclusive under strict 0.5 pp margin, weakening parity claims.",
+   "severity": "minor",
+   "version": "6.4",
+   "review_id": 1863,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Closed-loop multi-turn agent evaluations are exploratory with small sample sizes, limiting evidence for broad applicability of escalation and reflex routing claims.",
+   "severity": "major",
+   "version": "6.4",
+   "review_id": 1863,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation ambiguities: adjacency matrix construction and spectral properties of negative random-walk Laplacian on DAGs are insufficiently motivated and explained.",
+   "severity": "minor",
+   "version": "6.4",
+   "review_id": 1863,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The architectural novelty is limited, mainly adapting LGCA and related GNNs; claims like 'architectural representability principle' overstate conceptual advances.",
+   "severity": "major",
+   "version": "6.5",
+   "review_id": 1864,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal guarantees apply only to a convex surrogate, not the deployed ReLU-gated router; the empirical Jacobian bound is not a formal proof for the actual model.",
+   "severity": "major",
+   "version": "6.5",
+   "review_id": 1864,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Empirical gains are small, benchmark-dependent, and sometimes statistically non-significant, limiting strength of claims about superiority.",
+   "severity": "major",
+   "version": "6.5",
+   "review_id": 1864,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Notation is dense and inconsistent, e.g., conflicting definitions and sign conventions for Lrw and overlapping symbols like A for adjacency and accuracy.",
+   "severity": "minor",
+   "version": "6.5",
+   "review_id": 1864,
+   "rating": 6
+  },
+  {
+   "theme": "T11",
+   "point": "Downstream multi-turn agent evaluations are underpowered and exploratory but presented alongside confirmatory results, risking misleading interpretation.",
+   "severity": "minor",
+   "version": "6.5",
+   "review_id": 1864,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "Core components like directed Laplacian filtering and tree-simulation equivalence largely adapt existing GSP and neural tree ideas, limiting novelty.",
+   "severity": "major",
+   "version": "6.6",
+   "review_id": 1866,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Proposition 4's formal-to-deployed bridging relies on empirical Jacobian contractivity without theoretical guarantees for the non-convex router, weakening certification claims.",
+   "severity": "major",
+   "version": "6.6",
+   "review_id": 1866,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Evaluation is limited to four benchmarks with a small tool vocabulary (|C|=13), restricting generalization and practical significance.",
+   "severity": "major",
+   "version": "6.6",
+   "review_id": 1866,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation inconsistently defines Lrw and its negative, causing potential reader confusion; sign conventions should be clarified.",
+   "severity": "minor",
+   "version": "6.6",
+   "review_id": 1866,
+   "rating": 6
+  },
+  {
+   "theme": "T08",
+   "point": "Escalation score components (entropy vs. step norm) are not ablated separately, leaving the source of AUROC gains unclear.",
+   "severity": "minor",
+   "version": "6.6",
+   "review_id": 1866,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The paper's core methods adapt known directed Laplacian filtering and tree-simulation equivalence, with only incremental gains over prior work like LGCA and DNDT.",
+   "severity": "major",
+   "version": "6.7",
+   "review_id": 1867,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal guarantees apply to a convex surrogate, but the deployed non-convex router relies on an unproven empirical contractivity hypothesis, limiting practical verification value.",
+   "severity": "major",
+   "version": "6.7",
+   "review_id": 1867,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Empirical claims about statistical parity and superiority are inconsistent and sometimes marginal, with p-values near significance thresholds and dependence on chosen margins.",
+   "severity": "major",
+   "version": "6.7",
+   "review_id": 1867,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Notation for the Laplacian (−Lrw = A − I) is non-standard and potentially confusing; escalation score parameters lack clear justification and explanation.",
+   "severity": "minor",
+   "version": "6.7",
+   "review_id": 1867,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "The formal contraction guarantee applies only to a convex surrogate, while the deployed non-convex router relies on an empirical Jacobian audit without theoretical worst-case guarantees.",
+   "severity": "major",
+   "version": "6.8",
+   "review_id": 1868,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Benchmark datasets and tasks lack detailed descriptions such as size, label distribution, and adjacency construction, hindering reproducibility and external validity assessment.",
+   "severity": "major",
+   "version": "6.8",
+   "review_id": 1868,
+   "rating": 6
+  },
+  {
+   "theme": "T06",
+   "point": "The claim that directed filtering is 'mathematically necessary' for preserving the causal Markov boundary is stated without formal proof or explicit assumptions, appearing as a heuristic argument.",
+   "severity": "major",
+   "version": "6.8",
+   "review_id": 1868,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical reporting omits details on random effects structure, convergence diagnostics, multiple comparison corrections, and confidence intervals, weakening rigor.",
+   "severity": "minor",
+   "version": "6.8",
+   "review_id": 1868,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Manuscript is dense with undefined acronyms and forward references; notation is sometimes used before definition, reducing readability and clarity.",
+   "severity": "minor",
+   "version": "6.8",
+   "review_id": 1868,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Corollary 1 claims directed linear filtering is necessary for preserving the causal Markov boundary but lacks a formal proof and precise assumptions defining the boundary in execution trace DAGs.",
+   "severity": "major",
+   "version": "6.9",
+   "review_id": 1869,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Proposition 4's Lipschitz bound bridging surrogate contraction to deployed router is not rigorously justified; domain radius choice and global validity of the bound are unclear.",
+   "severity": "major",
+   "version": "6.9",
+   "review_id": 1869,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Notation and sign conventions around the random-walk Laplacian and its negative are inconsistent and confusing; spectral claims rely on unproven properties of the attention-weighted adjacency matrix.",
+   "severity": "minor",
+   "version": "6.9",
+   "review_id": 1869,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Architectural ablations are incomplete; the contribution of residual damping and triplet perception is not isolated, hindering attribution of performance gains.",
+   "severity": "major",
+   "version": "6.9",
+   "review_id": 1869,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical reporting omits effect sizes and confidence intervals for key accuracy comparisons, limiting rigor despite reported p-values.",
+   "severity": "major",
+   "version": "6.9",
+   "review_id": 1869,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Theoretical claims like Corollary 1 and Theorem 6 lack formal statements, assumptions, and proofs, undermining the validity of the paper's formal guarantees.",
+   "severity": "major",
+   "version": "7.0",
+   "review_id": 1870,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Proposition 4's Lipschitz bound linking surrogate and deployed models is under-specified; assumptions and domain radius justification are missing, weakening stability claims.",
+   "severity": "major",
+   "version": "7.0",
+   "review_id": 1870,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical reporting conflates confirmatory and exploratory analyses; effect sizes are very small despite significance, and inferential regimes are not clearly separated.",
+   "severity": "major",
+   "version": "7.0",
+   "review_id": 1870,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Mathematical notation and sign conventions are inconsistent and unclear; topological ordering assumptions for lower-triangular adjacency are unstated and unverified.",
+   "severity": "major",
+   "version": "7.0",
+   "review_id": 1870,
+   "rating": 6
+  },
+  {
+   "theme": "T06",
+   "point": "Causal interpretation claims lack direct evidence; performance ablation does not prove future information leakage or causal Markov condition preservation.",
+   "severity": "major",
+   "version": "7.0",
+   "review_id": 1870,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Unclear if capacity-matched Random Forest baseline was tuned with equal hyperparameter budget as GNCA, risking unfair comparison and overstated gains.",
+   "severity": "major",
+   "version": "7.1",
+   "review_id": 1871,
+   "rating": 6
+  },
+  {
+   "theme": "T06",
+   "point": "Causal filtering claim (Corollary 1) lacks full proof and explicit assumptions in main text; nonlinear GNCA extension is not justified, weakening theoretical foundation.",
+   "severity": "major",
+   "version": "7.1",
+   "review_id": 1871,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal guarantees rely on surrogate contraction proofs not directly applicable to deployed non-convex router; Lipschitz bound derivation and domain justification are incomplete.",
+   "severity": "major",
+   "version": "7.1",
+   "review_id": 1871,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical analysis omits random-effects structure details, uses only 3 seeds, and lacks multiple comparison corrections, raising false positive concerns.",
+   "severity": "major",
+   "version": "7.1",
+   "review_id": 1871,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "Novelty overstated as directed Laplacian A−I adaptation is not compared against stronger directed GNN baselines without cellular weight-tying, limiting insight on architectural contribution.",
+   "severity": "major",
+   "version": "7.1",
+   "review_id": 1871,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "The claimed novelty of using a directed negative random-walk Laplacian for causal filtering is overstated; this operator is standard in graph signal processing and directed GNNs.",
+   "severity": "major",
+   "version": "7.2",
+   "review_id": 1872,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Theoretical guarantees apply only to a convex surrogate model; the deployed non-convex router lacks formal guarantees, relying instead on a possibly loose Lipschitz bound and empirical Jacobian audit.",
+   "severity": "major",
+   "version": "7.2",
+   "review_id": 1872,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Notation and sign conventions are inconsistent and confusing, mixing Δ and −L_rw without clear separation, hindering reader comprehension.",
+   "severity": "minor",
+   "version": "7.2",
+   "review_id": 1872,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical reporting omits clarity on model assumptions, multiple comparison family definitions, and justification of equivalence/non-inferiority margins without power analysis.",
+   "severity": "major",
+   "version": "7.2",
+   "review_id": 1872,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Limitations section insufficiently addresses failure modes when causal DAG assumptions fail (e.g., cycles, non-chronological edges) and risks of escalation score miscalibration in deployment.",
+   "severity": "minor",
+   "version": "7.2",
+   "review_id": 1872,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "Novelty claims overstate contributions; directed Laplacian filtering and tree-simulation theorem are domain adaptations, not fundamental advances.",
+   "severity": "major",
+   "version": "7.3",
+   "review_id": 1874,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Notation and sign conventions for Lrw, ∆, and adjacency matrix A are inconsistent and unclear, especially regarding A's triangularity assumption.",
+   "severity": "major",
+   "version": "7.3",
+   "review_id": 1874,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Statistical reporting conflates small effect sizes with practical significance; claims of superiority are not sufficiently tempered.",
+   "severity": "major",
+   "version": "7.3",
+   "review_id": 1874,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal verification covers a convex surrogate, but the deployed non-convex router lacks a formal proof; Lipschitz bound is unverified and domain assumptions unvalidated.",
+   "severity": "major",
+   "version": "7.3",
+   "review_id": 1874,
+   "rating": 6
+  },
+  {
+   "theme": "T10",
+   "point": "Related work omits key recent GNCAs and neural decision tree variants, lacking empirical comparisons beyond DNDT.",
+   "severity": "minor",
+   "version": "7.3",
+   "review_id": 1874,
+   "rating": 6
+  },
+  {
+   "theme": "T06",
+   "point": "Corollary 1's claim that directed lower-triangular filtering is necessary and sufficient for causal Markov condition lacks full proof and overstates symmetric filtering's leakage risk across all graph topologies.",
+   "severity": "major",
+   "version": "7.4",
+   "review_id": 1875,
+   "rating": 6
+  },
+  {
+   "theme": "T13",
+   "point": "Section 3's Laplacian sign conventions are inconsistent and confusing, particularly regarding eigenvalue signs and stability guarantees for row-stochastic lower-triangular matrices.",
+   "severity": "minor",
+   "version": "7.4",
+   "review_id": 1875,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Proposition 4's Lipschitz bound on the surrogate model does not rigorously guarantee contraction or bounded deviation for the deployed non-convex router under all conditions.",
+   "severity": "major",
+   "version": "7.4",
+   "review_id": 1875,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Adapted baselines (LGCA, E(n)-GNCA, TextNCA) may be under-tuned, and claims of GNCA's superiority lack evidence that baselines received comparable hyperparameter search budgets.",
+   "severity": "major",
+   "version": "7.4",
+   "review_id": 1875,
+   "rating": 6
+  },
+  {
+   "theme": "T16",
+   "point": "Reported effect sizes are small, and practical benefits may not justify system complexity; cost-benefit trade-offs versus simpler baselines like HistGradientBoosting are not discussed.",
+   "severity": "minor",
+   "version": "7.4",
+   "review_id": 1875,
+   "rating": 6
+  },
+  {
+   "theme": "T08",
+   "point": "Escalation score uses fixed β without sensitivity analysis; AUROC is modest, and claims conflating escalation with oracle selection lack clear explanation.",
+   "severity": "minor",
+   "version": "7.4",
+   "review_id": 1875,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Corollary 1's necessity claim for directed lower-triangular filtering lacks full in-text proof and explicit assumptions on innovation and filter classes, hindering assessment of symmetric filtering exclusion.",
+   "severity": "major",
+   "version": "7.5",
+   "review_id": 1876,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "The certified contraction guarantee applies only to a convex surrogate; the deployed router's Lipschitz bound relies on empirical Jacobian audits and assumed domain invariance, not formal certification.",
+   "severity": "major",
+   "version": "7.5",
+   "review_id": 1876,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Notation inconsistencies appear between Δ = A−I and −L_rw = I−A, with unclear escalation score range derivation, complicating verification and readability.",
+   "severity": "minor",
+   "version": "7.5",
+   "review_id": 1876,
+   "rating": 6
+  },
+  {
+   "theme": "T06",
+   "point": "The causal-Markov justification for symmetric-filter 'leakage' is asserted without formal derivation, relying on intuition and empirical correlation rather than a proven causal-inference violation.",
+   "severity": "major",
+   "version": "7.5",
+   "review_id": 1876,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Adapted GNCA baselines may be under-tuned relative to their native regimes, raising fairness concerns about reported performance gaps despite ablation efforts.",
+   "severity": "major",
+   "version": "7.5",
+   "review_id": 1876,
+   "rating": 6
+  },
+  {
+   "theme": "T01",
+   "point": "Theoretical contributions like directed Laplacian filtering and tree-simulation equivalence adapt known GNN-GSP concepts, overstating novelty relative to prior work.",
+   "severity": "minor",
+   "version": "7.6",
+   "review_id": 1879,
+   "rating": 6
+  },
+  {
+   "theme": "T02",
+   "point": "Hyperparameter tuning budget (50 trials) may favor the proposed method; unclear if baselines received equal tuning and fair search spaces.",
+   "severity": "major",
+   "version": "7.6",
+   "review_id": 1879,
+   "rating": 6
+  },
+  {
+   "theme": "T03",
+   "point": "Only 3 random seeds used for evaluation, limiting statistical rigor and robustness of reported gains across benchmarks.",
+   "severity": "major",
+   "version": "7.6",
+   "review_id": 1879,
+   "rating": 6
+  },
+  {
+   "theme": "T04",
+   "point": "Abstract juxtaposes negligible effect size (Cohen's h=0.022) with claims of eliminating 10.4 misrouted calls per 1,000 turns, misleading practical significance.",
+   "severity": "major",
+   "version": "7.6",
+   "review_id": 1879,
+   "rating": 6
+  },
+  {
+   "theme": "T05",
+   "point": "Formal Lipschitz bound for deployed router relies on surrogate model and compact domain; residual gap and empirical Jacobian audit do not constitute full formal guarantee.",
+   "severity": "major",
+   "version": "7.6",
+   "review_id": 1879,
+   "rating": 6
+  },
+  {
+   "theme": "T12",
+   "point": "Dense, compressed exposition with long sentences and heavy notation reduces readability and hinders claim verification without supplementary material.",
+   "severity": "minor",
+   "version": "7.6",
+   "review_id": 1879,
+   "rating": 6
+  }
+ ],
+ "note": "Points extracted from 63 public aiXiv reviews of aixiv.261101.000002 (v1.4-v7.6), raw reviews via POST https://aixiv.science/api/get-review"
+}

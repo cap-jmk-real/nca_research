@@ -57,7 +57,7 @@ def hops_from_goal(A: np.ndarray) -> list[int]:
 
 
 LAYOUTS = {
-    "1d":   {0: (0.5, 0.5), 1: (1.35, 0.5), 2: (2.2, 0.5), 3: (3.05, 0.5), 4: (3.9, 0.5)},
+    "1d":   {0: (0.35, 0.5), 1: (1.275, 0.5), 2: (2.2, 0.5), 3: (3.125, 0.5), 4: (4.05, 0.5)},
     "star": {0: (2.2, 0.5), 1: (1.0, 1.15), 2: (3.4, 1.15), 3: (1.0, -0.15), 4: (3.4, -0.15)},
     "tree": {0: (2.2, 1.25), 1: (1.2, 0.45), 2: (3.2, 0.45), 3: (0.6, -0.35), 4: (1.8, -0.35)},
 }
@@ -80,13 +80,14 @@ def draw_graph(ax, topo: str, title: str, subtitle: str) -> None:
                 if key in drawn:
                     continue
                 drawn.add(key)
+                chain = (topo == "1d")
                 arr = FancyArrowPatch(
                     pos[j], pos[i],
-                    arrowstyle="<|-|>",
+                    arrowstyle="-" if chain else "<|-|>",
                     mutation_scale=8,
                     color=EDGE_C,
-                    lw=1.3,
-                    shrinkA=13, shrinkB=13,
+                    lw=1.6 if chain else 1.3,
+                    shrinkA=8 if chain else 13, shrinkB=8 if chain else 13,
                     zorder=1,
                 )
                 ax.add_patch(arr)
@@ -118,9 +119,12 @@ def draw_graph(ax, topo: str, title: str, subtitle: str) -> None:
             dy = pos[dst][1] - pos[src][1]
             d = np.hypot(dx, dy)
             nx, ny = -dy / d, dx / d
+            off = 0.40 if {src, dst} == {0, 1} else 0.34
+            if (src, dst) == (1, 3):
+                off = -off  # keep the t-4 -> t-2 label on the outer side of its arrow
             ax.text(
-                mx + 0.16 * nx, my + 0.16 * ny, f"{w:.2f}",
-                fontsize=5.2, ha="center", va="center", color="#222222",
+                mx + off * nx, my + off * ny, f"{w:.2f}",
+                fontsize=6.0, ha="center", va="center", color="#222222",
                 bbox=dict(boxstyle="round,pad=0.1", fc="white", ec="#CCCCCC", lw=0.4, alpha=0.92),
                 zorder=2,
             )
@@ -129,14 +133,14 @@ def draw_graph(ax, topo: str, title: str, subtitle: str) -> None:
     for k, (x, y) in pos.items():
         ax.scatter([x], [y], s=260, c=GOAL_C if k == 0 else CELL_C, edgecolors="#222222", linewidths=0.9, zorder=3)
         ax.text(
-            x, y, NAMES[k], ha="center", va="center", fontsize=5.8, zorder=4,
+            x, y, NAMES[k], ha="center", va="center", fontsize=6.4, zorder=4,
             color="white" if k == 0 else "black", fontweight="bold" if k == 0 else "normal",
         )
 
-    ax.set_title(title, fontsize=7.2, fontweight="bold", pad=5)
+    ax.set_title(title, fontsize=6.8, fontweight="bold", pad=5)
     ax.text(
         0.5, -0.06, subtitle,
-        transform=ax.transAxes, ha="center", va="top", fontsize=5.3,
+        transform=ax.transAxes, ha="center", va="top", fontsize=6.0,
         color="#333333", linespacing=1.15,
     )
 
@@ -183,21 +187,22 @@ def draw_mlp(ax):
     ax.set_ylim(-0.6, 1.55)
     for k in range(5):
         y = 1.35 - 0.28 * k
-        ax.scatter([0.35], [y], s=90, c=GOAL_C if k == 0 else CELL_C, edgecolors="k", linewidths=0.6, zorder=3)
-        ax.text(0.35, y, NAMES[k], fontsize=4.2, ha="center", va="center", zorder=4,
+        ax.scatter([0.42], [y], s=150, c=GOAL_C if k == 0 else CELL_C, edgecolors="k", linewidths=0.6, zorder=3)
+        ax.text(0.42, y, NAMES[k], fontsize=4.2, ha="center", va="center", zorder=4,
                 color="white" if k == 0 else "black")
-        arrow(ax, (0.55, y), (1.05, 0.78), lw=0.5)
+        arrow(ax, (0.62, y), (1.08, 0.78), lw=0.5)
     box(ax, 1.45, 0.78, 0.7, 1.45, "concat\n$5{\\times}146$\n$=730$", fs=4.9)
     box(ax, 2.35, 0.78, 0.55, 1.05, "76", fc="#E8E8F8")
     box(ax, 3.05, 0.78, 0.55, 1.05, "76", fc="#E8E8F8")
     box(ax, 3.75, 0.78, 0.55, 0.75, "13\ntools", fc="#FCE8D8", fs=4.8)
     for a, b in [(1.8, 2.07), (2.63, 2.77), (3.33, 3.47)]:
         arrow(ax, (a, 0.78), (b, 0.78))
-    ax.set_title("(e) Flat MLP (62.7k params)", fontsize=7.2, fontweight="bold", pad=5)
+    _mb = json.loads((Path(__file__).resolve().parents[1] / "stage0/stage0_results/review_1110/multibench.json").read_text())
+    ax.set_title(f"(e) MLP ({_mb['benchmarks']['curated']['models']['MLP']['n_params']/1e3:.1f}k params)", fontsize=6.8, fontweight="bold", pad=5)
     ax.text(
         0.5, -0.06,
         "No graph: all cells concatenated;\ncell identity is solely input offset",
-        transform=ax.transAxes, ha="center", va="top", fontsize=5.3, color="#333333", linespacing=1.15,
+        transform=ax.transAxes, ha="center", va="top", fontsize=6.0, color="#333333", linespacing=1.15,
     )
     ax.axis("off")
 
@@ -212,11 +217,12 @@ def draw_rf(ax):
         arrow(ax, (x, 0.15), (3.4, 0.55), lw=0.5)
     ax.text(3.05, 0.95, "…", fontsize=9, ha="center")
     box(ax, 3.8, 0.55, 0.75, 0.55, "majority\nvote", fc="#FCE8D8", fs=4.9)
-    ax.set_title("(f) Random Forest (18.2M nodes)", fontsize=7.2, fontweight="bold", pad=5)
+    _cc = json.loads((Path(__file__).resolve().parents[1] / "stage0/stage0_results/review_1110/cpu_cost.json").read_text())
+    ax.set_title(f"(f) Random Forest ({_cc['RandomForest']['n_tree_nodes']/1e3:.0f}k nodes)", fontsize=6.8, fontweight="bold", pad=5)
     ax.text(
         0.5, -0.06,
         "Deep bootstrap trees voted in parallel;\neach split tests a single feature",
-        transform=ax.transAxes, ha="center", va="top", fontsize=5.3, color="#333333", linespacing=1.15,
+        transform=ax.transAxes, ha="center", va="top", fontsize=6.0, color="#333333", linespacing=1.15,
     )
     ax.axis("off")
 
@@ -227,7 +233,7 @@ def draw_hgb(ax):
     xs = [0.45, 1.45, 2.45]
     for n, x in enumerate(xs):
         mini_tree(ax, x, 1.05, 0.60, depth=2, hot=[(1, n % 2), (2, (n % 2) * 3)], color=HGB_C)
-        ax.text(x, 0.35, f"$f_{n + 1}$", fontsize=5.5, ha="center", va="top")
+        ax.text(x, 0.35, f"$f_{n + 1}$", fontsize=6.0, ha="center", va="top")
         if n < 2:
             ax.text(x + 0.5, 0.35, "+", fontsize=7.5, ha="center", va="top")
     ax.text(2.95, 0.35, "+ … =", fontsize=6.0, ha="left", va="top")
@@ -238,13 +244,13 @@ def draw_hgb(ax):
                 arrowprops=dict(arrowstyle="-|>", color=HGB_C, lw=0.7, connectionstyle="arc3,rad=-0.35"))
     ax.annotate("", xy=(2.45, 1.25), xytext=(1.45, 1.25),
                 arrowprops=dict(arrowstyle="-|>", color=HGB_C, lw=0.7, connectionstyle="arc3,rad=-0.35"))
-    ax.text(1.45, 1.42, "fit residual", fontsize=5.0, ha="center", va="center", color=HGB_C, fontweight="bold")
+    ax.text(1.45, 1.42, "fit residual", fontsize=6.0, ha="center", va="center", color=HGB_C, fontweight="bold")
 
-    ax.set_title("(g) HistGradientBoosting", fontsize=7.2, fontweight="bold", pad=5)
+    ax.set_title("(g) HistGradientBoosting", fontsize=6.8, fontweight="bold", pad=5)
     ax.text(
         0.5, -0.06,
         "Shallow sequential additive trees;\neach tree fits prior pseudo-residuals",
-        transform=ax.transAxes, ha="center", va="top", fontsize=5.3, color="#333333", linespacing=1.15,
+        transform=ax.transAxes, ha="center", va="top", fontsize=6.0, color="#333333", linespacing=1.15,
     )
     ax.axis("off")
 
@@ -258,24 +264,24 @@ def draw_hops(ax):
             ax.text(c, r, f"{int(M[r, c])}", ha="center", va="center", fontsize=6.2,
                     color="white" if M[r, c] >= 3 else "black", fontweight="bold")
     ax.set_xticks(range(5))
-    ax.set_xticklabels(NAMES, fontsize=5.3)
+    ax.set_xticklabels(NAMES, fontsize=6.0)
     ax.set_yticks(range(len(rows)))
-    ax.set_yticklabels([r for r, _ in rows], fontsize=5.5)
+    ax.set_yticklabels([r for r, _ in rows], fontsize=6.0)
     ax.tick_params(length=0)
-    ax.set_title("(h) Goal Hop Distance", fontsize=7.2, fontweight="bold", pad=5)
+    ax.set_title("(h) Goal Hop Distance", fontsize=6.8, fontweight="bold", pad=5)
     ax.text(
         0.5, -0.22,
         "Steps for goal intent to reach cell;\nStar & Tree achieve $O(1)$/$O(\\log V)$ hops",
-        transform=ax.transAxes, ha="center", va="top", fontsize=5.3, color="#333333", linespacing=1.15,
+        transform=ax.transAxes, ha="center", va="top", fontsize=6.0, color="#333333", linespacing=1.15,
     )
 
 
 def main() -> None:
     fig, axes = plt.subplots(2, 4, figsize=(7.2, 4.0), gridspec_kw={"hspace": 0.58, "wspace": 0.20})
-    draw_graph(axes[0, 0], "1d", "(a) 1D Lattice (TextNCA)", "Nearest-neighbor line: goal needs\n$V{-}1{=}4$ steps to reach latest call")
+    draw_graph(axes[0, 0], "1d", "(a) 1D Chain", "Nearest-neighbor line: goal needs\n$V{-}1{=}4$ steps to reach latest call")
     draw_graph(axes[0, 1], "star", "(b) Star GNCA", "Central hub: goal broadcasts to\nevery cell in exactly 1 step")
     draw_graph(axes[0, 2], "tree", "(c) Tree GNCA", "Binary call tree: recent calls are\nsiblings with $O(\\log V)$ diameter")
-    draw_graph(axes[0, 3], "meta", "(d) Meta-Learned GNCA", "Learned continuous edge weights;\nconverges to directed tree backbone")
+    draw_graph(axes[0, 3], "meta", "(d) Learned Topology", "Row-softmax edge weights initialised\nat the tree; largest weights, seed 0")
     draw_mlp(axes[1, 0])
     draw_rf(axes[1, 1])
     draw_hgb(axes[1, 2])

@@ -1,0 +1,21 @@
+{
+ "seed": 1,
+ "best_trial": 19,
+ "config": {
+  "lr": 0.003669952942710555,
+  "weight_decay": 0.1204410233699682,
+  "label_smoothing": 0.1,
+  "batch_size": 512,
+  "train_steps": 400,
+  "K": 6,
+  "hidden_c": 16,
+  "update_hidden": 192
+ },
+ "val_top1": 78.22,
+ "best_step": 300,
+ "fit_s": 5.5,
+ "n_params": 109038,
+ "test_top1": 75.87,
+ "n_test": 692,
+ "wall_s": 5.5
+}

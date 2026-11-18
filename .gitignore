@@ -20,6 +20,9 @@ results/
 *.fdb_latexmk
 *.synctex.gz
 stage0/stage0_results/e1_checkpoints/
-stage0/stage0_results/e1v2/
+stage0/stage0_results/e1v2/**/checkpoints/*.pkl
+stage0/stage0_results/e1v2/**/checkpoints/*.pt
+stage0/stage0_results/e1v2/**/predictions*/
+stage0/stage0_results/e1v2/dry_run/
 .nca_data/
 *.pkl
