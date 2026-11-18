@@ -60,7 +60,7 @@ A smoke run checks that the pipeline executes and writes its output files. It do
 
 | Run | Command | Checks | Time |
 | --- | --- | --- | --- |
-| Smoke | `bash scripts/test_stage0_e1_e2_dry_run.sh` | E1 and E2 code paths on the public BFCL split with 150 steps, one seed. Checks that star, meta and 1d checkpoints and `e2_router_ablation.json` are written. | minutes on CPU |
+| Smoke | `bash scripts/test_stage0_e1_e2_dry_run.sh` | E1 and E2 code paths on the public BFCL split with 150 steps, one seed. Checks that star, meta and 1d checkpoints and `e2_router_ablation.json` are written. | about a minute on a CI runner (CPU) |
 | Full E1 and E2 | `bash scripts/run_e1.sh` then `bash scripts/run_e2.sh` | 150,000 steps, seeds 0 to 2, writes `e1_benchmark.json` and `e2_router_ablation.json`. | 150,000 training steps per run, GPU recommended |
 
 The smoke run overwrites `stage0/stage0_results/e1_benchmark.json` and `e2_router_ablation.json` in your working tree. Restore them with `git checkout -- stage0/stage0_results` afterwards.
