@@ -63,7 +63,7 @@ jobs:
           cd paper
           pdftotext main_tmlr.pdf review.txt
           tr '\n' ' ' < review.txt | sed 's/- //g' > review.flat
-          pat='github|cap-jmk|kleber|julian|orcid|0000-0001-5518|aixiv|klaut|sail\.black|obsevia|librebase|s4il0r|reelsynth|denoise-opt'
+          pat='github|cap-jmk|kleber|julian|orcid|0000-0001-5518|aixiv|klaut|sail\.black|obsevia|librebase|s4il0r|reelsynth|denoise-opt|version[ ~]?7\.6|manuscript v[0-9]'
           if grep -n -i -o -E ".{0,40}($pat).{0,40}" review.flat; then echo "identifying string in the review PDF"; exit 1; fi
           if pdfinfo main_tmlr.pdf | grep -i -E "^(Author|Title|Subject|Keywords):.*($pat)"; then echo "identifying PDF metadata"; exit 1; fi
           echo "anonymity check passed"

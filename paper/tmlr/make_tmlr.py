@@ -95,14 +95,8 @@ items.sort(key=lambda kv: re.sub(r"[^a-z0-9]", "", LABELS[kv[0]].lower()))
 new_bib = "".join("\\bibitem[%s]{%s}%s\n" % (LABELS[k], k, t.rstrip("\n")) for k, t in items)
 body = body[:bib_m.start(2)] + new_bib + body[bib_m.end(2):]
 
-# ---- LLM-use footnote on the first page (TMLR FAQ). Wording pending Julian's OK. ----
-AI_NOTE_NAMED = ("The author used AI coding and writing assistants (Cursor and other LLM-based tools) to write code, "
-           "run experiments and draft and edit text. The research questions, study design and conclusions are the "
-           "author's. The author checked every number against the released result files and every citation against "
-           "its source, and takes full responsibility for the content.")
-AI_NOTE_ANON = (AI_NOTE_NAMED.replace("The author used", "The authors used").replace("the author's", "the authors'")
-                .replace("The author checked", "The authors checked").replace("takes full", "take full"))
-AI_NOTE = "\\ifdefined\\NONANON " + AI_NOTE_NAMED + "\\else " + AI_NOTE_ANON + "\\fi"
+# ---- LLM-use footnote on the first page (TMLR FAQ). Wording approved by Julian (2026-11-18, 09:01); keep verbatim. ----
+AI_NOTE = ("The author used AI coding, research and writing assistants (Cursor, Grok Bot, Hermes Agent, Antigravity and SciSpace) to write code, run experiments, search and read literature, and draft and edit text. The research questions, study design and conclusions are the author's. The author checked every number against the released result files and every citation against its source, and takes full responsibility for the content.")
 # the footnote replaces the body paragraph "Use of AI tools" in the TMLR builds (no duplicate statement)
 body, n_ai = re.subn(r"\\paragraph\{Use of AI tools\.\}[^\n]*\n", "", body)
 assert n_ai == 1, "AI-use paragraph not found"

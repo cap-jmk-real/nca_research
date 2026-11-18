@@ -21,7 +21,7 @@ CI (`.github/workflows/paper-build.yml`) reruns the five table generators and fa
 1. Preamble: TMLR style instead of the two-column `article` layout.
 2. Citations: natbib author-year as the template defines it, with one label per bibitem. The bibliography is sorted by label.
 3. Title block anonymised in the review build. The repository URL is a macro that shows a placeholder for the anonymized mirror in the review build.
-4. The "Use of AI tools" paragraph becomes a footnote on the first page (TMLR FAQ). Wording pending Julian's OK.
+4. The "Use of AI tools" paragraph becomes a footnote on the first page (TMLR FAQ). Wording approved by Julian on 2026-11-18 (09:01).
 5. The internal change ledger appendix and the intro sentence pointing to it are removed, because they refer to earlier public versions.
 6. Two appendix tables get a smaller column separation so they fit the 6.5 in text block.
 
