@@ -21,17 +21,22 @@
 \input{../generated/numbers_protocol.tex}
 \usepackage{url}
 
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\setcounter{table}{0}
+\setcounter{figure}{0}
+
 \title{Supplementary Material:\\Micro-Routing with Graph Neural Cellular Automata for Sub-Millisecond Agent Tool Selection}
 \author{Anonymous authors}
 \begin{document}
 \maketitle
 
-\section{Lean axiom audit (Supplementary Listing S1)}\label{sup:lean}
+\section{Lean axiom audit}\label{sup:lean}
 Output of \texttt{\#print axioms} for every top-level theorem (\path{stage0/stage0_results/review_1110/lean_axioms.txt}), generated with \texttt{lake env lean} in \path{formal_proofs/}. ``Standard'' axioms are Lean's \texttt{propext}, \texttt{Quot.sound} and \texttt{Classical.choice}.
 {\scriptsize
 \lstinputlisting[breaklines=true,basicstyle=\ttfamily\tiny]{../../stage0/stage0_results/review_1110/lean_axioms.txt}}
 
-\section{Default-configuration benchmark table (Supplementary Table S1)}\label{sup:multibench}
+\section{Default-configuration benchmark table}\label{sup:multibench}
 \begin{table*}[t]
 \centering
 \small
@@ -40,7 +45,7 @@ Output of \texttt{\#print axioms} for every top-level theorem (\path{stage0/stag
 \input{../generated/tab_multibench.tex}
 \end{table*}
 
-\section{Default-configuration paired comparisons (Supplementary Table S2)}\label{sup:paired}
+\section{Default-configuration paired comparisons}\label{sup:paired}
 \begin{table}[t]
 \centering
 \scriptsize
@@ -51,6 +56,6 @@ Output of \texttt{\#print axioms} for every top-level theorem (\path{stage0/stag
 \end{table}
 
 \section{Reproducibility bundle}
-The anonymised supplementary ZIP (built with \texttt{make -f tmlr/Makefile supplement-zip} from \path{paper/}) contains result files, table generators, the Lean sources and this listing. The review build of the main paper keeps the public code mirror as a placeholder; replace \texttt{\textbackslash repolink} with the anonymised mirror URL at camera-ready. Submission licence: CC BY 4.0 (TMLR); repository licence: MIT.
+The anonymised supplementary ZIP \texttt{nca\_tmlr\_supplement\_anon.zip} (built with \texttt{make -f tmlr/Makefile supplement-zip}) contains the same materials as this PDF: result files, table generators, stage-0 code, Lean sources and \texttt{supplement\_README.txt}. Submission licence: CC BY 4.0 (TMLR); code licence: MIT.
 
 \end{document}

@@ -36,6 +36,8 @@ head = r"""\documentclass[10pt]{article}
   \usepackage{tmlr}
 \fi
 \usepackage[utf8]{inputenc}
+\usepackage{xr-hyper}
+\externaldocument{tmlr/supplement}
 """
 title = r"""
 \title{Micro-Routing with Graph Neural Cellular Automata for Sub-Millisecond Agent Tool Selection}
@@ -48,7 +50,7 @@ title = r"""
 \else
 \author{Anonymous authors}
 \def\month{MM}\def\year{YYYY}\def\openreview{\url{https://openreview.net/forum?id=XXXX}}
-\newcommand{\repolink}{\textit{[anonymized code mirror: URL inserted when the mirror is built; the same files are in the supplementary ZIP]}}
+\newcommand{\repolink}{\textit{Anonymised code, configs and result files for double-blind review: supplementary ZIP \texttt{nca\_tmlr\_supplement\_anon.zip} (rebuilt via \texttt{make -f tmlr/Makefile supplement-zip}; see \texttt{supplement\_README.txt} in the bundle).}}
 \fi
 """
 
@@ -60,6 +62,10 @@ abs_ = re.search(r"\\begin\{abstract\}.*?\\end\{abstract\}", blk, flags=re.S).gr
 abs_ = abs_.replace("\\vspace{-1.0em}\n", "").replace("\\noindent ", "")
 body = body.replace(blk, "\\maketitle\n" + abs_)
 # repository URL -> macro (anonymous in review build)
+body = body.replace(
+    "\\url{https://github.com/cap-jmk-real/nca_research} (MIT licence). For TMLR double-blind review the same materials are supplied in the anonymised supplementary ZIP \\texttt{nca\\_tmlr\\_supplement\\_anon.zip} (built by \\path{make -f paper/tmlr/Makefile supplement-zip}).",
+    "\\repolink{}",
+)
 body = body.replace("\\url{https://github.com/cap-jmk-real/nca_research} (MIT licence)", "\\repolink{} (MIT licence)")
 # drop the internal change-ledger half of the last appendix (mentions earlier internal/preprint versions)
 body = body.replace("\\section{Result Sources and Changes from Version 7.6}\\label{app:ledger}", "\\section{Result Sources}\\label{app:ledger}")

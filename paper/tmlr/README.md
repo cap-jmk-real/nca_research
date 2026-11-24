@@ -28,7 +28,7 @@ CI (`.github/workflows/paper-build.yml`) reruns the five table generators and fa
 ## Supplement and licences
 
 - **Supplementary ZIP:** `make -f tmlr/Makefile supplement-zip` from `paper/` (manifest-driven, must stay $\leq$ 100\,MB). See `tmlr/SUBMISSION_PACKAGE.md`.
-- **Review anonymity:** the anonymous `main_tmlr` build keeps the `\repolink` placeholder; swap in the anonymised mirror URL only at camera-ready.
+- **Review anonymity:** the anonymous `main_tmlr` build cites the submitted supplementary ZIP via `\repolink`; swap in the public GitHub URL at camera-ready.
 - **Licences:** TMLR submission PDF is under **CC BY 4.0** on acceptance; the code repository stays **MIT** (stated in the paper).
 
 ## Open before submission (needs Julian)

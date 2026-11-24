@@ -45,10 +45,18 @@ jobs:
           curl --proto '=https' --tlsv1.2 -fsSL https://drop-sh.fullyjustified.net | sh
           sudo mv tectonic /usr/local/bin/
 
-      - name: Build anonymous review PDF, named preprint and two-column PDF
+      - name: Supplement manifest and anonymity check
+        run: |
+          python scripts/write_supplement_manifest.py
+          python scripts/check_supplement_anonymity.py
+
+      - name: Build supplementary PDF and anonymous review PDF
         run: |
           cd paper
-          tectonic -X compile -Z search-path=tmlr --keep-logs main_tmlr.tex
+          tectonic -X compile -Z search-path=tmlr --keep-intermediates tmlr/supplement.tex
+          python tmlr/make_tmlr.py
+          tectonic -X compile -Z search-path=tmlr --keep-logs --keep-intermediates main_tmlr.tex
+          tectonic -X compile -Z search-path=tmlr --keep-logs --keep-intermediates main_tmlr.tex
           tectonic -X compile -Z search-path=tmlr main_tmlr_preprint.tex
           tectonic -X compile main.tex
 
@@ -56,7 +64,7 @@ jobs:
         run: |
           cd paper
           if grep -E "Overfull \\\\hbox" main_tmlr.log; then echo "overfull hbox in the review build"; exit 1; fi
-          if grep -E "(Reference|Citation) .* undefined" main_tmlr.log; then echo "undefined reference or citation"; exit 1; fi
+          if grep -E "(Reference|Citation) .* undefined" main_tmlr.log; then echo "undefined reference or citation (run supplement.tex first with --keep-intermediates)"; exit 1; fi
 
       - name: No bare result floats in the review TeX source
         run: python scripts/check_tmlr_bare_floats.py

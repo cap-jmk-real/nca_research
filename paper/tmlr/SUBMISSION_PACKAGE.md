@@ -14,8 +14,8 @@ tectonic -X compile -Z search-path=tmlr tmlr/supplement.tex     # supplementary 
 
 ## Anonymity
 
-- **Review PDF** (`main_tmlr.pdf`): `\repolink` stays the placeholder text; do not insert the real GitHub or mirror URL.
-- **Supplementary ZIP**: same policy; README in the bundle describes what to swap at camera-ready.
+- **Review PDF** (`main_tmlr.pdf`): `\repolink` points reviewers to the submitted supplementary ZIP, not the public GitHub URL.
+- **Supplementary ZIP**: must pass `scripts/check_supplement_anonymity.py` (no author paths or account names). After acceptance, restore the public repository URL in the camera-ready PDF.
 
 ## Licences (camera-ready)
 

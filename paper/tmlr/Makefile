@@ -6,6 +6,7 @@ REPO := ..
 .PHONY: supplement-zip supplement-manifest clean-zip
 
 supplement-zip: supplement-manifest
+	python3 $(REPO)/scripts/check_supplement_anonymity.py
 	rm -f $(ZIP)
 	cd $(REPO) && zip -r paper/$(ZIP) -@ < paper/$(MANIFEST)
 	python3 -c "import os; p='$(ZIP)'; s=os.path.getsize(p); print(f'Wrote {p} ({s/1e6:.2f} MB)'); assert s <= 100*1024*1024, 'supplement zip exceeds 100 MB'"
