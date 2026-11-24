@@ -26,7 +26,7 @@ jobs:
       - name: Regenerate every paper number from the result files
         run: |
           cd scripts
-          for s in build_review_tables_1110 build_hpo_tables_1110 build_v76c_extras_1110 build_rigour_tables_1110 build_bfcl_official_1116; do
+          for s in build_review_tables_1110 build_hpo_tables_1110 build_v76c_extras_1110 build_rigour_tables_1110 build_bfcl_official_1116 build_ksweep_1124; do
             echo "::group::$s"; python "$s.py" > /dev/null; echo "::endgroup::"
           done
 
