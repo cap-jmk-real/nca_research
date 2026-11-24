@@ -86,6 +86,8 @@ LABELS = {
  "patil2023gorilla": "Patil et~al.(2024)", "gorilla-bfcl": "Patil et~al.(2025)", "qin2023toolllm": "Qin et~al.(2024)",
  "li2023apibank": "Li et~al.(2023)", "hermestraces": "{Hermes traces}(2026)", "chung1997spectral": "Chung(1997)",
  "katz2019marabou": "Katz et~al.(2019)", "wang2021beta": "Wang et~al.(2021)",
+ "katz2017reluplex": "Katz et~al.(2017)", "bentkamp2017expressiveness": "Bentkamp et~al.(2017)",
+ "chow1970optimum": "Chow(1970)", "breiman2001random": "Breiman(2001)", "friedman2001greedy": "Friedman(2001)", "hendrycks2017baseline": "Hendrycks and Gimpel(2017)",
 }
 bib_m = re.search(r"(\\begin\{thebibliography\}\{[^}]*\}[^\n]*\n)(.*?)(\\end\{thebibliography\})", body, flags=re.S)
 items = re.findall(r"\\bibitem\{([^}]+)\}([^\n]*(?:\n(?!\\bibitem|\\end\{thebibliography\})[^\n]*)*)", bib_m.group(2))
