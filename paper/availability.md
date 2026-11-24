@@ -13,7 +13,7 @@
 | SI registry | `paper/si/experiments/` + `paper/si/experiments_index.json` |
 | Open runs / exports | `paper/JULIAN_TODO.md` |
 
-**License:** none in repo yet — see `paper/JULIAN_TODO.md`.
+**License:** MIT for code (`LICENSE`); CC BY 4.0 for `paper/`, `data/`, and in-repo results (`LICENSE-CC-BY-4.0`). See root `README.md` § License.
 
 ## Hugging Face (top-4 slots — revisions not pinned)
 
