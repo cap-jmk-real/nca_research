@@ -83,7 +83,8 @@ LABELS = {
  "singla2026agentweave": "Singla et~al.(2026)", "li2026fastmodels": "Li(2026)",
  "chen2024octopus": "Chen and Li(2024)", "erdogan2024tinyagent": "Erdogan et~al.(2024)",
  "lin2024hammer": "Lin et~al.(2025)", "chen2026oats": "Chen et~al.(2026)", "qu2024colt": "Qu et~al.(2024)",
- "patil2023gorilla": "Patil et~al.(2024)", "gorilla-bfcl": "Patil et~al.(2025)", "qin2023toolllm": "Qin et~al.(2024)",
+ "patil2023gorilla": "Patil et~al.(2024)", "gorilla-bfcl": "Patil et~al.(2025)", "bfcl-eval": "BFCL eval package(2026)",
+ "qin2023toolllm": "Qin et~al.(2024)",
  "li2023apibank": "Li et~al.(2023)", "hermestraces": "{Hermes traces}(2026)", "chung1997spectral": "Chung(1997)",
  "katz2019marabou": "Katz et~al.(2019)", "wang2021beta": "Wang et~al.(2021)",
  "katz2017reluplex": "Katz et~al.(2017)", "bentkamp2017expressiveness": "Bentkamp et~al.(2017)",
@@ -103,10 +104,14 @@ AI_NOTE = ("The author used AI coding, research and writing assistants (Cursor, 
 body, n_ai = re.subn(r"\\paragraph\{Use of AI tools\.\}[^\n]*\n", "", body)
 assert n_ai == 1, "AI-use paragraph not found"
 body = body.replace("\\end{abstract}", "\\footnote{" + AI_NOTE + "}\n\\end{abstract}", 1)
-# two appendix tables were laid out for the wider two-column page (overfull in the 6.5in TMLR text block)
-body, n1 = re.subn(r"(\\section\{Default Configurations and the Single-Seed Search\}\\label\{app:earlier\}\n\\begin\{table\*\}\[t\]\n\\centering\n)\\small", r"\1\\footnotesize\\setlength{\\tabcolsep}{2.5pt}", body)
+# Tuned-model appendix table layout (6.5in TMLR text block); default-config tables live in supplement.tex
+body, n1 = re.subn(
+    r"(\\section\{Default Configurations and the Single-Seed Search\}\\label\{app:earlier\}\n\\begin\{table\*\}\[t\]\n\\centering\n)\\small",
+    r"\1\\footnotesize\\setlength{\\tabcolsep}{2.5pt}",
+    body,
+)
 body, n2 = re.subn(r"(\\scriptsize\n)\\setlength\{\\tabcolsep\}\{3\.5pt\}(\n\\caption\{Tuned models: test top-1)", r"\1\\setlength{\\tabcolsep}{2.5pt}\2", body)
-assert n1 == 1 and n2 == 1, (n1, n2)
+assert n2 == 1, f"hpo table colsep tweak missing (n1={n1})"
 assert "tab:ledger" not in body and "Version~7.6" not in body, "ledger removal failed"
 assert "github.com" not in body.replace("\\repolink", ""), "repo URL still in body"
 out = head + pre.strip() + "\n" + title + body

@@ -25,9 +25,15 @@ CI (`.github/workflows/paper-build.yml`) reruns the five table generators and fa
 5. The internal change ledger appendix and the intro sentence pointing to it are removed, because they refer to earlier public versions.
 6. Two appendix tables get a smaller column separation so they fit the 6.5 in text block.
 
+## Supplement and licences
+
+- **Supplementary ZIP:** `make -f tmlr/Makefile supplement-zip` from `paper/` (manifest-driven, must stay $\leq$ 100\,MB). See `tmlr/SUBMISSION_PACKAGE.md`.
+- **Review anonymity:** the anonymous `main_tmlr` build keeps the `\repolink` placeholder; swap in the anonymised mirror URL only at camera-ready.
+- **Licences:** TMLR submission PDF is under **CC BY 4.0** on acceptance; the code repository stays **MIT** (stated in the paper).
+
 ## Open before submission (needs Julian)
 
 - His yes to the venue, the errata list, the AI-use wording, the data statement on the private sessions, and the cover letter.
 - His own OpenReview profile and the submit click.
 - The anonymized mirror URL (built after this PR and the hygiene PR are merged).
-- Length: about 17 pages of main text (references start on page 18). TMLR asks 4-week reviews above 12 pages. No cuts made.
+- Length: re-check with `tectonic` after each cut; TMLR asks 4-week reviews above 12 pages.

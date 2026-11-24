@@ -26,3 +26,4 @@ stage0/stage0_results/e1v2/**/predictions*/
 stage0/stage0_results/e1v2/dry_run/
 .nca_data/
 *.pkl
+paper/tmlr/nca_tmlr_supplement_anon.zip

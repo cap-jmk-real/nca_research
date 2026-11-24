@@ -26,7 +26,7 @@ jobs:
       - name: Regenerate every paper number from the result files
         run: |
           cd scripts
-          for s in build_review_tables_1110 build_hpo_tables_1110 build_v76c_extras_1110 build_rigour_tables_1110 build_bfcl_official_1116 build_ksweep_1124; do
+          for s in build_review_tables_1110 build_hpo_tables_1110 build_v76c_extras_1110 build_rigour_tables_1110 build_bfcl_official_1116 build_ksweep_1124 build_efficiency_1118 build_protocol_pins_1124; do
             echo "::group::$s"; python "$s.py" > /dev/null; echo "::endgroup::"
           done
 
@@ -57,6 +57,9 @@ jobs:
           cd paper
           if grep -E "Overfull \\\\hbox" main_tmlr.log; then echo "overfull hbox in the review build"; exit 1; fi
           if grep -E "(Reference|Citation) .* undefined" main_tmlr.log; then echo "undefined reference or citation"; exit 1; fi
+
+      - name: No bare result floats in the review TeX source
+        run: python scripts/check_tmlr_bare_floats.py
 
       - name: Anonymity check of the review PDF (text and metadata)
         run: |

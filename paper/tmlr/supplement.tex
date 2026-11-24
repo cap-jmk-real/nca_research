@@ -1,0 +1,56 @@
+% Supplementary Material for TMLR submission (anonymous review build uses same content).
+% Build from paper/: tectonic -X compile -Z search-path=tmlr tmlr/supplement.tex
+\documentclass[10pt]{article}
+\usepackage{tmlr}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs,graphicx,amsmath,amssymb,hyperref,listings}
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.97,0.97,0.97}
+\lstdefinestyle{ncaLst}{backgroundcolor=\color{backcolour}, commentstyle=\color{codegreen}, keywordstyle=\color{magenta}, numberstyle=\tiny\color{codegray}, stringstyle=\color{codepurple}, basicstyle=\ttfamily\fontsize{5.5pt}{6.6pt}\selectfont, breakatwhitespace=false, breaklines=true, captionpos=b, keepspaces=true, numbers=left, numbersep=5pt, showspaces=false, showstringspaces=false, showtabs=false, tabsize=2}
+\lstset{style=ncaLst}
+\input{../generated/numbers.tex}
+\input{../generated/numbers_v76c.tex}
+\input{../generated/numbers_hpo.tex}
+\input{../generated/numbers_rig.tex}
+\input{../generated/numbers_bfcl_official.tex}
+\input{../generated/numbers_efficiency_1118.tex}
+\input{../generated/numbers_ksweep_1124.tex}
+\input{../generated/numbers_protocol.tex}
+\usepackage{url}
+
+\title{Supplementary Material:\\Micro-Routing with Graph Neural Cellular Automata for Sub-Millisecond Agent Tool Selection}
+\author{Anonymous authors}
+\begin{document}
+\maketitle
+
+\section{Lean axiom audit (Supplementary Listing S1)}\label{sup:lean}
+Output of \texttt{\#print axioms} for every top-level theorem (\path{stage0/stage0_results/review_1110/lean_axioms.txt}), generated with \texttt{lake env lean} in \path{formal_proofs/}. ``Standard'' axioms are Lean's \texttt{propext}, \texttt{Quot.sound} and \texttt{Classical.choice}.
+{\scriptsize
+\lstinputlisting[breaklines=true,basicstyle=\ttfamily\tiny]{../../stage0/stage0_results/review_1110/lean_axioms.txt}}
+
+\section{Default-configuration benchmark table (Supplementary Table S1)}\label{sup:multibench}
+\begin{table*}[t]
+\centering
+\small
+\caption{Test top-1 accuracy (\%, mean $\pm$ SD over seeds 0--2). Source S1.}
+\label{tab:sup-multibench}
+\input{../generated/tab_multibench.tex}
+\end{table*}
+
+\section{Default-configuration paired comparisons (Supplementary Table S2)}\label{sup:paired}
+\begin{table}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\caption{Paired comparisons, tree GNCA minus baseline (pp). Seed-clustered bootstrap over test turns. Source S1.}
+\label{tab:sup-paired}
+\input{../generated/tab_paired.tex}
+\end{table}
+
+\section{Reproducibility bundle}
+The anonymised supplementary ZIP (built with \texttt{make -f tmlr/Makefile supplement-zip} from \path{paper/}) contains result files, table generators, the Lean sources and this listing. The review build of the main paper keeps the public code mirror as a placeholder; replace \texttt{\textbackslash repolink} with the anonymised mirror URL at camera-ready. Submission licence: CC BY 4.0 (TMLR); repository licence: MIT.
+
+\end{document}
