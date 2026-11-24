@@ -36,6 +36,8 @@ head = r"""\documentclass[10pt]{article}
   \usepackage{tmlr}
 \fi
 \usepackage[utf8]{inputenc}
+\usepackage{xr-hyper}
+\externaldocument{tmlr/supplement}
 """
 title = r"""
 \title{Micro-Routing with Graph Neural Cellular Automata for Sub-Millisecond Agent Tool Selection}
@@ -48,7 +50,7 @@ title = r"""
 \else
 \author{Anonymous authors}
 \def\month{MM}\def\year{YYYY}\def\openreview{\url{https://openreview.net/forum?id=XXXX}}
-\newcommand{\repolink}{\textit{[anonymized code mirror: URL inserted when the mirror is built; the same files are in the supplementary ZIP]}}
+\newcommand{\repolink}{\textit{Anonymised code, configs and result files for double-blind review: supplementary ZIP \texttt{nca\_tmlr\_supplement\_anon.zip} (rebuilt via \texttt{make -f tmlr/Makefile supplement-zip}; see \texttt{supplement\_README.txt} in the bundle).}}
 \fi
 """
 
@@ -60,6 +62,10 @@ abs_ = re.search(r"\\begin\{abstract\}.*?\\end\{abstract\}", blk, flags=re.S).gr
 abs_ = abs_.replace("\\vspace{-1.0em}\n", "").replace("\\noindent ", "")
 body = body.replace(blk, "\\maketitle\n" + abs_)
 # repository URL -> macro (anonymous in review build)
+body = body.replace(
+    "\\url{https://github.com/cap-jmk-real/nca_research} (MIT licence). For TMLR double-blind review the same materials are supplied in the anonymised supplementary ZIP \\texttt{nca\\_tmlr\\_supplement\\_anon.zip} (built by \\path{make -f paper/tmlr/Makefile supplement-zip}).",
+    "\\repolink{}",
+)
 body = body.replace("\\url{https://github.com/cap-jmk-real/nca_research} (MIT licence)", "\\repolink{} (MIT licence)")
 # drop the internal change-ledger half of the last appendix (mentions earlier internal/preprint versions)
 body = body.replace("\\section{Result Sources and Changes from Version 7.6}\\label{app:ledger}", "\\section{Result Sources}\\label{app:ledger}")
@@ -83,9 +89,12 @@ LABELS = {
  "singla2026agentweave": "Singla et~al.(2026)", "li2026fastmodels": "Li(2026)",
  "chen2024octopus": "Chen and Li(2024)", "erdogan2024tinyagent": "Erdogan et~al.(2024)",
  "lin2024hammer": "Lin et~al.(2025)", "chen2026oats": "Chen et~al.(2026)", "qu2024colt": "Qu et~al.(2024)",
- "patil2023gorilla": "Patil et~al.(2024)", "gorilla-bfcl": "Patil et~al.(2025)", "qin2023toolllm": "Qin et~al.(2024)",
+ "patil2023gorilla": "Patil et~al.(2024)", "gorilla-bfcl": "Patil et~al.(2025)", "bfcl-eval": "BFCL eval package(2026)",
+ "qin2023toolllm": "Qin et~al.(2024)",
  "li2023apibank": "Li et~al.(2023)", "hermestraces": "{Hermes traces}(2026)", "chung1997spectral": "Chung(1997)",
  "katz2019marabou": "Katz et~al.(2019)", "wang2021beta": "Wang et~al.(2021)",
+ "katz2017reluplex": "Katz et~al.(2017)", "bentkamp2017expressiveness": "Bentkamp et~al.(2017)",
+ "chow1970optimum": "Chow(1970)", "breiman2001random": "Breiman(2001)", "friedman2001greedy": "Friedman(2001)", "hendrycks2017baseline": "Hendrycks and Gimpel(2017)",
 }
 bib_m = re.search(r"(\\begin\{thebibliography\}\{[^}]*\}[^\n]*\n)(.*?)(\\end\{thebibliography\})", body, flags=re.S)
 items = re.findall(r"\\bibitem\{([^}]+)\}([^\n]*(?:\n(?!\\bibitem|\\end\{thebibliography\})[^\n]*)*)", bib_m.group(2))
@@ -101,10 +110,14 @@ AI_NOTE = ("The author used AI coding, research and writing assistants (Cursor, 
 body, n_ai = re.subn(r"\\paragraph\{Use of AI tools\.\}[^\n]*\n", "", body)
 assert n_ai == 1, "AI-use paragraph not found"
 body = body.replace("\\end{abstract}", "\\footnote{" + AI_NOTE + "}\n\\end{abstract}", 1)
-# two appendix tables were laid out for the wider two-column page (overfull in the 6.5in TMLR text block)
-body, n1 = re.subn(r"(\\section\{Default Configurations and the Single-Seed Search\}\\label\{app:earlier\}\n\\begin\{table\*\}\[t\]\n\\centering\n)\\small", r"\1\\footnotesize\\setlength{\\tabcolsep}{2.5pt}", body)
+# Tuned-model appendix table layout (6.5in TMLR text block); default-config tables live in supplement.tex
+body, n1 = re.subn(
+    r"(\\section\{Default Configurations and the Single-Seed Search\}\\label\{app:earlier\}\n\\begin\{table\*\}\[t\]\n\\centering\n)\\small",
+    r"\1\\footnotesize\\setlength{\\tabcolsep}{2.5pt}",
+    body,
+)
 body, n2 = re.subn(r"(\\scriptsize\n)\\setlength\{\\tabcolsep\}\{3\.5pt\}(\n\\caption\{Tuned models: test top-1)", r"\1\\setlength{\\tabcolsep}{2.5pt}\2", body)
-assert n1 == 1 and n2 == 1, (n1, n2)
+assert n2 == 1, f"hpo table colsep tweak missing (n1={n1})"
 assert "tab:ledger" not in body and "Version~7.6" not in body, "ledger removal failed"
 assert "github.com" not in body.replace("\\repolink", ""), "repo URL still in body"
 out = head + pre.strip() + "\n" + title + body
