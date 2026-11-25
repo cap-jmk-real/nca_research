@@ -4,7 +4,7 @@
 \toprule
 & \multicolumn{2}{c}{OOD (held-out sessions)} & \multicolumn{2}{c}{Sessions all correct (\%)} & \multicolumn{3}{c}{CPU time per turn, 1 thread (ms, median)} & Size \\
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-8}
-Model & Top-1 [95\% CI] & $\Delta$ vs.\ GNCA & Hermes test & OOD & Inference & Featurisation & Pipeline & kB \\
+Model & Top-1 [95\% CI] & $\Delta$ (GNCA$-$model) & Hermes test & OOD & Inference & Featurisation & Pipeline & kB \\
 \midrule
 Logistic regression & 52.78 [46.1, 60.2] & +3.82 & 3.8 & 5.9 & 0.102 & 3.27 & 3.37 & 10 \\
 Random Forest & 56.77 [48.0, 63.8] & -0.17 & 5.3 & 2.0 & 4.442 & 3.37 & 7.82 & 154788 \\
