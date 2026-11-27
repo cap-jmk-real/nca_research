@@ -32,15 +32,61 @@ NICE = {"Majority": "Majority class", "Linear": "Logistic regression", "RandomFo
 
 
 def cluster_boot(a: np.ndarray, b: np.ndarray, n_boot=10000, seed=0) -> dict:
-    """a, b: (seeds, n) 0/1 correctness. Resample examples; seeds stay together."""
+    """a, b: (seeds, n) 0/1 correctness. Resample turns with seeds averaged per turn.
+
+    Two-sided p-value: (1 + #{|boot - obs| >= |obs|}) / (n_boot + 1) on the bootstrap
+    distribution of the mean paired difference (percent). CI: percentiles 2.5 and 97.5.
+    """
     d = a.mean(0) - b.mean(0)
     obs = d.mean() * 100
     rng = np.random.default_rng(seed)
     idx = rng.integers(0, len(d), size=(n_boot, len(d)))
     boots = d[idx].mean(1) * 100
     p = (1 + np.sum(np.abs(boots - obs) >= abs(obs))) / (n_boot + 1)
-    return {"diff_pp": float(obs), "ci95": [float(np.percentile(boots, 2.5)), float(np.percentile(boots, 97.5))],
-            "se_pp": float(boots.std(ddof=1)), "p": float(p), "n_examples": int(len(d)), "n_seeds": int(a.shape[0])}
+    return {
+        "diff_pp": float(obs),
+        "ci95": [float(np.percentile(boots, 2.5)), float(np.percentile(boots, 97.5))],
+        "se_pp": float(boots.std(ddof=1)),
+        "p": float(p),
+        "n_examples": int(len(d)),
+        "n_seeds": int(a.shape[0]),
+        "bootstrap_unit": "turn",
+    }
+
+
+def session_cluster_boot(a: np.ndarray, b: np.ndarray, sess: np.ndarray, n_boot=10000, seed=0) -> dict:
+    """Paired session bootstrap: resample sessions with replacement, keep all turns in each session."""
+    d = a.mean(0) - b.mean(0)
+    obs = d.mean() * 100
+    rng = np.random.default_rng(seed)
+    us = np.unique(sess)
+    members = [np.where(sess == u)[0] for u in us]
+    n_sess = len(us)
+    pick = rng.integers(0, n_sess, size=(n_boot, n_sess))
+    boots = np.empty(n_boot)
+    for i in range(n_boot):
+        idx = np.concatenate([members[j] for j in pick[i]])
+        boots[i] = d[idx].mean() * 100
+    p = (1 + np.sum(np.abs(boots - obs) >= abs(obs))) / (n_boot + 1)
+    return {
+        "diff_pp": float(obs),
+        "ci95": [float(np.percentile(boots, 2.5)), float(np.percentile(boots, 97.5))],
+        "se_pp": float(boots.std(ddof=1)),
+        "p": float(p),
+        "n_examples": int(len(d)),
+        "n_sessions": int(n_sess),
+        "n_seeds": int(a.shape[0]),
+        "bootstrap_unit": "session",
+    }
+
+
+def paired_cluster_boot(
+    a: np.ndarray, b: np.ndarray, sess: np.ndarray | None = None, n_boot=10000, seed=0
+) -> dict:
+    """Use session clustering when multiple turns share a session; otherwise turn bootstrap."""
+    if sess is not None and len(np.unique(sess)) < len(sess):
+        return session_cluster_boot(a, b, sess, n_boot, seed)
+    return cluster_boot(a, b, n_boot, seed)
 
 
 def holm(ps: list[float]) -> list[float]:
