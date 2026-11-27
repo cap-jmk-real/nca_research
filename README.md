@@ -6,6 +6,8 @@ Research code and manuscript for **Micro-Routing with Graph Neural Cellular Auto
 - Project handoff and file map: [`HANDOFF.md`](HANDOFF.md)
 - How to cite: [`CITATION.cff`](CITATION.cff)
 
+- Research journal (sanitized snapshot, 2026-11-27): [`docs/JOURNAL.md`](docs/JOURNAL.md)
+
 ## License
 
 This repository uses a **split license**. Paths not listed under [CC BY 4.0](#cc-by-40) are under the [MIT License](LICENSE) (SPDX: `MIT`, copyright Julian M. Kleber).
